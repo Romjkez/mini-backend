@@ -5,10 +5,9 @@ import { FinishedTest } from './finished-test.entity';
 import { FinishedTestController } from './finished-test.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([FinishedTest])],
-    providers: [FinishedTestService],
-    controllers: [FinishedTestController],
-    exports: [FinishedTestService],
+  imports: [TypeOrmModule.forFeature([FinishedTest])],
+  providers: [FinishedTestService],
+  controllers: [FinishedTestController],
+  exports: [FinishedTestService],
 })
-export class FinishedTestModule {
-}
+export class FinishedTestModule {}

@@ -8,43 +8,43 @@ import { FinishedTest } from '../finished-test/finished-test.entity';
 
 @Entity()
 export class User {
-    @ApiModelProperty()
-    @PrimaryGeneratedColumn({ unsigned: true })
-    id: number;
+  @ApiModelProperty()
+  @PrimaryGeneratedColumn({ unsigned: true })
+  id: number;
 
-    @ApiModelProperty()
-    @Column({ length: 50, type: 'varchar' })
-    firstName: string;
+  @ApiModelProperty()
+  @Column({ length: 50, type: 'varchar' })
+  firstName: string;
 
-    @ApiModelPropertyOptional()
-    @Column({ length: 50, type: 'varchar', nullable: true })
-    lastName?: string;
+  @ApiModelPropertyOptional()
+  @Column({ length: 50, type: 'varchar', nullable: true })
+  lastName?: string;
 
-    @ApiModelProperty()
-    @Column({ length: 100, type: 'varchar' })
-    email: string;
+  @ApiModelProperty()
+  @Column({ length: 100, type: 'varchar' })
+  email: string;
 
-    @ApiModelProperty({ readOnly: true })
-    @CreateDateColumn({ type: 'timestamp' })
-    createdAt: number;
+  @ApiModelProperty({ readOnly: true })
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: number;
 
-    @ApiModelProperty()
-    @UpdateDateColumn({ type: 'timestamp', nullable: true })
-    updatedAt?: number;
+  @ApiModelProperty()
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
+  updatedAt?: number;
 
-    @ApiModelProperty()
-    @Column({ type: 'boolean', default: false })
-    isPrivate: boolean;
+  @ApiModelProperty()
+  @Column({ type: 'boolean', default: false })
+  isPrivate: boolean;
 
-    @ApiModelProperty()
-    @Column({ type: 'tinyint', nullable: true })
-    rating: number;
+  @ApiModelProperty()
+  @Column({ type: 'tinyint', nullable: true })
+  rating: number;
 
-    @ApiModelProperty({ type: Article, isArray: true })
-    @ManyToMany(() => Article, article => article.finishedBy)
-    finishedArticles: Array<Article>;
+  @ApiModelProperty({ type: Article, isArray: true })
+  @ManyToMany(() => Article, article => article.finishedBy)
+  finishedArticles: Array<Article>;
 
-    @ApiModelProperty({ type: FinishedTest, isArray: true })
-    @ManyToMany(() => FinishedTest, test => test.finishedBy)
-    finishedTests: Array<FinishedTest>;
+  @ApiModelProperty({ type: FinishedTest, isArray: true })
+  @ManyToMany(() => FinishedTest, test => test.finishedBy)
+  finishedTests: Array<FinishedTest>;
 }

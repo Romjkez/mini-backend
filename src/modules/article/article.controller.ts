@@ -5,13 +5,12 @@ import { ArticleService } from './article.service';
 import { ApiTags } from '@nestjs/swagger';
 
 @Crud({
-    model: {
-        type: Article,
-    },
+  model: {
+    type: Article,
+  },
 })
 @ApiTags('article')
 @Controller('article')
 export class ArticleController implements CrudController<Article> {
-    constructor(public service: ArticleService) {
-    }
+  constructor(public service: ArticleService) {}
 }

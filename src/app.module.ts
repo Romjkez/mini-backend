@@ -9,30 +9,30 @@ import { FinishedTest } from './modules/finished-test/finished-test.entity';
 import { OptionModule } from './modules/option/option.module';
 
 @Module({
-    imports: [
-        // TODO: uncomment when db config is ready
-        // DatabaseModule,
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            host: process.env.DB_HOST,
-            port: 3306,
-            username: process.env.DB_USER,
-            password: process.env.DB_PASS,
-            database: process.env.NODE_ENV,
-            entities:
-              process.env.NODE_ENV === 'production'
-                ? [`${__dirname}/modules/**/*.entity{.ts,.js}`]
-                : ['dist/**/*.entity{.ts,.js}'],
-            synchronize: false,
-        }),
-        UserModule,
-        ArticleModule,
-        QuestionModule,
-        TestModule,
-        FinishedTest,
-        OptionModule,
-    ],
-    controllers: [AppController],
-    providers: [],
+  imports: [
+    // TODO: uncomment when db config is ready
+    // DatabaseModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: 3306,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.NODE_ENV,
+      entities:
+        process.env.NODE_ENV === 'production'
+          ? [`${__dirname}/modules/**/*.entity{.ts,.js}`]
+          : ['dist/**/*.entity{.ts,.js}'],
+      synchronize: false,
+    }),
+    UserModule,
+    ArticleModule,
+    QuestionModule,
+    TestModule,
+    FinishedTest,
+    OptionModule,
+  ],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}

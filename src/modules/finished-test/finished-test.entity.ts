@@ -6,27 +6,27 @@ import { Test } from '../test/test.entity';
 
 @Entity()
 export class FinishedTest {
-    @ApiModelProperty()
-    @PrimaryGeneratedColumn({ unsigned: true })
-    id: number;
+  @ApiModelProperty()
+  @PrimaryGeneratedColumn({ unsigned: true })
+  id: number;
 
-    @ApiModelProperty({ type: User, isArray: true })
-    @ManyToMany(() => User, user => user.finishedTests)
-    finishedBy: Array<User>;
+  @ApiModelProperty({ type: User, isArray: true })
+  @ManyToMany(() => User, user => user.finishedTests)
+  finishedBy: Array<User>;
 
-    @ApiModelProperty({ type: Option, isArray: true })
-    @OneToMany(() => Option, option => option.id)
-    chosenOptions: Array<Option>;
+  @ApiModelProperty({ type: Option, isArray: true })
+  @OneToMany(() => Option, option => option.id)
+  chosenOptions: Array<Option>;
 
-    @ApiModelProperty({ type: Test })
-    @ManyToOne(() => Test, test => test.id)
-    test: Test;
+  @ApiModelProperty({ type: Test })
+  @ManyToOne(() => Test, test => test.id)
+  test: Test;
 
-    @ApiModelProperty()
-    @Column({ type: 'float' })
-    rate: number;
+  @ApiModelProperty()
+  @Column({ type: 'float' })
+  rate: number;
 
-    @ApiModelProperty({ readOnly: true })
-    @CreateDateColumn({ type: 'timestamp' })
-    createdAt: number;
+  @ApiModelProperty({ readOnly: true })
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: number;
 }

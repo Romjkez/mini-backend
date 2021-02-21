@@ -5,7 +5,7 @@ import { Option } from './option.entity';
 
 @Injectable()
 export class OptionService extends TypeOrmCrudService<Option> {
-    constructor(@InjectRepository(Option) repo) {
-        super(repo);
-    }
+  constructor(@InjectRepository(Option) repo) {
+    super(repo);
+  }
 }
