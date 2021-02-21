@@ -10,21 +10,26 @@ export const swaggerOptions = new DocumentBuilder()
   .setTitle('MINI Backend')
   .setDescription('API of the MINI mobile app')
   .setVersion(version)
-  .setLicense(license, 'https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode');
+  .setLicense(
+    license,
+    'https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode',
+  );
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule);
 
-  const document = SwaggerModule.createDocument(app, swaggerOptions.build());
-  if (process.env.NODE_ENV !== 'production') {
-    const outputPath = path.resolve(process.cwd(), 'openapi.json');
-    writeFile(outputPath, JSON.stringify(document), () => console.log('Successfully saved OpenAPI spec'));
-  }
+    const document = SwaggerModule.createDocument(app, swaggerOptions.build());
+    if (process.env.NODE_ENV !== 'production') {
+        const outputPath = path.resolve(process.cwd(), 'openapi.json');
+        writeFile(outputPath, JSON.stringify(document), () =>
+          console.log('Successfully saved OpenAPI spec'),
+        );
+    }
 
-  SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('api', app, document);
 
-  app.use(helmet());
+    app.use(helmet());
 
-  await app.listen(+process.env.PORT || 3000);
+    await app.listen(+process.env.PORT || 3000);
 }
 bootstrap();

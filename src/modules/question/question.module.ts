@@ -5,10 +5,10 @@ import { QuestionService } from './question.service';
 import { QuestionController } from './question.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Question])],
-  providers: [QuestionService],
-  controllers: [QuestionController],
-  exports: [QuestionService],
+    imports: [TypeOrmModule.forFeature([Question])],
+    providers: [QuestionService],
+    controllers: [QuestionController],
+    exports: [QuestionService],
 })
 export class QuestionModule {
 }

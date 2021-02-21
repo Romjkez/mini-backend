@@ -5,10 +5,10 @@ import { ArticleService } from './article.service';
 import { ArticleController } from './article.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Article])],
-  providers: [ArticleService],
-  controllers: [ArticleController],
-  exports: [ArticleService],
+    imports: [TypeOrmModule.forFeature([Article])],
+    providers: [ArticleService],
+    controllers: [ArticleController],
+    exports: [ArticleService],
 })
 export class ArticleModule {
 }

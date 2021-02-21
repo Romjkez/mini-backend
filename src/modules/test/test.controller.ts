@@ -5,13 +5,13 @@ import { TestService } from './test.service';
 import { Test } from './test.entity';
 
 @Crud({
-  model: {
-    type: Test,
-  },
+    model: {
+        type: Test,
+    },
 })
 @ApiTags('test')
 @Controller('test')
 export class TestController implements CrudController<Test> {
-  constructor(public service: TestService) {
-  }
+    constructor(public service: TestService) {
+    }
 }

@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  mini-backend:
+    build:
+      - target: production
+      - context: .
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_HOST: database
+
+  postgres:
+    image: postgres:13.2
+    ports:
+      - target: 3306
+        published: 3306
+    environment:
+      DB_NAME: 'mini'
+    env_file:
+      - .env

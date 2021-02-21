@@ -5,7 +5,7 @@ import { Question } from './question.entity';
 
 @Injectable()
 export class QuestionService extends TypeOrmCrudService<Question> {
-  constructor(@InjectRepository(Question) repo) {
-    super(repo);
-  }
+    constructor(@InjectRepository(Question) repo) {
+        super(repo);
+    }
 }
