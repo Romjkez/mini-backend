@@ -4,10 +4,9 @@ import { Option } from './option.entity';
 import { OptionService } from './option.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Option])],
-    providers: [OptionService],
-    controllers: [],
-    exports: [OptionService],
+  imports: [TypeOrmModule.forFeature([Option])],
+  providers: [OptionService],
+  controllers: [],
+  exports: [OptionService],
 })
-export class OptionModule {
-}
+export class OptionModule {}
