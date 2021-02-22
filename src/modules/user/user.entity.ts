@@ -37,7 +37,7 @@ export class User {
   isPrivate: boolean;
 
   @ApiModelProperty()
-  @Column({ type: 'tinyint', nullable: true })
+  @Column({ type: 'smallint', nullable: true })
   rating: number;
 
   @ApiModelProperty({ type: Article, isArray: true })
