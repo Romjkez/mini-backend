@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import {
-    ApiModelProperty,
-    ApiModelPropertyOptional,
+  ApiModelProperty,
+  ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 @Entity()

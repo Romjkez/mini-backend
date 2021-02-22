@@ -24,6 +24,16 @@
     "@typescript-eslint/no-explicit-any": "off",
     "no-empty": "warn",
     "no-console": "warn",
-    "prefer-template": "error"
+    "prefer-template": "error",
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "tabWidth": 2,
+        "ignoreRegExpLiterals": true,
+        "ignoreUrls": true,
+        "ignorePattern": "^import\\s.+\\sfrom\\s.+;$"
+      }
+    ]
   }
 }

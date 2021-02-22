@@ -1,4 +1,11 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Article } from '../article/article.entity';
 import {
   ApiModelProperty,
@@ -37,7 +44,7 @@ export class User {
   isPrivate: boolean;
 
   @ApiModelProperty()
-  @Column({ type: 'tinyint', nullable: true })
+  @Column({ type: 'smallint', nullable: true })
   rating: number;
 
   @ApiModelProperty({ type: Article, isArray: true })

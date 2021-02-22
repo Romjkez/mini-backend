@@ -3,22 +3,26 @@ version: "3.7"
 services:
   mini-backend:
     build: .
-    env_file:
-      - .env
     depends_on:
-      - postgres
+      - db
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: production
+    restart: unless-stopped
+    env_file:
+      - .env
     command: "yarn run start:prod"
 
-  postgres:
+  db:
     image: postgres:13.2
     ports:
-      - target: 3306
-        published: 3306
+      - target: 5432
+        published: 5432
     environment:
-      DB_NAME: 'mini'
+      POSTGRES_DB: '${POSTGRES_PASSWORD}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
+      POSTGRES_USER: '${POSTGRES_USER}'
+    restart: always
     env_file:
       - .env
