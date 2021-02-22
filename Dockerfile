@@ -1,12 +1,12 @@
-FROM node:14
+FROM mhart/alpine-node:14
 
 LABEL maintainer="meshkov.ra@yandex.com"
 
 WORKDIR /app
 
-ADD package.json yarn.lock /app/
+COPY package.json yarn.lock /app/
 
-RUN npm ci
+RUN yarn install --ignore-optional --frozen-lockfile && yarn cache clean
 
 ADD . /app/
 
@@ -19,5 +19,6 @@ ENV DB_USERNAME ''
 ENV DB_PASSWORD ''
 ENV DB_NAME ''
 
+RUN apk --update --no-cache add postgresql-client
 
-CMD ./scripts/start.sh
+COPY dist/ /app/dist/

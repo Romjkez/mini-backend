@@ -2,9 +2,7 @@ version: "3.7"
 
 services:
   mini-backend:
-    build:
-      - target: development
-      - context: .
+    build: .
     env_file:
       - .env
     depends_on:
@@ -13,17 +11,19 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: development
-      DATABASE_HOST: database
+      DB_PASS: ''
+      DB_USER: 'postgres'
+      DB_HOST: 'localhost'
+    command: "yarn run start:dev"
 
   postgres:
     image: postgres:13.2
     ports:
-      - target: 3306
-        published: 3306
+      - target: 5432
+        published: 5432
     environment:
-      DB_HOST: localhost
       DB_USER: root
-      DB_PASS: ''
+      POSTGRES_PASSWORD: 'qwerty'
       DB_NAME: 'mini'
     env_file:
       - .env

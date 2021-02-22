@@ -2,9 +2,7 @@ version: "3.7"
 
 services:
   mini-backend:
-    build:
-      - target: production
-      - context: .
+    build: .
     env_file:
       - .env
     depends_on:
@@ -13,7 +11,7 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
-      DATABASE_HOST: database
+    command: "yarn run start:prod"
 
   postgres:
     image: postgres:13.2

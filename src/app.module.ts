@@ -15,7 +15,7 @@ import { OptionModule } from './modules/option/option.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
-      port: 3306,
+      port: 5432,
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.NODE_ENV,
