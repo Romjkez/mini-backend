@@ -10,6 +10,7 @@ export const swaggerOptions = new DocumentBuilder()
   .setTitle('MINI Backend')
   .setDescription('API of the MINI mobile app')
   .setVersion(version)
+  .setContact('Roman Meshkov', '', 'meshkov.ra@ya.ru')
   .setLicense(
     license,
     'https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode',
