@@ -7,7 +7,11 @@ import { UserRepository } from "./user.repository";
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserRepository])],
-  providers: [UserService, Logger],
+  providers: [UserService, Logger,
+    {
+      provide: 'SALT_ROUNDS',
+      useValue: 8
+    }],
   controllers: [UserController],
   exports: [UserService],
 })

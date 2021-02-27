@@ -1,20 +1,20 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { catchError, map, mapTo } from 'rxjs/operators';
-import { EMPTY, from, Observable } from 'rxjs';
+import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
 import { SimpleUser } from './models/simple-user.model';
 import { convertUserToSimpleUser } from './utils/convert-user-to-simple-user';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import * as bcrypt from 'bcrypt'
+import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserRepository) private readonly userRepo: UserRepository,
+    @Inject('SALT_ROUNDS') private readonly saltRounds: number,
     private readonly logger: Logger,
   ) {
     logger.setContext('UserService');
@@ -46,7 +46,7 @@ export class UserService {
   }
 
   deactivate(id: number): Observable<void> {
-    return from(this.userRepo.update(id,{bannedAt: new Date()}))
+    return from(this.userRepo.update(id, { bannedAt: new Date() }))
       .pipe(
         catchError(err => {
           this.logger.error(err);
@@ -56,5 +56,28 @@ export class UserService {
       );
   }
 
-  delete() {}
+  changePassword(id: number, dto: ChangePasswordDto): Observable<void> {
+    return from(this.userRepo.findOne({ select: ['password'], where: { id } })).pipe(
+      catchError(err => {
+        this.logger.error(err);
+        throw new InternalServerErrorException(err);
+      }),
+      switchMap((user: Partial<User>) => from(bcrypt.compare(dto.oldPassword, user.password))),
+      switchMap(comparisonResult=>{
+        if(!comparisonResult) {
+          throw new UnprocessableEntityException('Old password is wrong')
+        }
+        return from(bcrypt.hash(dto.newPassword, this.saltRounds));
+      }),
+      catchError(err => {
+        this.logger.error(err);
+        throw new InternalServerErrorException(err);
+      }),
+      mapTo(null),
+    );
+
+  }
+
+  delete() {
+  }
 }

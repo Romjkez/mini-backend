@@ -14,6 +14,7 @@ import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { SimpleUser } from './models/simple-user.model';
 import { Observable, of } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -34,6 +35,15 @@ export class UserController {
   @Get(':id')
   getById(): Observable<User> {
     return null;
+  }
+
+  @Put(':id/password')
+  changePassword(
+    @Param() id: number,
+    @Body() body: ChangePasswordDto,
+  ): Observable<void> {
+    // TODO add same password validation
+    return this.userService.changePassword(id, body);
   }
 
   @Get()
