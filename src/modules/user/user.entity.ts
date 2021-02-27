@@ -33,11 +33,11 @@ export class User extends SimpleUser {
   lastName: string;
 
   @ApiModelProperty()
-  @Column({ length: 100, type: 'varchar', comment: 'Email' })
+  @Column({ length: 100, type: 'varchar', comment: 'Email', unique: true })
   email: string;
 
   @ApiModelProperty()
-  @Column({type: 'varchar', nullable: true, comment: 'Employer company' })
+  @Column({ type: 'varchar', nullable: true, comment: 'Employer company' })
   company?: string;
 
   @ApiModelProperty({ readOnly: true })
@@ -45,15 +45,27 @@ export class User extends SimpleUser {
   createdAt: Date;
 
   @ApiModelProperty()
-  @UpdateDateColumn({ type: 'timestamp', nullable: true, comment: 'Last account update' })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    nullable: true,
+    comment: 'Last account update',
+  })
   updatedAt?: Date;
 
   @ApiModelProperty()
-  @Column({ type: 'boolean', default: false, comment: 'If user prefers to hide profile from users rating' })
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'If user prefers to hide profile from users rating',
+  })
   isPrivate: boolean;
 
   @ApiModelProperty()
-  @Column({type: 'timestamp', nullable: true, comment: 'Account ban date-time'})
+  @Column({
+    type: 'timestamp',
+    nullable: true,
+    comment: 'Account ban date-time',
+  })
   bannedAt?: Date;
 
   @ApiModelProperty()

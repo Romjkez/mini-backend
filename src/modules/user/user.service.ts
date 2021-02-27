@@ -27,10 +27,17 @@ export class UserService {
   }
 
   createOne(dto: CreateUserDto): Observable<SimpleUser> {
-    return this.userRepo.saveOne(dto).pipe(
+    const password = Math.floor(Math.random() * 1000000).toString();
+
+    return this.userRepo.saveOne({ ...dto, password }, this.saltRounds).pipe(
       map(user => convertUserToSimpleUser(user)),
       catchError(err => {
         this.logger.error(err);
+        if (err.code === '23505') {
+          throw new BadRequestException(
+            'User with such an email already exists',
+          );
+        }
         throw new InternalServerErrorException(err);
       }),
     );
@@ -78,6 +85,7 @@ export class UserService {
         }
         return from(bcrypt.hash(dto.newPassword, this.saltRounds));
       }),
+      switchMap(hash => from(this.userRepo.update(id, { password: hash }))),
       mapTo(null),
     );
   }
