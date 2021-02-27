@@ -20,6 +20,10 @@ export class User {
   id: number;
 
   @ApiModelProperty()
+  @Column({ type: 'varchar' })
+  password: string;
+
+  @ApiModelProperty()
   @Column({ length: 50, type: 'varchar' })
   firstName: string;
 
@@ -30,6 +34,10 @@ export class User {
   @ApiModelProperty()
   @Column({ length: 100, type: 'varchar' })
   email: string;
+
+  @ApiModelProperty()
+  @Column({ length: 255, type: 'varchar' })
+  company: string;
 
   @ApiModelProperty({ readOnly: true })
   @CreateDateColumn({ type: 'timestamp' })
