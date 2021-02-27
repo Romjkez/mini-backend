@@ -12,9 +12,10 @@ import {
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { FinishedTest } from '../finished-test/finished-test.entity';
+import { SimpleUser } from './models/simple-user.model';
 
 @Entity()
-export class User {
+export class User extends SimpleUser {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
@@ -28,16 +29,16 @@ export class User {
   firstName: string;
 
   @ApiModelPropertyOptional()
-  @Column({ length: 50, type: 'varchar', nullable: true })
-  lastName?: string;
+  @Column({ length: 50, type: 'varchar' })
+  lastName: string;
 
   @ApiModelProperty()
   @Column({ length: 100, type: 'varchar' })
   email: string;
 
   @ApiModelProperty()
-  @Column({ length: 255, type: 'varchar' })
-  company: string;
+  @Column({type: 'varchar', nullable: true })
+  company?: string;
 
   @ApiModelProperty({ readOnly: true })
   @CreateDateColumn({ type: 'timestamp' })

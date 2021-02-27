@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { license, version } from 'package.json';
 import * as path from 'path';
 import { writeFile } from 'fs';
+import { Logger } from '@nestjs/common';
 
 export const swaggerOptions = new DocumentBuilder()
   .setTitle('MINI Backend')
@@ -22,9 +23,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerOptions.build());
   if (process.env.NODE_ENV !== 'production') {
     const outputPath = path.resolve(process.cwd(), 'openapi.json');
-    writeFile(outputPath, JSON.stringify(document), () =>
-      console.log('Successfully saved OpenAPI spec'),
-    );
+    writeFile(outputPath, JSON.stringify(document), () => {
+      const logger = new Logger();
+      logger.setContext('Main');
+      logger.log('Successfully saved OpenAPI spec');
+    });
   }
 
   SwaggerModule.setup('api', app, document);

@@ -14,18 +14,38 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
-  @ApiModelProperty()
+  @ApiModelProperty({
+    example: 'John',
+    nullable: false,
+    description: 'First name',
+  })
   firstName: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @IsOptional()
-  @ApiModelPropertyOptional()
-  lastName?: string;
+  @ApiModelProperty({
+    example: 'Doe',
+    nullable: false,
+    description: 'Last name',
+  })
+  lastName: string;
 
   @IsNotEmpty()
   @IsEmail()
-  @ApiModelProperty()
+  @ApiModelProperty({
+    example: 'john@doe.com',
+    nullable: false,
+    description: 'Email',
+  })
   email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiModelPropertyOptional({
+    example: 'Avilon NY',
+    description: 'User employment company',
+  })
+  company?: string;
 }

@@ -10,14 +10,14 @@ export class SimpleUser {
   @ApiModelProperty()
   firstName: string;
 
-  @ApiModelPropertyOptional()
-  lastName?: string;
+  @ApiModelProperty()
+  lastName: string;
 
   @ApiModelProperty()
   email: string;
 
   @ApiModelProperty()
-  company: string;
+  company?: string;
 
   @ApiModelProperty({ readOnly: true })
   createdAt: number;
