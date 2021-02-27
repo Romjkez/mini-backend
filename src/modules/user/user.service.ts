@@ -6,8 +6,8 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { catchError, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { catchError, map, mapTo } from 'rxjs/operators';
+import { EMPTY, from, Observable } from 'rxjs';
 import { SimpleUser } from './models/simple-user.model';
 import { convertUserToSimpleUser } from './utils/convert-user-to-simple-user';
 
@@ -15,7 +15,7 @@ import { convertUserToSimpleUser } from './utils/convert-user-to-simple-user';
 export class UserService {
   constructor(
     @InjectRepository(UserRepository) private readonly userRepo: UserRepository,
-    private logger: Logger,
+    private readonly logger: Logger,
   ) {
     logger.setContext('UserService');
   }
@@ -24,7 +24,7 @@ export class UserService {
     return this.userRepo.saveOne(dto).pipe(
       map(user => convertUserToSimpleUser(user)),
       catchError(err => {
-        this.logger.log(err);
+        this.logger.error(err);
         throw new InternalServerErrorException(err);
       }),
     );
@@ -34,9 +34,27 @@ export class UserService {
 
   update() {}
 
-  activate() {}
+  activate(id: number): Observable<void> {
+    return from(this.userRepo.update(id,{bannedAt: null}))
+      .pipe(
+        catchError(err => {
+          this.logger.error(err);
+          throw new InternalServerErrorException(err);
+        }),
+        mapTo(null),
+      );
+  }
 
-  deactivate() {}
+  deactivate(id: number): Observable<void> {
+    return from(this.userRepo.update(id,{bannedAt: new Date()}))
+      .pipe(
+        catchError(err => {
+          this.logger.error(err);
+          throw new InternalServerErrorException(err);
+        }),
+        mapTo(null),
+      );
+  }
 
   delete() {}
 }

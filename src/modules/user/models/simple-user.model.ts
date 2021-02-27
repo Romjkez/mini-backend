@@ -1,33 +1,25 @@
-import {
-  ApiModelProperty,
-  ApiModelPropertyOptional,
-} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 export class SimpleUser {
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 228 })
   id: number;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 'John' })
   firstName: string;
 
-  @ApiModelProperty()
-  lastName: string;
+  @ApiModelProperty({ example: 'Doe' }) lastName: string;
 
-  @ApiModelProperty()
-  email: string;
+  @ApiModelProperty({ example: 'john@doe.com' }) email: string;
 
-  @ApiModelProperty()
-  company?: string;
+  @ApiModelProperty({ example: 'Avilon NY' }) company?: string;
 
-  @ApiModelProperty({ readOnly: true })
-  createdAt: number;
+  @ApiModelProperty({ readOnly: true }) createdAt: Date;
 
-  @ApiModelProperty()
-  updatedAt?: number;
+  @ApiModelProperty({ readOnly: true }) updatedAt?: Date;
 
-  @ApiModelProperty()
-  isPrivate: boolean;
+  @ApiModelProperty() isPrivate: boolean;
 
-  @ApiModelProperty()
-  rating: number;
+  @ApiModelProperty() bannedAt?: Date;
+
+  @ApiModelProperty({ example: 4.51 }) rating: number;
 }

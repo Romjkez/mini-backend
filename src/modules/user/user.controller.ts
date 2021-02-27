@@ -1,18 +1,27 @@
-import { Body, Controller, Delete, Get, Post, Put } from "@nestjs/common";
-import { Crud, CrudController } from '@nestjsx/crud';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { SimpleUser } from './models/simple-user.model';
-import { Observable, of } from "rxjs";
-import { CreateUserDto } from "./dto/create-user.dto";
-// eslint-disable
+import { Observable, of } from 'rxjs';
+import { CreateUserDto } from './dto/create-user.dto';
+
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiCreatedResponse({ type: SimpleUser })
   create(@Body() dto: CreateUserDto): Observable<SimpleUser> {
     return this.userService.createOne(dto);
   }
@@ -33,18 +42,24 @@ export class UserController {
   }
 
   @Put()
-  update(): Observable<User> {    return null;
+  update(): Observable<User> {
+    return null;
   }
 
   @Post(':id/activate')
-  activate(): Observable<User> {    return null;
+  @HttpCode(200)
+  activate(@Param('id') id: number): Observable<void> {
+    return this.userService.activate(id);
   }
 
   @Post(':id/deactivate')
-  deactivate(): Observable<User> {    return null;
+  @HttpCode(200)
+  deactivate(@Param('id') id: number): Observable<void> {
+    return this.userService.deactivate(id);
   }
 
   @Delete(':id')
-  delete() {    return null;
+  delete() {
+    return null;
   }
 }
