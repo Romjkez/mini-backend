@@ -32,6 +32,10 @@
       }
     ],
     "object-property-newline": "off",
+    "function-call-argument-newline": [
+      "error",
+      "consistent"
+    ],
     "no-empty": "warn",
     "no-console": "warn",
     "prefer-template": "error",

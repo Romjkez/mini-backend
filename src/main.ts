@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { license, version } from 'package.json';
 import * as path from 'path';
 import { writeFile } from 'fs';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 export const swaggerOptions = new DocumentBuilder()
   .setTitle('MINI Backend')
@@ -19,7 +19,7 @@ export const swaggerOptions = new DocumentBuilder()
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, swaggerOptions.build());
   if (process.env.NODE_ENV !== 'production') {
     const outputPath = path.resolve(process.cwd(), 'openapi.json');

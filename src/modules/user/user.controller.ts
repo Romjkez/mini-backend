@@ -1,20 +1,24 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
+  InternalServerErrorException,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SimpleUser } from './models/simple-user.model';
 import { Observable, of } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { IdDto } from '../../common/dto/id.dto';
+import { catchError } from 'rxjs/operators';
 
 @ApiTags('user')
 @Controller('user')
@@ -33,17 +37,24 @@ export class UserController {
   }
 
   @Get(':id')
-  getById(): Observable<User> {
+  getById(@Param() params: IdDto): Observable<User> {
     return null;
   }
 
+  @ApiParam({ type: Number, name: 'id' })
   @Put(':id/password')
   changePassword(
-    @Param() id: number,
+    @Param() params: IdDto,
     @Body() body: ChangePasswordDto,
   ): Observable<void> {
-    // TODO add same password validation
-    return this.userService.changePassword(id, body);
+    if (body.oldPassword === body.newPassword) {
+      throw new BadRequestException('Old and new passwords must not be equal');
+    }
+    return this.userService.changePassword(params.id, body).pipe(
+      catchError(err => {
+        throw new InternalServerErrorException(err?.response || err);
+      }),
+    );
   }
 
   @Get()
@@ -52,24 +63,24 @@ export class UserController {
   }
 
   @Put()
-  update(): Observable<User> {
+  update(@Param() params: IdDto): Observable<User> {
     return null;
   }
 
   @Post(':id/activate')
   @HttpCode(200)
-  activate(@Param('id') id: number): Observable<void> {
-    return this.userService.activate(id);
+  activate(@Param() params: IdDto): Observable<void> {
+    return this.userService.activate(params.id);
   }
 
   @Post(':id/deactivate')
   @HttpCode(200)
-  deactivate(@Param('id') id: number): Observable<void> {
-    return this.userService.deactivate(id);
+  deactivate(@Param() params: IdDto): Observable<void> {
+    return this.userService.deactivate(params.id);
   }
 
   @Delete(':id')
-  delete() {
+  delete(@Param() params: IdDto): Observable<void> {
     return null;
   }
 }
