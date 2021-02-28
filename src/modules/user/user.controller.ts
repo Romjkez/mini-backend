@@ -1,7 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger';
-import { SimpleUser } from './models/simple-user.model';
 import { Observable } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -18,13 +17,13 @@ export class UserController {
 
   @Post()
   @ApiCreatedResponse({ type: User })
-  create(@Body() dto: CreateUserDto): Observable<SimpleUser> {
+  create(@Body() dto: CreateUserDto): Observable<User> {
     return this.userService.createOne(dto);
   }
 
   @Post('/bulk')
   @ApiCreatedResponse({ type: User, isArray: true })
-  createBulk(@Body() dto: CreateUserBulkDto): Observable<Array<SimpleUser>> {
+  createBulk(@Body() dto: CreateUserBulkDto): Observable<Array<User>> {
     return this.userService.createBulk(dto);
   }
 
@@ -36,7 +35,7 @@ export class UserController {
 
   @Post('getMany')
   @HttpCode(200)
-  getMany(@Body() dto: GetManyUsersDto): Observable<Array<SimpleUser>> {
+  getMany(@Body() dto: GetManyUsersDto): Promise<any> {
     return this.userService.getMany(dto);
   }
 

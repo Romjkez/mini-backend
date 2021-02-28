@@ -11,7 +11,6 @@ import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { from, Observable } from 'rxjs';
-import { SimpleUser } from './models/simple-user.model';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from './user.entity';
@@ -21,6 +20,9 @@ import { CreateUserBulkDto } from './dto/create-user-bulk.dto';
 import { CreateUserInternalDto } from './dto/create-user-internal.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetManyUsersDto } from './dto/get-many-users.dto';
+import { SortType } from '../../common/models/sort-type.enum';
+import { addUserFilter } from './utils/add-user-filter';
+import { addUserSort } from './utils/add-user-sort';
 
 @Injectable()
 export class UserService {
@@ -76,8 +78,23 @@ export class UserService {
       );
   }
 
-  getMany(dto: GetManyUsersDto): Observable<Array<SimpleUser>> {
-    return null;
+  async getMany(dto: GetManyUsersDto): Promise<Array<any>> {
+    const entityName = 'user';
+    let qb = this.userRepo.createQueryBuilder(entityName)
+      .limit(dto?.perPage || 15)
+      .offset(dto?.perPage * (dto?.page - 1) || 0);
+
+    if (dto.sort) {
+      qb = addUserSort(qb, dto.sort, entityName);
+    } else {
+      qb = qb.addOrderBy(`"${entityName}"."createdAt"`, SortType.DESC);
+    }
+
+    if (dto.filter) {
+      qb = addUserFilter(qb, dto.filter, entityName);
+    }
+    const res = await qb.getManyAndCount();
+    return res;
   }
 
   update(id: number, dto: UpdateUserDto): Observable<User> {
