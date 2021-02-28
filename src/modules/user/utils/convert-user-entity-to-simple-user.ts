@@ -1,7 +1,7 @@
 import { UserEntity } from '../user.entity';
 import { SimpleUser } from '../models/simple-user.model';
 
-export function convertUserToSimpleUser(user: UserEntity): SimpleUser {
+export function convertUserEntityToSimpleUser(user: UserEntity): SimpleUser {
   return {
     id: user.id,
     firstName: user.firstName,

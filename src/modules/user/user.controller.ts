@@ -1,25 +1,14 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  InternalServerErrorException,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SimpleUser } from './models/simple-user.model';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { IdDto } from '../../common/dto/id.dto';
-import { catchError } from 'rxjs/operators';
 import { User } from './models/user.model';
+import { CreateUserBulkDto } from './dto/create-user-bulk.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -27,16 +16,16 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @ApiCreatedResponse({ type: SimpleUser })
+  @ApiCreatedResponse({ type: User })
   create(@Body() dto: CreateUserDto): Observable<SimpleUser> {
     return this.userService.createOne(dto);
   }
 
   @Post('/bulk')
-  createBulk(): Observable<number> {
-    return of(1);
+  @ApiCreatedResponse({ type: User, isArray: true })
+  createBulk(@Body() dto: CreateUserBulkDto): Observable<Array<SimpleUser>> {
+    return this.userService.createBulk(dto);
   }
-
 
   @ApiParam({ type: Number, name: 'id' })
   @Get(':id')
@@ -46,23 +35,17 @@ export class UserController {
 
   @ApiParam({ type: Number, name: 'id' })
   @Put(':id/password')
-  changePassword(
-    @Param() params: IdDto,
-    @Body() body: ChangePasswordDto,
-  ): Observable<void> {
+  changePassword(@Param() params: IdDto, @Body() body: ChangePasswordDto): Observable<void> {
     if (body.oldPassword === body.newPassword) {
       throw new BadRequestException('Old and new passwords must not be equal');
     }
     return this.userService.changePassword(params.id, body).pipe(
-      catchError(err => {
-        throw new InternalServerErrorException(err?.response || err);
-      }),
     );
   }
 
   @Get()
   getMany(): Observable<Array<SimpleUser>> {
-    return null;
+    return this.userService.getMany();
   }
 
   @ApiParam({ type: Number, name: 'id' })
@@ -88,6 +71,6 @@ export class UserController {
   @ApiParam({ type: Number, name: 'id' })
   @Delete(':id')
   delete(@Param() params: IdDto): Observable<void> {
-    return null;
+    return this.userService.delete(params.id);
   }
 }

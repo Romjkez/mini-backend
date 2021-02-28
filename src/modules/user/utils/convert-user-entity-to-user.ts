@@ -3,6 +3,9 @@ import { Article } from '../../article/article.entity';
 import { User } from '../models/user.model';
 import { FinishedTest } from '../../finished-test/finished-test.entity';
 
+/**
+ * Renamed by TypeORM fields
+ */
 export interface UserEntityRelations {
   __finishedTests__: Array<FinishedTest>;
   __finishedArticles__: Array<Article>

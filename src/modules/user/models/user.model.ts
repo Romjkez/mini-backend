@@ -1,13 +1,10 @@
 import { SimpleUser } from './simple-user.model';
-import {
-  ApiModelProperty,
-  ApiModelPropertyOptional,
-} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Article } from '../../article/article.entity';
 import { FinishedTest } from '../../finished-test/finished-test.entity';
 
 /**
- * User with converted Articles and Tests relations
+ * User with converted Articles and FinishedTests relations
  */
 export class User extends SimpleUser {
   @ApiModelProperty()
@@ -16,7 +13,7 @@ export class User extends SimpleUser {
   @ApiModelProperty()
   firstName: string;
 
-  @ApiModelPropertyOptional()
+  @ApiModelProperty()
   lastName: string;
 
   @ApiModelProperty()
