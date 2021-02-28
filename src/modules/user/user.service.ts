@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -29,7 +23,7 @@ export class UserService {
   createOne(dto: CreateUserDto): Observable<SimpleUser> {
     const password = Math.floor(Math.random() * 1000000).toString();
 
-    return this.userRepo.saveOne({ ...dto, password }, this.saltRounds).pipe(
+    return this.userRepo.insertOne({ ...dto, password }, this.saltRounds).pipe(
       map(user => convertUserToSimpleUser(user)),
       catchError(err => {
         this.logger.error(err);
@@ -43,9 +37,19 @@ export class UserService {
     );
   }
 
-  createBulk() {}
+  createBulk() {
+  }
 
-  update() {}
+  getById(id: number): Observable<User> {
+    return from(
+      this.userRepo.findOneOrFail(id, {
+        relations: ['finishedTests', 'finishedArticles'],
+      }),
+    ).pipe(tap(user => console.log(user)));
+  }
+
+  update() {
+  }
 
   activate(id: number): Observable<void> {
     return from(this.userRepo.update(id, { bannedAt: null })).pipe(

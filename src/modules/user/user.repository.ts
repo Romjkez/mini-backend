@@ -7,7 +7,7 @@ import { CreateUserInternalDto } from './dto/create-user-internal.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  saveOne(dto: CreateUserInternalDto, saltRounds: number): Observable<User> {
+  insertOne(dto: CreateUserInternalDto, saltRounds: number): Observable<User> {
     return from(bcrypt.hash(dto.password, saltRounds)).pipe(
       switchMap(hash =>
         from(

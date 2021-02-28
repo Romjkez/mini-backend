@@ -36,9 +36,11 @@ export class UserController {
     return of(1);
   }
 
+
+  @ApiParam({ type: Number, name: 'id' })
   @Get(':id')
   getById(@Param() params: IdDto): Observable<User> {
-    return null;
+    return this.userService.getById(params.id);
   }
 
   @ApiParam({ type: Number, name: 'id' })
@@ -62,23 +64,27 @@ export class UserController {
     return null;
   }
 
+  @ApiParam({ type: Number, name: 'id' })
   @Put()
   update(@Param() params: IdDto): Observable<User> {
     return null;
   }
 
+  @ApiParam({ type: Number, name: 'id' })
   @Post(':id/activate')
   @HttpCode(200)
   activate(@Param() params: IdDto): Observable<void> {
     return this.userService.activate(params.id);
   }
 
+  @ApiParam({ type: Number, name: 'id' })
   @Post(':id/deactivate')
   @HttpCode(200)
   deactivate(@Param() params: IdDto): Observable<void> {
     return this.userService.deactivate(params.id);
   }
 
+  @ApiParam({ type: Number, name: 'id' })
   @Delete(':id')
   delete(@Param() params: IdDto): Observable<void> {
     return null;

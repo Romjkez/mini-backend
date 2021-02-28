@@ -1,28 +1,18 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { Article } from '../article/article.entity';
+import { SimpleUser } from './simple-user.model';
 import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { FinishedTest } from '../finished-test/finished-test.entity';
-import { SimpleUser } from './models/simple-user.model';
+import { Column, CreateDateColumn, JoinTable, ManyToMany, UpdateDateColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Article } from '../../article/article.entity';
+import { FinishedTest } from '../../finished-test/finished-test.entity';
 
 /**
- * Plain user object from database
+ * User with converted Articles and Tests relations
  */
-@Entity({ name: 'user' })
-export class User extends SimpleUser {
+export class ConvertedUser extends SimpleUser {
   @ApiModelProperty()
-  @PrimaryGeneratedColumn({ unsigned: true, comment: 'Unique identifier' })
   id: number;
 
   @Exclude({ toPlainOnly: true })
