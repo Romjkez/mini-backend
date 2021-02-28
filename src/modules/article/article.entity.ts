@@ -1,6 +1,9 @@
 import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
-import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import {
+  ApiModelProperty,
+  ApiModelPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 @Entity({ name: 'article' })
 export class ArticleEntity {
@@ -27,6 +30,10 @@ export class ArticleEntity {
   @ApiModelProperty({ type: UserEntity, isArray: true })
   @ManyToMany(() => UserEntity, async user => user.finishedArticles)
   finishedBy: Array<UserEntity>;
+
+  @ApiModelPropertyOptional({ example: 'https://avtotachki.com/wp-content/uploads/2020/12/37.jpg' })
+  @Column({ type: 'varchar', default: null, nullable: true })
+  previewUrl?: string;
 
   @ApiModelProperty({ readOnly: true })
   @CreateDateColumn({ type: 'timestamp' })

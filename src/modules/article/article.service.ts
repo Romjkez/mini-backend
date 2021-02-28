@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleEntity } from './article.entity';
 import { Repository } from 'typeorm';
 import { from, Observable } from 'rxjs';
-import { catchError, mapTo } from 'rxjs/operators';
+import { catchError, map, mapTo } from 'rxjs/operators';
+import { CreateArticleDto } from './dto/create-article.dto';
 
 @Injectable()
 export class ArticleService {
@@ -13,7 +14,15 @@ export class ArticleService {
     logger.setContext('ArticleService');
   }
 
-  createOne() {
+  createOne(dto: CreateArticleDto): Observable<ArticleEntity> {
+    return from(this.articleRepo.save(dto))
+      .pipe(
+        map(article => ({ ...article, finishedBy: [] })),
+        catchError(err => {
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
+      );
 
   }
 

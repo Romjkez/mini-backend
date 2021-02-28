@@ -1,8 +1,10 @@
-import { Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { IdDto } from '../../common/dto/id.dto';
 import { Observable } from 'rxjs';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { ArticleEntity } from './article.entity';
 
 @ApiTags('article')
 @Controller('article')
@@ -11,7 +13,8 @@ export class ArticleController {
   }
 
   @Post()
-  createOne() {
+  createOne(@Body() dto: CreateArticleDto): Observable<ArticleEntity> {
+    return this.articleService.createOne(dto);
   }
 
   @ApiParam({ type: Number, name: 'id' })
