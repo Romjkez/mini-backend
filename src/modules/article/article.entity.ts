@@ -3,7 +3,7 @@ import { UserEntity } from '../user/user.entity';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 @Entity({ name: 'article' })
-export class Article {
+export class ArticleEntity {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
@@ -11,6 +11,10 @@ export class Article {
   @ApiModelProperty()
   @Column({ length: 150, type: 'varchar' })
   title: string;
+
+  @ApiModelProperty()
+  @Column({ type: 'text' })
+  content: string;
 
   @ApiModelProperty()
   @Column({ type: 'boolean', default: true })

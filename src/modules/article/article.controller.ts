@@ -1,16 +1,47 @@
-import { Crud, CrudController } from '@nestjsx/crud';
-import { Controller } from '@nestjs/common';
-import { Article } from './article.entity';
+import { Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { ApiTags } from '@nestjs/swagger';
+import { IdDto } from '../../common/dto/id.dto';
+import { Observable } from 'rxjs';
 
-@Crud({
-  model: {
-    type: Article,
-  },
-})
 @ApiTags('article')
 @Controller('article')
-export class ArticleController implements CrudController<Article> {
-  constructor(public service: ArticleService) {}
+export class ArticleController {
+  constructor(private readonly articleService: ArticleService) {
+  }
+
+  @Post()
+  createOne() {
+  }
+
+  @Get(':id')
+  getById(@Param() params: IdDto) {
+    return this.articleService.getById(params.id);
+  }
+
+  @Post(':id/hide')
+  @HttpCode(200)
+  hide(@Param() params: IdDto): Observable<void> {
+
+  }
+
+  @Post(':id/show')
+  @HttpCode(200)
+  show(@Param() params: IdDto): Observable<void> {
+
+  }
+
+  @Post('getMany')
+  @HttpCode(200)
+  getMany() {
+  }
+
+  @Put(':id')
+  update(@Param() params: IdDto) {
+  }
+
+  @Delete(':id')
+  delete(@Param() params: IdDto): Observable<void> {
+    return this.articleService.delete(params.id);
+  }
 }
