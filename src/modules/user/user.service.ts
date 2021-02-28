@@ -10,7 +10,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { SimpleUser } from './models/simple-user.model';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';
@@ -19,6 +19,7 @@ import { convertUserEntityToUser, UserEntityRelations } from './utils/convert-us
 import { User } from './models/user.model';
 import { CreateUserBulkDto } from './dto/create-user-bulk.dto';
 import { CreateUserInternalDto } from './dto/create-user-internal.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -80,8 +81,12 @@ export class UserService {
     throw new NotImplementedException();
   }
 
-  update(): Observable<User> {
-    return of(null);
+  update(id: number, dto: UpdateUserDto): Observable<User> {
+    return from(this.userRepo.update(id, dto))
+      .pipe(
+        switchMap(() => from(this.userRepo.findOne(id, { relations: ['finishedArticles', 'finishedTests'] }))),
+        map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
+      );
   }
 
   activate(id: number): Observable<void> {

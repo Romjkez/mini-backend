@@ -17,7 +17,7 @@ export class UserRepository extends Repository<UserEntity> {
       .pipe(
         switchMap(hash => from(super.save({ ...dto, password: hash }))),
         switchMap(user =>
-          from(this.findOneOrFail(user.id, { relations: ['finishedArticles', 'finishedTests'] }))),
+          from(this.findOne(user.id, { relations: ['finishedArticles', 'finishedTests'] }))),
       );
   }
 

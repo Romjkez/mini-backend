@@ -1,5 +1,4 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
-import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SimpleUser } from './models/simple-user.model';
@@ -9,6 +8,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { IdDto } from '../../common/dto/id.dto';
 import { User } from './models/user.model';
 import { CreateUserBulkDto } from './dto/create-user-bulk.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -49,9 +49,9 @@ export class UserController {
   }
 
   @ApiParam({ type: Number, name: 'id' })
-  @Put()
-  update(@Param() params: IdDto): Observable<UserEntity> {
-    return null;
+  @Put(':id')
+  update(@Param() params: IdDto, @Body() dto: UpdateUserDto): Observable<User> {
+    return this.userService.update(params.id, dto);
   }
 
   @ApiParam({ type: Number, name: 'id' })

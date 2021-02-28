@@ -2,18 +2,15 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+
+export const MIN_FIRSTNAME_LENGTH = 2;
+export const MIN_LASTNAME_LENGTH = 2;
 
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  @MinLength(2)
+  @MinLength(MIN_FIRSTNAME_LENGTH)
   @ApiModelProperty({
     example: 'John',
     nullable: false,
@@ -23,8 +20,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(2)
-  @IsOptional()
+  @MinLength(MIN_LASTNAME_LENGTH)
   @ApiModelProperty({
     example: 'Doe',
     nullable: false,

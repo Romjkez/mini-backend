@@ -1,19 +1,20 @@
 import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import { MIN_FIRSTNAME_LENGTH, MIN_LASTNAME_LENGTH } from './create-user.dto';
 
 export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @MinLength(2)
+  @MinLength(MIN_FIRSTNAME_LENGTH)
   @ApiModelPropertyOptional({ example: 'John', nullable: false, description: 'First name' })
   firstName?: string;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @MinLength(2)
-  @ApiModelPropertyOptional({example: 'Doe', nullable: false, description: 'Last name'})
+  @MinLength(MIN_LASTNAME_LENGTH)
+  @ApiModelPropertyOptional({ example: 'Doe', nullable: false, description: 'Last name' })
   lastName?: string;
 
   @IsOptional()
