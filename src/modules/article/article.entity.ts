@@ -1,12 +1,5 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { User } from '../user/user.entity';
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { UserEntity } from '../user/user.entity';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 @Entity()
@@ -27,9 +20,9 @@ export class Article {
   @Column({ type: 'int', default: 0 })
   finishedCount: number;
 
-  @ApiModelProperty({ type: User, isArray: true })
-  @ManyToMany(() => User, user => user.finishedArticles)
-  finishedBy: Array<User>;
+  @ApiModelProperty({ type: UserEntity, isArray: true })
+  @ManyToMany(() => UserEntity, async user => user.finishedArticles)
+  finishedBy: Array<UserEntity>;
 
   @ApiModelProperty({ readOnly: true })
   @CreateDateColumn({ type: 'timestamp' })

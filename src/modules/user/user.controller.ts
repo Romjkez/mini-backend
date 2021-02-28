@@ -10,7 +10,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SimpleUser } from './models/simple-user.model';
@@ -19,6 +19,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { IdDto } from '../../common/dto/id.dto';
 import { catchError } from 'rxjs/operators';
+import { User } from './models/user.model';
 
 @ApiTags('user')
 @Controller('user')
@@ -66,7 +67,7 @@ export class UserController {
 
   @ApiParam({ type: Number, name: 'id' })
   @Put()
-  update(@Param() params: IdDto): Observable<User> {
+  update(@Param() params: IdDto): Observable<UserEntity> {
     return null;
   }
 

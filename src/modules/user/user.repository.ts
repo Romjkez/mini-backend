@@ -1,13 +1,13 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { from, Observable } from 'rxjs';
 import * as bcrypt from 'bcrypt';
 import { switchMap } from 'rxjs/operators';
 import { CreateUserInternalDto } from './dto/create-user-internal.dto';
 
-@EntityRepository(User)
-export class UserRepository extends Repository<User> {
-  insertOne(dto: CreateUserInternalDto, saltRounds: number): Observable<User> {
+@EntityRepository(UserEntity)
+export class UserRepository extends Repository<UserEntity> {
+  insertOne(dto: CreateUserInternalDto, saltRounds: number): Observable<UserEntity> {
     return from(bcrypt.hash(dto.password, saltRounds)).pipe(
       switchMap(hash =>
         from(

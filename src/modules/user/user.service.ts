@@ -8,7 +8,9 @@ import { SimpleUser } from './models/simple-user.model';
 import { convertUserToSimpleUser } from './utils/convert-user-to-simple-user';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
+import { convertUserEntityToUser, UserEntityRelations } from './utils/convert-user-entity-to-user';
+import { User } from './models/user.model';
 
 @Injectable()
 export class UserService {
@@ -41,11 +43,10 @@ export class UserService {
   }
 
   getById(id: number): Observable<User> {
-    return from(
-      this.userRepo.findOneOrFail(id, {
-        relations: ['finishedTests', 'finishedArticles'],
-      }),
-    ).pipe(tap(user => console.log(user)));
+    return from(this.userRepo.findOneOrFail(id, { relations: ['finishedTests', 'finishedArticles'] }))
+      .pipe(
+        map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
+      );
   }
 
   update() {
@@ -80,7 +81,7 @@ export class UserService {
           throw new BadRequestException(`User with ID ${id} was not found`);
         }
       }),
-      switchMap((user: Partial<User>) =>
+      switchMap((user: Partial<UserEntity>) =>
         from(bcrypt.compare(dto.oldPassword, user.password)),
       ),
       switchMap(comparisonResult => {

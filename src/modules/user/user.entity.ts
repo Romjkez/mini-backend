@@ -14,18 +14,16 @@ import {
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { FinishedTest } from '../finished-test/finished-test.entity';
 import { SimpleUser } from './models/simple-user.model';
-import { Exclude } from 'class-transformer';
 
 /**
  * Plain user object from database
  */
 @Entity({ name: 'user' })
-export class User extends SimpleUser {
+export class UserEntity extends SimpleUser {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true, comment: 'Unique identifier' })
   id: number;
 
-  @Exclude({ toPlainOnly: true })
   @ApiModelProperty()
   @Column({ type: 'varchar', comment: 'User password' })
   password: string;
