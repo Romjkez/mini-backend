@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -9,11 +9,14 @@ import { User } from './models/user.model';
 import { CreateUserBulkDto } from './dto/create-user-bulk.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetManyUsersDto } from './dto/get-many-users.dto';
+import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
+import { SimpleUser } from './models/simple-user.model';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {
+  }
 
   @Post()
   @ApiCreatedResponse({ type: User })
@@ -27,15 +30,17 @@ export class UserController {
     return this.userService.createBulk(dto);
   }
 
+  @ApiOkResponse({ type: User })
   @ApiParam({ type: Number, name: 'id' })
   @Get(':id')
   getById(@Param() params: IdDto): Observable<User> {
     return this.userService.getById(params.id);
   }
 
+  @ApiOkResponse({ type: GetManyResponseDto })
   @Post('getMany')
   @HttpCode(200)
-  getMany(@Body() dto: GetManyUsersDto): Promise<any> {
+  getMany(@Body() dto: GetManyUsersDto): Observable<GetManyResponseDto<SimpleUser>> {
     return this.userService.getMany(dto);
   }
 
@@ -49,6 +54,7 @@ export class UserController {
     );
   }
 
+  @ApiOkResponse({ type: User })
   @ApiParam({ type: Number, name: 'id' })
   @Put(':id')
   update(@Param() params: IdDto, @Body() dto: UpdateUserDto): Observable<User> {

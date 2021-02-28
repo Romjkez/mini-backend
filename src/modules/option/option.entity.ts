@@ -4,7 +4,7 @@ import {
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-@Entity()
+@Entity({ name: 'option' })
 export class Option {
   @ApiModelProperty({
     type: 'integer',

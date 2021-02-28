@@ -25,5 +25,6 @@ export function convertUserEntityToUser(user: UserEntity & UserEntityRelations):
     rating: user.rating,
     finishedArticles: user.__finishedArticles__,
     finishedTests: user.__finishedTests__,
+    role: user.role,
   };
 }

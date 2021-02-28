@@ -23,6 +23,10 @@ import { GetManyUsersDto } from './dto/get-many-users.dto';
 import { SortType } from '../../common/models/sort-type.enum';
 import { addUserFilter } from './utils/add-user-filter';
 import { addUserSort } from './utils/add-user-sort';
+import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
+import { SimpleUser } from './models/simple-user.model';
+import { convertUserEntityToSimpleUser } from './utils/convert-user-entity-to-simple-user';
 
 @Injectable()
 export class UserService {
@@ -78,11 +82,11 @@ export class UserService {
       );
   }
 
-  async getMany(dto: GetManyUsersDto): Promise<Array<any>> {
+  getMany(dto: GetManyUsersDto): Observable<GetManyResponseDto<SimpleUser>> {
     const entityName = 'user';
     let qb = this.userRepo.createQueryBuilder(entityName)
-      .limit(dto?.perPage || 15)
-      .offset(dto?.perPage * (dto?.page - 1) || 0);
+      .limit(dto?.perPage || DEFAULT_PER_PAGE)
+      .offset(dto?.perPage * (dto?.page - 1) || DEFAULT_PAGE - 1);
 
     if (dto.sort) {
       qb = addUserSort(qb, dto.sort, entityName);
@@ -93,8 +97,21 @@ export class UserService {
     if (dto.filter) {
       qb = addUserFilter(qb, dto.filter, entityName);
     }
-    const res = await qb.getManyAndCount();
-    return res;
+    return from(qb.getManyAndCount())
+      .pipe(
+        catchError(err => {
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
+        map(res => {
+          return {
+            data: res[0].map((user: UserEntity & UserEntityRelations) => convertUserEntityToSimpleUser(user)),
+            perPage: dto?.perPage || DEFAULT_PER_PAGE,
+            page: dto?.page || DEFAULT_PAGE,
+            totalItems: res[1],
+          };
+        }),
+      );
   }
 
   update(id: number, dto: UpdateUserDto): Observable<User> {

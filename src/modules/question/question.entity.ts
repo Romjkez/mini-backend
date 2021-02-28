@@ -8,7 +8,7 @@ export enum QuestionType {
   ExactAnswer = 'exactAnswer',
 }
 
-@Entity()
+@Entity({ name: 'question' })
 export class Question {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })

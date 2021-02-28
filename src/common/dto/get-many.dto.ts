@@ -3,6 +3,8 @@ import { IsInt, IsOptional, IsPositive, Max } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 const MAX_PER_PAGE = 100;
+export const DEFAULT_PER_PAGE = 15;
+export const DEFAULT_PAGE = 1;
 
 export class GetManyDto {
   @IsOptional()
@@ -22,7 +24,7 @@ export class GetManyDto {
     example: 15,
     maximum: MAX_PER_PAGE,
     minimum: 1,
-    default: 15,
+    default: DEFAULT_PER_PAGE,
   })
   perPage: number;
 }

@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, U
 import { UserEntity } from '../user/user.entity';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-@Entity()
+@Entity({ name: 'article' })
 export class Article {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })

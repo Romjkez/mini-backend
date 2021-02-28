@@ -4,7 +4,7 @@ import { UserEntity } from '../user/user.entity';
 import { Option } from '../option/option.entity';
 import { Test } from '../test/test.entity';
 
-@Entity()
+@Entity({ name: 'finishedTest' })
 export class FinishedTest {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })
