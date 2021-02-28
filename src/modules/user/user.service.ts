@@ -40,9 +40,7 @@ export class UserService {
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
           if (err.code === '23505') {
-            throw new BadRequestException(
-              'User with such an email already exists',
-            );
+            throw new BadRequestException('User with such an email already exists');
           }
           throw new InternalServerErrorException(err);
         }),
@@ -86,10 +84,18 @@ export class UserService {
       .pipe(
         switchMap(() => from(this.userRepo.findOne(id, { relations: ['finishedArticles', 'finishedTests'] }))),
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
+        catchError(err => {
+          this.logger.error(JSON.stringify(err, null, 2));
+          if (err.code === '23505') {
+            throw new BadRequestException('User with such an email already exists');
+          }
+          throw new InternalServerErrorException(err);
+        }),
       );
   }
 
   activate(id: number): Observable<void> {
+    // TODO: check if user already activated and throw error
     return from(this.userRepo.update(id, { bannedAt: null }))
       .pipe(
         catchError(err => {
@@ -101,6 +107,7 @@ export class UserService {
   }
 
   deactivate(id: number): Observable<void> {
+    // TODO: check if user already deactivated and throw error
     return from(this.userRepo.update(id, { bannedAt: new Date() }))
       .pipe(
         catchError(err => {
