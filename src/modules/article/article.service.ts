@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleEntity } from './article.entity';
 import { Repository } from 'typeorm';
 import { from, Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, mapTo } from 'rxjs/operators';
 
 @Injectable()
 export class ArticleService {
@@ -36,10 +36,28 @@ export class ArticleService {
   update() {
   }
 
-  hide() {
+  hide(id: number): Observable<void> {
+    // TODO: check if article is already hidden and throw err
+    return from(this.articleRepo.update(id, { isVisible: false }))
+      .pipe(
+        catchError(err => {
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
+        mapTo(null),
+      );
   }
 
-  show() {
+  show(id: number): Observable<void> {
+    // TODO: check if article is already shown and throw err
+    return from(this.articleRepo.update(id, { isVisible: true }))
+      .pipe(
+        catchError(err => {
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
+        mapTo(null),
+      );
   }
 
   delete(id: number): Observable<void> {
