@@ -10,6 +10,7 @@ import {
 import { Article } from '../article/article.entity';
 import { FinishedTest } from '../finished-test/finished-test.entity';
 import { SimpleUser } from './models/simple-user.model';
+import { UserRole } from './models/user-role.enum';
 
 /**
  * Plain user object from database
@@ -31,7 +32,7 @@ export class UserEntity extends SimpleUser {
   @Column({ length: 100, type: 'varchar', nullable: false, comment: 'Email', unique: true })
   email: string;
 
-  @Column({ type: 'varchar', nullable: true, comment: 'Employer company' })
+  @Column({ type: 'varchar', nullable: true, comment: 'Employer of user' })
   company?: string;
 
   @CreateDateColumn({ type: 'timestamp', comment: 'Account creation date' })
@@ -61,6 +62,9 @@ export class UserEntity extends SimpleUser {
 
   @Column({ type: 'smallint', nullable: true, comment: 'Average test score' })
   rating: number;
+
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.EMPLOYEE, nullable: false, comment: 'User role' })
+  role: UserRole;
 
   @ManyToMany(() => Article, article => article.finishedBy)
   @JoinTable()

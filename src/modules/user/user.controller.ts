@@ -9,6 +9,7 @@ import { IdDto } from '../../common/dto/id.dto';
 import { User } from './models/user.model';
 import { CreateUserBulkDto } from './dto/create-user-bulk.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetManyUsersDto } from './dto/get-many-users.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -33,6 +34,12 @@ export class UserController {
     return this.userService.getById(params.id);
   }
 
+  @Post('getMany')
+  @HttpCode(200)
+  getMany(@Body() dto: GetManyUsersDto): Observable<Array<SimpleUser>> {
+    return this.userService.getMany(dto);
+  }
+
   @ApiParam({ type: Number, name: 'id' })
   @Put(':id/password')
   changePassword(@Param() params: IdDto, @Body() body: ChangePasswordDto): Observable<void> {
@@ -41,11 +48,6 @@ export class UserController {
     }
     return this.userService.changePassword(params.id, body).pipe(
     );
-  }
-
-  @Get()
-  getMany(): Observable<Array<SimpleUser>> {
-    return this.userService.getMany();
   }
 
   @ApiParam({ type: Number, name: 'id' })

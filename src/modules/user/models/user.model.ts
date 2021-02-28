@@ -7,34 +7,34 @@ import { FinishedTest } from '../../finished-test/finished-test.entity';
  * User with converted Articles and FinishedTests relations
  */
 export class User extends SimpleUser {
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'Unique identifier' })
   id: number;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'First name' })
   firstName: string;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'Last name' })
   lastName: string;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'Email' })
   email: string;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'Employer of user' })
   company?: string;
 
-  @ApiModelProperty({ readOnly: true })
+  @ApiModelProperty({ readOnly: true, description: 'Account creation date' })
   createdAt: Date;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ readOnly: true, description: 'Last account update' })
   updatedAt?: Date;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'If user prefers to hide profile from users rating' })
   isPrivate: boolean;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'Account ban date-time (activation status)' })
   bannedAt?: Date;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'Average test score' })
   rating: number;
 
   @ApiModelProperty({ type: Article, isArray: true })

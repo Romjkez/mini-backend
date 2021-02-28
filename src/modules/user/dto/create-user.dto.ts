@@ -41,7 +41,7 @@ export class CreateUserDto {
   @IsString()
   @ApiModelPropertyOptional({
     example: 'Avilon NY',
-    description: 'User employment company',
+    description: 'Employer of user',
   })
   company?: string;
 }

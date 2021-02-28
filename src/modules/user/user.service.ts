@@ -20,6 +20,7 @@ import { User } from './models/user.model';
 import { CreateUserBulkDto } from './dto/create-user-bulk.dto';
 import { CreateUserInternalDto } from './dto/create-user-internal.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetManyUsersDto } from './dto/get-many-users.dto';
 
 @Injectable()
 export class UserService {
@@ -75,8 +76,8 @@ export class UserService {
       );
   }
 
-  getMany(): Observable<Array<SimpleUser>> {
-    throw new NotImplementedException();
+  getMany(dto: GetManyUsersDto): Observable<Array<SimpleUser>> {
+    return null;
   }
 
   update(id: number, dto: UpdateUserDto): Observable<User> {
