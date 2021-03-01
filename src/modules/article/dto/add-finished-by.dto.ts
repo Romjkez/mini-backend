@@ -1,15 +1,19 @@
-import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-/**
- * ID param in a path
- */
-export class IdDto {
+export class AddFinishedByDto {
   @ApiModelProperty()
   @Transform(Number)
   @IsInt()
   @IsPositive()
   @IsNotEmpty()
-  id: number;
+  articleId: number;
+
+  @ApiModelProperty()
+  @Transform(Number)
+  @IsInt()
+  @IsPositive()
+  @IsNotEmpty()
+  userId: number;
 }

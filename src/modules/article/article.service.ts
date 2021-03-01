@@ -1,20 +1,24 @@
 import { Injectable, InternalServerErrorException, Logger, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArticleEntity } from './article.entity';
+import { Article } from './article.entity';
 import { Repository } from 'typeorm';
 import { from, Observable } from 'rxjs';
-import { catchError, map, mapTo } from 'rxjs/operators';
+import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 import { CreateArticleDto } from './dto/create-article.dto';
+import { UpdateArticleDto } from './dto/update-article.dto';
+import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
+import { SimpleArticle } from './models/simple-article.model';
+import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 
 @Injectable()
 export class ArticleService {
-  constructor(@InjectRepository(ArticleEntity) private readonly articleRepo: Repository<ArticleEntity>,
+  constructor(@InjectRepository(Article) private readonly articleRepo: Repository<Article>,
     private readonly logger: Logger,
   ) {
     logger.setContext('ArticleService');
   }
 
-  createOne(dto: CreateArticleDto): Observable<ArticleEntity> {
+  createOne(dto: CreateArticleDto): Observable<Article> {
     return from(this.articleRepo.save(dto))
       .pipe(
         map(article => ({ ...article, finishedBy: [] })),
@@ -26,7 +30,7 @@ export class ArticleService {
 
   }
 
-  getById(id: number): Observable<ArticleEntity> {
+  getById(id: number): Observable<Article> {
     return from(this.articleRepo.findOneOrFail(id, { relations: ['finishedBy'] }))
       .pipe(
         catchError(err => {
@@ -36,13 +40,23 @@ export class ArticleService {
       );
   }
 
-  getMany() {
+  getMany(dto: GetManyArticlesDto): Observable<GetManyResponseDto<SimpleArticle>> {
+    throw new NotImplementedException();
   }
 
-  addFinishedBy() {
+  addFinishedBy(): Observable<void> {
+    throw new NotImplementedException();
   }
 
-  update() {
+  update(id: number, dto: UpdateArticleDto): Observable<Article> {
+    return from(this.articleRepo.update(id, dto))
+      .pipe(
+        switchMap(() => from(this.articleRepo.findOne(id, { relations: ['finishedBy'] }))),
+        catchError(err => {
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
+      );
   }
 
   hide(id: number): Observable<void> {

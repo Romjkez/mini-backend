@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -31,7 +31,7 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: User })
-  @ApiParam({ type: Number, name: 'id' })
+
   @Get(':id')
   getById(@Param() params: IdDto): Observable<User> {
     return this.userService.getById(params.id);
@@ -44,7 +44,7 @@ export class UserController {
     return this.userService.getMany(dto);
   }
 
-  @ApiParam({ type: Number, name: 'id' })
+
   @Put(':id/password')
   changePassword(@Param() params: IdDto, @Body() body: ChangePasswordDto): Observable<void> {
     if (body.oldPassword === body.newPassword) {
@@ -55,27 +55,27 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: User })
-  @ApiParam({ type: Number, name: 'id' })
+
   @Put(':id')
   update(@Param() params: IdDto, @Body() dto: UpdateUserDto): Observable<User> {
     return this.userService.update(params.id, dto);
   }
 
-  @ApiParam({ type: Number, name: 'id' })
+
   @Post(':id/activate')
   @HttpCode(200)
   activate(@Param() params: IdDto): Observable<void> {
     return this.userService.activate(params.id);
   }
 
-  @ApiParam({ type: Number, name: 'id' })
+
   @Post(':id/deactivate')
   @HttpCode(200)
   deactivate(@Param() params: IdDto): Observable<void> {
     return this.userService.deactivate(params.id);
   }
 
-  @ApiParam({ type: Number, name: 'id' })
+
   @Delete(':id')
   delete(@Param() params: IdDto): Observable<void> {
     return this.userService.delete(params.id);

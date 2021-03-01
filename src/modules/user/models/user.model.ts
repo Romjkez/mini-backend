@@ -1,6 +1,6 @@
 import { SimpleUser } from './simple-user.model';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { ArticleEntity } from '../../article/article.entity';
+import { Article } from '../../article/article.entity';
 import { FinishedTest } from '../../finished-test/finished-test.entity';
 import { UserRole } from './user-role.enum';
 
@@ -39,7 +39,7 @@ export class User extends SimpleUser {
   rating: number;
 
   @ApiModelProperty({ type: Object, isArray: true, example: [] })
-  finishedArticles: Array<ArticleEntity>;
+  finishedArticles: Array<Article>;
 
   @ApiModelProperty({ type: Object, isArray: true, example: [] })
   finishedTests: Array<FinishedTest>;

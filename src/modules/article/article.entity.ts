@@ -6,7 +6,7 @@ import {
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 @Entity({ name: 'article' })
-export class ArticleEntity {
+export class Article {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
@@ -23,9 +23,11 @@ export class ArticleEntity {
   @Column({ type: 'boolean', default: true })
   isVisible: boolean;
 
+  /*
   @ApiModelProperty({ type: 'integer', default: 0 })
   @Column({ type: 'int', default: 0 })
   finishedCount: number;
+  */
 
   @ApiModelProperty({ type: UserEntity, isArray: true })
   @ManyToMany(() => UserEntity, async user => user.finishedArticles)

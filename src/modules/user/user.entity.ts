@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ArticleEntity } from '../article/article.entity';
+import { Article } from '../article/article.entity';
 import { FinishedTest } from '../finished-test/finished-test.entity';
 import { SimpleUser } from './models/simple-user.model';
 import { UserRole } from './models/user-role.enum';
@@ -66,9 +66,9 @@ export class UserEntity extends SimpleUser {
   @Column({ type: 'enum', enum: UserRole, default: UserRole.EMPLOYEE, nullable: false, comment: 'User role' })
   role: UserRole;
 
-  @ManyToMany(() => ArticleEntity, article => article.finishedBy)
+  @ManyToMany(() => Article, article => article.finishedBy)
   @JoinTable()
-  finishedArticles: Promise<Array<ArticleEntity>>;
+  finishedArticles: Promise<Array<Article>>;
 
   @ManyToMany(() => FinishedTest, test => test.finishedBy)
   @JoinTable()
