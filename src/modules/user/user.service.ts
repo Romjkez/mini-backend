@@ -40,11 +40,15 @@ export class UserService {
 
   createOne(dto: CreateUserDto): Observable<User> {
     const password = this.generatePassword();
+    if (process.env.NODE_ENV !== 'production') {
+      this.logger.debug(`${dto.email}:${password}`);
+    }
 
     return this.userRepo.insertOne({ ...dto, password }, this.saltRounds)
       .pipe(
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
         catchError(err => {
+          console.log(err);
           this.logger.error(JSON.stringify(err, null, 2));
           if (err.code === '23505') {
             throw new BadRequestException('User with such an email already exists');
@@ -77,6 +81,13 @@ export class UserService {
 
   getById(id: number): Observable<User> {
     return from(this.userRepo.findOneOrFail(id, { relations: ['finishedTests', 'finishedArticles'] }))
+      .pipe(
+        map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
+      );
+  }
+
+  getByEmail(email: string): Observable<User> {
+    return from(this.userRepo.findOneOrFail({ email }, { relations: ['finishedTests', 'finishedArticles'] }))
       .pipe(
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
       );
