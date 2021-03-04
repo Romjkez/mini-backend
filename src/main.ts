@@ -12,12 +12,13 @@ export const swaggerOptions = new DocumentBuilder()
   .setDescription('API of the MINI mobile app')
   .setVersion(version)
   .setContact('Roman Meshkov', '', 'meshkov.ra@ya.ru')
+  .addBearerAuth({ bearerFormat: 'JWT', type: 'http', scheme: 'bearer' }, 'bearer')
   .setLicense(
     license,
     'https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode',
   );
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, swaggerOptions.build());

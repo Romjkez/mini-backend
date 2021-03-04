@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -12,6 +12,8 @@ import { GetManyUsersDto } from './dto/get-many-users.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { SimpleUser } from './models/simple-user.model';
 
+// @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth('bearer')
 @ApiTags('user')
 @Controller('user')
 export class UserController {
@@ -31,7 +33,6 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: User })
-
   @Get(':id')
   getById(@Param() params: IdDto): Observable<User> {
     return this.userService.getById(params.id);
@@ -55,7 +56,6 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: User })
-
   @Put(':id')
   update(@Param() params: IdDto, @Body() dto: UpdateUserDto): Observable<User> {
     return this.userService.update(params.id, dto);

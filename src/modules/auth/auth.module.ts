@@ -6,6 +6,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from '../user/user.repository';
+import { PassportModule } from '@nestjs/passport';
 
 export const JWT_CONSTANTS = {
   jwtSecret: crypto.randomBytes(64).toString('hex'),
@@ -13,15 +14,17 @@ export const JWT_CONSTANTS = {
 };
 
 @Module({
-  imports: [JwtModule.register({
-    secret: JWT_CONSTANTS.jwtSecret,
-    verifyOptions: {
-      algorithms: ['HS512'],
-    },
-    signOptions: {
-      expiresIn: JWT_CONSTANTS.expirationTime,
-    },
-  }), TypeOrmModule.forFeature([UserRepository])],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: JWT_CONSTANTS.jwtSecret,
+      verifyOptions: {
+        algorithms: ['HS512'],
+      },
+      signOptions: {
+        expiresIn: `${JWT_CONSTANTS.expirationTime}s`,
+      },
+    }), TypeOrmModule.forFeature([UserRepository])],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
   exports: [AuthService],
