@@ -60,7 +60,7 @@ export class UserEntity extends SimpleUser {
   })
   bannedAt?: Date;
 
-  @Column({ type: 'smallint', nullable: true, comment: 'Average test score' })
+  @Column({ type: 'real', unsigned: true, nullable: true, comment: 'Average test score' })
   rating: number;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.EMPLOYEE, nullable: false, comment: 'User role' })
