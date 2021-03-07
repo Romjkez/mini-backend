@@ -9,6 +9,10 @@ export class MultiOptionQuestion {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
+  @ApiModelProperty({ nullable: false, example: '3123e029-da13-4b68-9bb9-b28d6331814b' })
+  @Column({ type: 'uuid', unique: true, comment: 'Unique question identifier among all types of questions' })
+  uuid: string;
+
   @ApiModelProperty({ type: 'string', enum: Object.values(QuestionType), default: QuestionType.MultipleOf })
   @Column({ type: 'enum', enum: QuestionType, default: QuestionType.MultipleOf })
   readonly type: QuestionType.OneOf;

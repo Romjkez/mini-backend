@@ -24,4 +24,13 @@ export class Option {
   })
   @Column({ type: 'varchar', nullable: true })
   url?: string;
+
+  @ApiModelPropertyOptional({ nullable: true, example: 1 })
+  @Column({
+    type: 'smallint',
+    unsigned: true,
+    nullable: true,
+    comment: 'Identifier of option for ordering inside order questions',
+  })
+  order?: number;
 }
