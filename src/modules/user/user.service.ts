@@ -48,7 +48,7 @@ export class UserService {
       .pipe(
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
         catchError(err => {
-          console.log(err);
+          console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           if (err.code === '23505') {
             throw new BadRequestException('User with such an email already exists');

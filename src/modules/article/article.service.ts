@@ -1,28 +1,30 @@
 import { Injectable, InternalServerErrorException, Logger, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from './article.entity';
-import { Repository } from 'typeorm';
 import { from, Observable } from 'rxjs';
-import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, mapTo, switchMap } from 'rxjs/operators';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { SimpleArticle } from './models/simple-article.model';
 import { GetManyArticlesDto } from './dto/get-many-articles.dto';
+import { ArticleRepository } from './article.repository';
+
+export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy'];
 
 @Injectable()
 export class ArticleService {
-  constructor(@InjectRepository(Article) private readonly articleRepo: Repository<Article>,
+  constructor(@InjectRepository(ArticleRepository) private readonly articleRepo: ArticleRepository,
     private readonly logger: Logger,
   ) {
     logger.setContext('ArticleService');
   }
 
   createOne(dto: CreateArticleDto): Observable<Article> {
-    return from(this.articleRepo.save(dto))
+    return from(this.articleRepo.insertOne(dto))
       .pipe(
-        map(article => ({ ...article, finishedBy: [] })),
         catchError(err => {
+          console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
         }),
@@ -31,7 +33,7 @@ export class ArticleService {
   }
 
   getById(id: number): Observable<Article> {
-    return from(this.articleRepo.findOneOrFail(id, { relations: ['finishedBy'] }))
+    return from(this.articleRepo.findOneOrFail(id, { relations: ARTICLE_RELATIONS }))
       .pipe(
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
@@ -48,10 +50,14 @@ export class ArticleService {
     throw new NotImplementedException();
   }
 
+  addFavoriteFor(): Observable<void> {
+    throw new NotImplementedException();
+  }
+
   update(id: number, dto: UpdateArticleDto): Observable<Article> {
     return from(this.articleRepo.update(id, dto))
       .pipe(
-        switchMap(() => from(this.articleRepo.findOne(id, { relations: ['finishedBy'] }))),
+        switchMap(() => from(this.articleRepo.findOne(id, { relations: ARTICLE_RELATIONS }))),
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
