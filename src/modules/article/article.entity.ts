@@ -15,9 +15,13 @@ export class Article {
   @Column({ length: 150, type: 'varchar' })
   title: string;
 
-  @ApiModelProperty()
-  @Column({ type: 'text' })
-  content: string;
+  @Column({ type: 'varchar', nullable: true })
+  @ApiModelPropertyOptional()
+  video?: string;
+
+  @ApiModelPropertyOptional()
+  @Column({ type: 'text', nullable: true })
+  content?: string;
 
   @ApiModelProperty()
   @Column({ type: 'boolean', default: true })
@@ -31,7 +35,7 @@ export class Article {
 
   @ApiModelProperty({ type: UserEntity, isArray: true })
   @ManyToMany(() => UserEntity, async user => user.finishedArticles)
-  finishedBy: Array<UserEntity>;
+  finishedBy: Promise<Array<UserEntity>>;
 
   @ApiModelPropertyOptional({ example: 'https://avtotachki.com/wp-content/uploads/2020/12/37.jpg' })
   @Column({ type: 'varchar', default: null, nullable: true })
@@ -44,4 +48,8 @@ export class Article {
   @ApiModelProperty()
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt?: number;
+
+  @ApiModelProperty()
+  @ManyToMany(() => UserEntity, async user => user.favoriteArticles)
+  favoriteFor: Promise<Array<UserEntity>>;
 }
