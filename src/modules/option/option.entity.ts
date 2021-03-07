@@ -4,7 +4,7 @@ import {
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-@Entity()
+@Entity({ name: 'option' })
 export class Option {
   @ApiModelProperty({
     type: 'integer',
@@ -24,4 +24,13 @@ export class Option {
   })
   @Column({ type: 'varchar', nullable: true })
   url?: string;
+
+  @ApiModelPropertyOptional({ nullable: true, example: 1 })
+  @Column({
+    type: 'smallint',
+    unsigned: true,
+    nullable: true,
+    comment: 'Identifier of option for ordering inside order questions',
+  })
+  order?: number;
 }

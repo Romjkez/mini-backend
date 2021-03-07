@@ -13,6 +13,7 @@ services:
       DB_NAME: 'mini'
       DB_USER: 'mini-user'
       DB_HOST: 'db'
+      JWT_EXPIRATION: 3600
     env_file:
       - .env
     command: "yarn run start:dev"

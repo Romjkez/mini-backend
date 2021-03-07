@@ -1,15 +1,11 @@
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { UserEntity } from '../user/user.entity';
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { User } from '../user/user.entity';
-import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+  ApiModelProperty,
+  ApiModelPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-@Entity()
+@Entity({ name: 'article' })
 export class Article {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -20,16 +16,26 @@ export class Article {
   title: string;
 
   @ApiModelProperty()
+  @Column({ type: 'text' })
+  content: string;
+
+  @ApiModelProperty()
   @Column({ type: 'boolean', default: true })
   isVisible: boolean;
 
+  /*
   @ApiModelProperty({ type: 'integer', default: 0 })
   @Column({ type: 'int', default: 0 })
   finishedCount: number;
+  */
 
-  @ApiModelProperty({ type: User, isArray: true })
-  @ManyToMany(() => User, user => user.finishedArticles)
-  finishedBy: Array<User>;
+  @ApiModelProperty({ type: UserEntity, isArray: true })
+  @ManyToMany(() => UserEntity, async user => user.finishedArticles)
+  finishedBy: Array<UserEntity>;
+
+  @ApiModelPropertyOptional({ example: 'https://avtotachki.com/wp-content/uploads/2020/12/37.jpg' })
+  @Column({ type: 'varchar', default: null, nullable: true })
+  previewUrl?: string;
 
   @ApiModelProperty({ readOnly: true })
   @CreateDateColumn({ type: 'timestamp' })

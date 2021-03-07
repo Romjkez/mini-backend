@@ -7,6 +7,8 @@ import { QuestionModule } from './modules/question/question.module';
 import { TestModule } from './modules/test/test.module';
 import { FinishedTest } from './modules/finished-test/finished-test.entity';
 import { OptionModule } from './modules/option/option.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserAnswerModule } from './modules/user-answer/user-answer.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { OptionModule } from './modules/option/option.module';
     TestModule,
     FinishedTest,
     OptionModule,
+    AuthModule,
+    UserAnswerModule,
   ],
   controllers: [AppController],
   providers: [],

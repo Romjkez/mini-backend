@@ -2,56 +2,75 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Article } from '../article/article.entity';
-import {
-  ApiModelProperty,
-  ApiModelPropertyOptional,
-} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { FinishedTest } from '../finished-test/finished-test.entity';
+import { SimpleUser } from './models/simple-user.model';
+import { UserRole } from './models/user-role.enum';
 
-@Entity()
-export class User {
-  @ApiModelProperty()
-  @PrimaryGeneratedColumn({ unsigned: true })
+/**
+ * Plain user object from database
+ */
+@Entity({ name: 'user' })
+export class UserEntity extends SimpleUser {
+  @PrimaryGeneratedColumn({ unsigned: true, comment: 'Unique identifier' })
   id: number;
 
-  @ApiModelProperty()
-  @Column({ length: 50, type: 'varchar' })
+  @Column({ type: 'varchar', nullable: false, comment: 'User password' })
+  password: string;
+
+  @Column({ length: 50, type: 'varchar', comment: 'First name' })
   firstName: string;
 
-  @ApiModelPropertyOptional()
-  @Column({ length: 50, type: 'varchar', nullable: true })
-  lastName?: string;
+  @Column({ length: 50, type: 'varchar', comment: 'Last name' })
+  lastName: string;
 
-  @ApiModelProperty()
-  @Column({ length: 100, type: 'varchar' })
+  @Column({ length: 100, type: 'varchar', nullable: false, comment: 'Email', unique: true })
   email: string;
 
-  @ApiModelProperty({ readOnly: true })
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: number;
+  @Column({ type: 'varchar', nullable: true, comment: 'Employer of user' })
+  company?: string;
 
-  @ApiModelProperty()
-  @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updatedAt?: number;
+  @CreateDateColumn({ type: 'timestamp', comment: 'Account creation date' })
+  createdAt: Date;
 
-  @ApiModelProperty()
-  @Column({ type: 'boolean', default: false })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    nullable: true,
+    comment: 'Last account update',
+  })
+  updatedAt?: Date;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'If user prefers to hide profile from users rating',
+  })
   isPrivate: boolean;
 
-  @ApiModelProperty()
-  @Column({ type: 'smallint', nullable: true })
+  @Column({
+    type: 'timestamp',
+    nullable: true,
+    default: null,
+    comment: 'Account ban date-time (activation status)',
+  })
+  bannedAt?: Date;
+
+  @Column({ type: 'real', unsigned: true, nullable: true, comment: 'Average test score' })
   rating: number;
 
-  @ApiModelProperty({ type: Article, isArray: true })
-  @ManyToMany(() => Article, article => article.finishedBy)
-  finishedArticles: Array<Article>;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.EMPLOYEE, nullable: false, comment: 'User role' })
+  role: UserRole;
 
-  @ApiModelProperty({ type: FinishedTest, isArray: true })
+  @ManyToMany(() => Article, article => article.finishedBy)
+  @JoinTable()
+  finishedArticles: Promise<Array<Article>>;
+
   @ManyToMany(() => FinishedTest, test => test.finishedBy)
-  finishedTests: Array<FinishedTest>;
+  @JoinTable()
+  finishedTests: Promise<Array<FinishedTest>>;
 }
