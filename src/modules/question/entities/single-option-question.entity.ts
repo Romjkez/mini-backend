@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { Option } from '../option/option.entity';
+import { Option } from '../../option/option.entity';
 
 /**
  * Type of question in a test
@@ -30,7 +30,7 @@ export class SingleOptionQuestion {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ApiModelProperty({ type: 'string', enum: Object.values(QuestionType) })
+  @ApiModelProperty({ type: 'string', enum: Object.values(QuestionType), default: QuestionType.OneOf })
   @Column({ type: 'enum', enum: QuestionType, default: QuestionType.OneOf })
   readonly type: QuestionType.OneOf;
 

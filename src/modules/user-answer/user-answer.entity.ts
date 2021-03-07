@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
-import { SingleOptionQuestion } from '../question/question.entity';
+import { SingleOptionQuestion } from '../question/entities/single-option-question.entity';
 import { Option } from '../option/option.entity';
 import { FinishedTest } from '../finished-test/finished-test.entity';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
