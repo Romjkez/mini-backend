@@ -70,7 +70,7 @@ export class UserEntity extends SimpleUser {
   @JoinTable()
   finishedArticles: Promise<Array<Article>>;
 
-  @ManyToMany(() => FinishedTest, test => test.finishedBy)
+  @ManyToMany(() => FinishedTest, async test => test.finishedBy)
   @JoinTable()
   finishedTests: Promise<Array<FinishedTest>>;
 

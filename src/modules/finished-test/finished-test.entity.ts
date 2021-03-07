@@ -11,8 +11,8 @@ export class FinishedTest {
   id: number;
 
   @ApiModelProperty({ type: UserEntity, isArray: true })
-  @ManyToMany(() => UserEntity, async user => user.finishedArticles)
-  finishedBy: Array<UserEntity>;
+  @ManyToMany(() => UserEntity, async user => user.finishedTests)
+  finishedBy: Promise<Array<UserEntity>>;
 
   @ApiModelProperty({ type: UserAnswer, isArray: true })
   @OneToMany(() => UserAnswer, answer => answer.finishedTest)
