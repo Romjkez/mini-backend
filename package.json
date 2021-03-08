@@ -6,6 +6,12 @@
     "email": "meshkov.ra@yandex.com",
     "name": "Roman Meshkov"
   },
+  "maintainers": [
+    {
+      "email": "meshkov.ra@yandex.com",
+      "name": "Roman Meshkov"
+    }
+  ],
   "private": true,
   "license": "CC BY-NC-SA",
   "scripts": {

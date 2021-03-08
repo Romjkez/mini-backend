@@ -1,15 +1,15 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import * as crypto from 'crypto';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from '../user/user.repository';
 import { PassportModule } from '@nestjs/passport';
+import { RefreshToken } from './refresh-token.entity';
 
 export const JWT_CONSTANTS = {
-  jwtSecret: crypto.randomBytes(64).toString('hex'),
+  jwtSecret: process.env.JWT_SECRET,
   expirationTime: process.env.JWT_EXPIRATION,
 };
 
@@ -24,8 +24,8 @@ export const JWT_CONSTANTS = {
       signOptions: {
         expiresIn: `${JWT_CONSTANTS.expirationTime}s`,
       },
-    }), TypeOrmModule.forFeature([UserRepository])],
-  providers: [AuthService, JwtStrategy],
+    }), TypeOrmModule.forFeature([UserRepository, RefreshToken])],
+  providers: [AuthService, JwtStrategy, Logger],
   controllers: [AuthController],
   exports: [AuthService],
 })

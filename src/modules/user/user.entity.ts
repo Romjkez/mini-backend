@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
@@ -29,6 +30,7 @@ export class UserEntity extends SimpleUser {
   @Column({ length: 50, type: 'varchar', comment: 'Last name' })
   lastName: string;
 
+  @Index({ unique: true })
   @Column({ length: 100, type: 'varchar', nullable: false, comment: 'Email', unique: true })
   email: string;
 
