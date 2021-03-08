@@ -12,6 +12,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {
   }
 
+  @ApiOkResponse({ type: JwtToken })
   @Post('login')
   @HttpCode(200)
   login(@Body() dto: ValidateUserDto): Observable<JwtToken> {
