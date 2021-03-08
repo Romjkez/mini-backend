@@ -8,21 +8,16 @@ import { UserRepository } from '../user/user.repository';
 import { PassportModule } from '@nestjs/passport';
 import { RefreshToken } from './refresh-token.entity';
 
-export const JWT_CONSTANTS = {
-  jwtSecret: process.env.JWT_SECRET,
-  expirationTime: process.env.JWT_EXPIRATION,
-};
-
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: JWT_CONSTANTS.jwtSecret,
+      secret: process.env.JWT_SECRET,
       verifyOptions: {
         algorithms: ['HS512'],
       },
       signOptions: {
-        expiresIn: `${JWT_CONSTANTS.expirationTime}s`,
+        expiresIn: process.env.JWT_EXPIRATION,
       },
     }), TypeOrmModule.forFeature([UserRepository, RefreshToken])],
   providers: [AuthService, JwtStrategy, Logger],
