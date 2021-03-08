@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
@@ -29,6 +30,7 @@ export class UserEntity extends SimpleUser {
   @Column({ length: 50, type: 'varchar', comment: 'Last name' })
   lastName: string;
 
+  @Index({ unique: true })
   @Column({ length: 100, type: 'varchar', nullable: false, comment: 'Email', unique: true })
   email: string;
 
@@ -66,11 +68,15 @@ export class UserEntity extends SimpleUser {
   @Column({ type: 'enum', enum: UserRole, default: UserRole.EMPLOYEE, nullable: false, comment: 'User role' })
   role: UserRole;
 
-  @ManyToMany(() => Article, article => article.finishedBy)
+  @ManyToMany(() => Article, async article => article.finishedBy)
   @JoinTable()
   finishedArticles: Promise<Array<Article>>;
 
-  @ManyToMany(() => FinishedTest, test => test.finishedBy)
+  @ManyToMany(() => FinishedTest, async test => test.finishedBy)
   @JoinTable()
   finishedTests: Promise<Array<FinishedTest>>;
+
+  @ManyToMany(() => Article, async article => article.favoriteFor)
+  @JoinTable()
+  favoriteArticles: Promise<Array<Article>>;
 }

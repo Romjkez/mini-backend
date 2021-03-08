@@ -8,7 +8,7 @@ import { CreateUserInternalDto } from './dto/create-user-internal.dto';
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
   /**
-   * Insert one user any hash his password
+   * Insert one user and hash his password
    * @param dto
    * @param saltRounds
    */

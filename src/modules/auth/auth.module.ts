@@ -1,31 +1,28 @@
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { Logger, Module } from '@nestjs/common';
+import { AuthService } from './services/auth.service';
 import { AuthController } from './auth.controller';
-import * as crypto from 'crypto';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from '../user/user.repository';
 import { PassportModule } from '@nestjs/passport';
-
-export const JWT_CONSTANTS = {
-  jwtSecret: crypto.randomBytes(64).toString('hex'),
-  expirationTime: process.env.JWT_EXPIRATION,
-};
+import { RefreshToken } from './refresh-token.entity';
+import { TaskService } from './services/task.service';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: JWT_CONSTANTS.jwtSecret,
+      secret: process.env.JWT_SECRET,
       verifyOptions: {
         algorithms: ['HS512'],
       },
       signOptions: {
-        expiresIn: `${JWT_CONSTANTS.expirationTime}s`,
+        expiresIn: process.env.JWT_EXPIRATION,
+        algorithm: 'HS512',
       },
-    }), TypeOrmModule.forFeature([UserRepository])],
-  providers: [AuthService, JwtStrategy],
+    }), TypeOrmModule.forFeature([UserRepository, RefreshToken])],
+  providers: [AuthService, JwtStrategy, Logger, TaskService],
   controllers: [AuthController],
   exports: [AuthService],
 })
