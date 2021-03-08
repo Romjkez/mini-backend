@@ -1,16 +1,16 @@
 import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
-import { ValidateUserDto } from './dto/validate-user.dto';
+import { ValidateUserDto } from '../dto/validate-user.dto';
 import { from, Observable, of, zip } from 'rxjs';
-import { UserRepository } from '../user/user.repository';
+import { UserRepository } from '../../user/user.repository';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { JwtToken } from './models/jwt-token.model';
-import { JwtFullPayload, JwtPayload } from './models/jwt-payload.model';
+import { JwtToken } from '../models/jwt-token.model';
+import { JwtFullPayload, JwtPayload } from '../models/jwt-payload.model';
 import { Repository } from 'typeorm';
-import { RefreshToken } from './refresh-token.entity';
+import { RefreshToken } from '../refresh-token.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../../user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -67,7 +67,7 @@ export class AuthService {
             return zip(
               from(this.jwtService.signAsync(accessTokenPayload)),
               from(this.jwtService.signAsync(refreshTokenPayload,
-                { expiresIn: process.env.REFRESH_EXPIRATION })),
+                { expiresIn: '60s' })),
               of(refreshTokenPayload.sub),
             );
           }

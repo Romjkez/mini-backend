@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { ValidateUserDto } from './dto/validate-user.dto';
 import { Observable } from 'rxjs';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';

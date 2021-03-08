@@ -9,6 +9,7 @@ import { FinishedTest } from './modules/finished-test/finished-test.entity';
 import { OptionModule } from './modules/option/option.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserAnswerModule } from './modules/user-answer/user-answer.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserAnswerModule } from './modules/user-answer/user-answer.module';
     OptionModule,
     AuthModule,
     UserAnswerModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [],
