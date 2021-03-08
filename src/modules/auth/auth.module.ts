@@ -18,6 +18,7 @@ import { RefreshToken } from './refresh-token.entity';
       },
       signOptions: {
         expiresIn: process.env.JWT_EXPIRATION,
+        algorithm: 'HS512',
       },
     }), TypeOrmModule.forFeature([UserRepository, RefreshToken])],
   providers: [AuthService, JwtStrategy, Logger],

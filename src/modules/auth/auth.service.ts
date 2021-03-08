@@ -1,8 +1,8 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
 import { ValidateUserDto } from './dto/validate-user.dto';
 import { from, Observable, of, zip } from 'rxjs';
 import { UserRepository } from '../user/user.repository';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtToken } from './models/jwt-token.model';
@@ -24,9 +24,39 @@ export class AuthService {
   login(dto: ValidateUserDto): Observable<JwtToken> {
     return from(this.userRepo.findOneOrFail({ email: dto.email }))
       .pipe(
+        catchError(err => {
+          this.logger.error(JSON.stringify(err, null, 2));
+          if (err?.name === 'EntityNotFound') {
+            throw new UnauthorizedException('User not found');
+          }
+          throw new UnauthorizedException(err);
+        }),
         switchMap(user => zip(from(bcrypt.compare(dto.password, user.password)), of(user))),
-        switchMap(([result, user]) => {
-          if (result) {
+        switchMap(([passwordValid, user]) => this.generateJwtToken(passwordValid, user)),
+      );
+  }
+
+  refresh(refreshToken: string): Observable<JwtToken> {
+    return from(this.jwtService.verifyAsync(refreshToken))
+      .pipe(
+        catchError(err => {
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new UnauthorizedException();
+        }),
+        switchMap((payload: JwtFullPayload) => this.generateJwtToken(true, {
+          id: payload.sub,
+          email: payload.login,
+          role: payload.role,
+        } as Partial<UserEntity>)),
+        tap(async () => await this.refreshTokenRepo.delete({ refreshToken })),
+      );
+  }
+
+  private generateJwtToken(isAuthorized: boolean, user: Partial<UserEntity>): Observable<JwtToken> {
+    return zip(of(isAuthorized), of(user))
+      .pipe(
+        switchMap(([passwordValid, user]) => {
+          if (passwordValid) {
             const accessTokenPayload: JwtPayload = { sub: user.id, login: user.email, role: user.role };
             const refreshTokenPayload: JwtPayload = {
               login: user.email,
@@ -38,24 +68,23 @@ export class AuthService {
               from(this.jwtService.signAsync(accessTokenPayload)),
               from(this.jwtService.signAsync(refreshTokenPayload,
                 { expiresIn: process.env.REFRESH_EXPIRATION })),
-              of(refreshTokenPayload),
+              of(refreshTokenPayload.sub),
             );
           }
           throw new UnauthorizedException('Email or password is invalid');
         }),
-        switchMap(([access, refresh, refreshPayload]) => {
+        switchMap(([access, refresh, userId]) => {
           const saveRefreshTokenDto = {
             refreshToken: refresh,
-            owner: refreshPayload.sub as Partial<UserEntity>,
+            owner: userId as Partial<UserEntity>,
             expiresAt: new Date((this.jwtService.decode(refresh) as JwtFullPayload).exp * 1000),
           };
 
           return from(this.refreshTokenRepo.save(saveRefreshTokenDto))
             .pipe(
               catchError(err => {
-                console.error(err);
-                this.logger.error(err);
-                return err;
+                this.logger.error(JSON.stringify(err, null, 2));
+                throw new InternalServerErrorException('Error while saving refresh token');
               }),
               switchMap(() => zip(of(access), of(refresh)),
               ),
