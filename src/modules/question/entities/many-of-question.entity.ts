@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Option } from '../../option/option.entity';
-import { QuestionType } from './single-option-question.entity';
+import { QuestionType } from './one-of-question.entity';
 
 @Entity({ name: 'manyOfQuestion' })
 export class ManyOfQuestion {
@@ -22,11 +22,11 @@ export class ManyOfQuestion {
   text: string;
 
   @ApiModelProperty({ type: Option, isArray: true })
-  @OneToMany(() => Option, option => option.id)
+  @OneToMany(() => Option, option => option.id, { eager: true })
   options: Array<Option>;
 
   @ApiModelProperty({ type: Option })
-  @OneToMany(() => Option, option => option.id)
+  @OneToMany(() => Option, option => option.id, { eager: true })
   answer: Array<Option>;
 
   @ApiModelProperty()

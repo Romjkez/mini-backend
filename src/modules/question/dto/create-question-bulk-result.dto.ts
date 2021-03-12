@@ -1,5 +1,5 @@
-import { OneOfQuestion } from '../entities/single-option-question.entity';
-import { ManyOfQuestion } from '../entities/multi-option-question.entity';
+import { OneOfQuestion } from '../entities/one-of-question.entity';
+import { ManyOfQuestion } from '../entities/many-of-question.entity';
 import { ExactAnswerQuestion } from '../entities/exact-answer-question.entity';
 
 export class CreateQuestionBulkResultDto {

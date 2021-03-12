@@ -1,7 +1,7 @@
 import { Crud, CrudController } from '@nestjsx/crud';
 import { ApiTags } from '@nestjs/swagger';
 import { Controller } from '@nestjs/common';
-import { OneOfQuestion } from './entities/single-option-question.entity';
+import { OneOfQuestion } from './entities/one-of-question.entity';
 import { QuestionService } from './question.service';
 
 @Crud({

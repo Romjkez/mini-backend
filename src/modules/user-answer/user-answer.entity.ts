@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { OneOfQuestion } from '../question/entities/single-option-question.entity';
+import { OneOfQuestion } from '../question/entities/one-of-question.entity';
 import { Option } from '../option/option.entity';
 import { FinishedTest } from '../finished-test/finished-test.entity';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';

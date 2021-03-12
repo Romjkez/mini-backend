@@ -43,11 +43,11 @@ export class OneOfQuestion {
   text: string;
 
   @ApiModelProperty({ type: Option, isArray: true })
-  @OneToMany(() => Option, option => option.id)
+  @OneToMany(() => Option, option => option.id, { eager: true })
   options: Array<Option>;
 
   @ApiModelProperty({ type: Option })
-  @OneToMany(() => Option, option => option.id)
+  @OneToMany(() => Option, option => option.id, { eager: true })
   answer: Option;
 
   @ApiModelProperty()

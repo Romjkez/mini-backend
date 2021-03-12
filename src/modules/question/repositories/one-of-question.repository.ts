@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { OneOfQuestion } from '../entities/single-option-question.entity';
+import { OneOfQuestion } from '../entities/one-of-question.entity';
 import { CreateOneOfQuestionDto } from '../dto/create-one-of-question.dto';
 import { v4 as uuidv4 } from 'uuid';
 

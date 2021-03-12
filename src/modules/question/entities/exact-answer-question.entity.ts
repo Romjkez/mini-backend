@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { QuestionType } from './single-option-question.entity';
+import { QuestionType } from './one-of-question.entity';
 
 @Entity({ name: 'exactAnswerQuestion' })
 export class ExactAnswerQuestion {

@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { ManyOfQuestion } from '../entities/multi-option-question.entity';
+import { ManyOfQuestion } from '../entities/many-of-question.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateManyOfQuestionDto } from '../dto/create-many-of-question.dto';
 
