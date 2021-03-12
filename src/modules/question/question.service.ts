@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OneOfQuestionRepository } from './repositories/one-of-question.repository';
 import { ManyOfQuestionRepository } from './repositories/many-of-question.repository';
 import { ExactAnswerQuestionRepository } from './repositories/exact-answer-question.repository';
 import { CreateQuestionBulkDto } from './dto/create-question-bulk.dto';
-import { CreateQuestionBulkResultDto } from './dto/create-question-bulk-result.dto';
+import { Questions } from './models/questions.model';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class QuestionService {
@@ -16,8 +17,8 @@ export class QuestionService {
               private readonly exactAnswerQRepo: ExactAnswerQuestionRepository) {
   }
 
-  async createBulk(dto: CreateQuestionBulkDto): Promise<CreateQuestionBulkResultDto> {
-    const result: CreateQuestionBulkResultDto = {};
+  async createBulk(dto: CreateQuestionBulkDto): Promise<Questions> {
+    const result: Questions = {};
     if (dto.oneOfQuestions) {
       result.oneOfQuestions = await this.oneOfQRepo.insertMany(dto.oneOfQuestions.data);
     }
@@ -31,5 +32,13 @@ export class QuestionService {
     }
 
     return result;
+  }
+
+  update(id: number, dto: any): Observable<any> {
+    throw new NotImplementedException();
+  }
+
+  delete(id: number): Observable<void> {
+    throw new NotImplementedException();
   }
 }

@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FinishedTest } from './finished-test.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class FinishedTestService extends TypeOrmCrudService<FinishedTest> {
-  constructor(@InjectRepository(FinishedTest) repo) {
-    super(repo);
+export class FinishedTestService {
+  constructor(@InjectRepository(FinishedTest) private readonly finishedTestRepo: Repository<FinishedTest>) {
   }
 }
