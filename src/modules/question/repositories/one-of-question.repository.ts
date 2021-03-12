@@ -12,5 +12,7 @@ export class OneOfQuestionRepository extends Repository<OneOfQuestion> {
     });
 
     return this.save(markedQuestions);
+    /*return this.save(markedQuestions)
+      .then(async questions => this.findByIds(questions.map(q => q.id)));*/
   }
 }

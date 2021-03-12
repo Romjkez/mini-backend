@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Option } from '../../option/option.entity';
 import { QuestionType } from './one-of-question.entity';
@@ -23,10 +23,12 @@ export class ManyOfQuestion {
 
   @ApiModelProperty({ type: Option, isArray: true })
   @OneToMany(() => Option, option => option.id, { eager: true, onDelete: 'CASCADE', cascade: true })
+  @JoinColumn()
   options: Array<Option>;
 
   @ApiModelProperty({ type: Option })
   @OneToMany(() => Option, option => option.id, { eager: true, onDelete: 'CASCADE', cascade: true })
+  @JoinColumn()
   answer: Array<Option>;
 
   @ApiModelProperty()

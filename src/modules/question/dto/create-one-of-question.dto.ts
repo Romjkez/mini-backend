@@ -25,12 +25,12 @@ export class CreateOneOfQuestionDto {
   @Type(() => CreateOptionDto)
   @ValidateNested({ each: true })
   @IsNotEmpty()
-  options: Array<CreateOptionDto>;
+  options: Array<CreateOptionDto> | Array<number>;
 
   @ApiModelProperty({ type: CreateOptionDto, nullable: false })
   @Type(() => CreateOptionDto)
   @IsNotEmpty()
-  answer: CreateOptionDto;
+  answer: CreateOptionDto | number;
 
   @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false })
   @IsInt()

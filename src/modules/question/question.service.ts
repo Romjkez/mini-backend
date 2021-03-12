@@ -8,6 +8,7 @@ import { Questions } from './models/questions.model';
 import { Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Option } from '../option/option.entity';
+import { CreateOptionDto } from '../option/dto/create-option.dto';
 
 @Injectable()
 export class QuestionService {
@@ -25,8 +26,8 @@ export class QuestionService {
     const result: Questions = {};
     if (dto.oneOfQuestions) {
       const questionsWithOptions = await Promise.all(dto.oneOfQuestions.data.map(async q => {
-        q.answer = await this.optionRepo.save(q.answer);
-        q.options = await this.optionRepo.save(q.options);
+        q.answer = (await this.optionRepo.save(q.answer as CreateOptionDto)).id;
+        q.options = (await this.optionRepo.save(q.options as Array<CreateOptionDto>)).map(option => option.id);
         return q;
       }));
       result.oneOfQuestions = await this.oneOfQRepo.insertMany(questionsWithOptions);
@@ -47,6 +48,10 @@ export class QuestionService {
     }
 
     return result;
+  }
+
+  getById(id: number) {
+    return this.oneOfQRepo.findOneOrFail(id);
   }
 
   update(id: number, dto: any): Observable<any> {
