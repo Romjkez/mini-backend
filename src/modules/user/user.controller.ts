@@ -45,7 +45,6 @@ export class UserController {
     return this.userService.getMany(dto);
   }
 
-
   @Put(':id/password')
   changePassword(@Param() params: IdDto, @Body() body: ChangePasswordDto): Observable<void> {
     if (body.oldPassword === body.newPassword) {
@@ -61,20 +60,17 @@ export class UserController {
     return this.userService.update(params.id, dto);
   }
 
-
   @Post(':id/activate')
   @HttpCode(200)
   activate(@Param() params: IdDto): Observable<void> {
     return this.userService.activate(params.id);
   }
 
-
   @Post(':id/deactivate')
   @HttpCode(200)
   deactivate(@Param() params: IdDto): Observable<void> {
     return this.userService.deactivate(params.id);
   }
-
 
   @Delete(':id')
   delete(@Param() params: IdDto): Observable<void> {
