@@ -6,6 +6,8 @@ import { ExactAnswerQuestionRepository } from './repositories/exact-answer-quest
 import { CreateQuestionBulkDto } from './dto/create-question-bulk.dto';
 import { Questions } from './models/questions.model';
 import { Observable } from 'rxjs';
+import { Repository } from 'typeorm';
+import { Option } from '../option/option.entity';
 
 @Injectable()
 export class QuestionService {
@@ -14,17 +16,30 @@ export class QuestionService {
               @InjectRepository(ManyOfQuestionRepository)
               private readonly manyOfQRepo: ManyOfQuestionRepository,
               @InjectRepository(ExactAnswerQuestionRepository)
-              private readonly exactAnswerQRepo: ExactAnswerQuestionRepository) {
+              private readonly exactAnswerQRepo: ExactAnswerQuestionRepository,
+              @InjectRepository(Option)
+              private readonly optionRepo: Repository<Option>) {
   }
 
   async createBulk(dto: CreateQuestionBulkDto): Promise<Questions> {
     const result: Questions = {};
     if (dto.oneOfQuestions) {
-      result.oneOfQuestions = await this.oneOfQRepo.insertMany(dto.oneOfQuestions.data);
+      const questionsWithOptions = await Promise.all(dto.oneOfQuestions.data.map(async q => {
+        q.answer = await this.optionRepo.save(q.answer);
+        q.options = await this.optionRepo.save(q.options);
+        return q;
+      }));
+      result.oneOfQuestions = await this.oneOfQRepo.insertMany(questionsWithOptions);
     }
 
     if (dto.manyOfQuestions) {
-      result.manyOfQuestions = await this.manyOfQRepo.insertMany(dto.manyOfQuestions.data);
+      const questionsWithOptions = await Promise.all(dto.manyOfQuestions.data.map(async q => {
+        q.answer = await this.optionRepo.save(q.answer);
+        q.options = await this.optionRepo.save(q.options);
+        return q;
+      }));
+
+      result.manyOfQuestions = await this.manyOfQRepo.insertMany(questionsWithOptions);
     }
 
     if (dto.exactAnswerQuestions) {

@@ -22,11 +22,11 @@ export class ManyOfQuestion {
   text: string;
 
   @ApiModelProperty({ type: Option, isArray: true })
-  @OneToMany(() => Option, option => option.id, { eager: true })
+  @OneToMany(() => Option, option => option.id, { eager: true, onDelete: 'CASCADE', cascade: true })
   options: Array<Option>;
 
   @ApiModelProperty({ type: Option })
-  @OneToMany(() => Option, option => option.id, { eager: true })
+  @OneToMany(() => Option, option => option.id, { eager: true, onDelete: 'CASCADE', cascade: true })
   answer: Array<Option>;
 
   @ApiModelProperty()

@@ -9,9 +9,9 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 
 export const swaggerOptions = new DocumentBuilder()
   .setTitle('MINI Backend')
-  .setDescription('API of the MINI mobile app')
+  .setDescription('API of the MINI mobile app and admin panel')
   .setVersion(version)
-  .setContact('Roman Meshkov', '', 'meshkov.ra@ya.ru')
+  .setContact('Roman Meshkov', '', 'meshkov.ra@yandex.com')
   .addBearerAuth({ bearerFormat: 'JWT', type: 'http', scheme: 'bearer' }, 'bearer')
   .setLicense(
     license,
