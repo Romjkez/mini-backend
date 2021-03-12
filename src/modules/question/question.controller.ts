@@ -1,17 +1,17 @@
 import { Crud, CrudController } from '@nestjsx/crud';
 import { ApiTags } from '@nestjs/swagger';
 import { Controller } from '@nestjs/common';
-import { SingleOptionQuestion } from './entities/single-option-question.entity';
+import { OneOfQuestion } from './entities/single-option-question.entity';
 import { QuestionService } from './question.service';
 
 @Crud({
   model: {
-    type: SingleOptionQuestion,
+    type: OneOfQuestion,
   },
 })
 @ApiTags('question')
 @Controller('question')
-export class QuestionController implements CrudController<SingleOptionQuestion> {
+export class QuestionController implements CrudController<OneOfQuestion> {
   constructor(public service: QuestionService) {
   }
 }

@@ -17,6 +17,7 @@ export class CreateOptionDto {
   @ApiModelPropertyOptional({
     nullable: true,
     example: 'https://i.imgur.com/oygcF4w.jpeg',
+    default: null,
   })
   url?: string;
 

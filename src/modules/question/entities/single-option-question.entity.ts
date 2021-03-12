@@ -24,8 +24,8 @@ export enum QuestionType {
   MultipleOf = 'multipleOf'
 }
 
-@Entity({ name: 'singleOptionQuestion' })
-export class SingleOptionQuestion {
+@Entity({ name: 'oneOfQuestion' })
+export class OneOfQuestion {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;

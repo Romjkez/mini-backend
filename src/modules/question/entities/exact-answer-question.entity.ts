@@ -1,7 +1,6 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { QuestionType } from './single-option-question.entity';
-import { Option } from '../../option/option.entity';
 
 @Entity({ name: 'exactAnswerQuestion' })
 export class ExactAnswerQuestion {
@@ -21,13 +20,9 @@ export class ExactAnswerQuestion {
   @Column({ type: 'varchar' })
   text: string;
 
-  @ApiModelProperty({ type: Option })
-  @OneToOne(() => Option, option => option.id)
-  options: Option;
-
-  @ApiModelProperty({ type: Option })
-  @OneToMany(() => Option, option => option.id)
-  answer: Option;
+  @ApiModelProperty()
+  @Column({ type: 'varchar' })
+  answer: string;
 
   @ApiModelProperty()
   @Column({ type: 'smallint', comment: 'Question order inside the test' })

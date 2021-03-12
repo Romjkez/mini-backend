@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { SingleOptionQuestion } from '../question/entities/single-option-question.entity';
+import { OneOfQuestion } from '../question/entities/single-option-question.entity';
 import { Option } from '../option/option.entity';
 import { FinishedTest } from '../finished-test/finished-test.entity';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
@@ -13,9 +13,9 @@ export class UserAnswer {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ApiModelProperty({ type: SingleOptionQuestion, isArray: true })
-  @OneToMany(() => SingleOptionQuestion, q => q.id)
-  question: Array<SingleOptionQuestion>;
+  @ApiModelProperty({ type: OneOfQuestion, isArray: true })
+  @OneToMany(() => OneOfQuestion, q => q.id)
+  question: Array<OneOfQuestion>;
 
   @ApiModelProperty({ type: Option, isArray: true })
   @OneToMany(() => Option, option => option.id)

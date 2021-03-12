@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SingleOptionQuestion } from './entities/single-option-question.entity';
 import { QuestionService } from './question.service';
 import { QuestionController } from './question.controller';
-import { MultiOptionQuestion } from './entities/multi-option-question.entity';
-import { ExactAnswerQuestion } from './entities/exact-answer-question.entity';
+import { SingleOptionQuestionRepository } from './repositories/single-option-question.repository';
+import { MultiOptionQuestionRepository } from './repositories/multi-option-question.repository';
+import { ExactAnswerQuestionRepository } from './repositories/exact-answer-question.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SingleOptionQuestion, MultiOptionQuestion, ExactAnswerQuestion])],
+  imports: [TypeOrmModule.forFeature([
+    SingleOptionQuestionRepository,
+    MultiOptionQuestionRepository,
+    ExactAnswerQuestionRepository,
+  ])],
   providers: [QuestionService],
   controllers: [QuestionController],
   exports: [QuestionService],

@@ -1,5 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  ApiModelProperty,
+  ApiModelPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 @Entity({ name: 'test' })
 export class Test {
@@ -7,9 +10,9 @@ export class Test {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ApiModelProperty({ type: 'integer', default: 0 })
-  @Column({ type: 'int' })
-  finishedCount: number;
+  @ApiModelProperty({ type: 'object', isArray: true })
+  @OneToMany(() => Question, q => q.id)
+  questions: Array<Question>;
 
   @ApiModelProperty()
   @Column({ type: 'boolean', default: true })
@@ -22,4 +25,10 @@ export class Test {
   @ApiModelProperty()
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt?: number;
+
+  @ApiModelPropertyOptional({ nullable: true })
+  @Column({ type: 'smallint', nullable: true })
+  order?: number;
+
+  // exercise: object
 }

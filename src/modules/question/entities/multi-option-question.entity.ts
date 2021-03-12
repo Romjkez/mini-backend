@@ -3,8 +3,8 @@ import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-prop
 import { Option } from '../../option/option.entity';
 import { QuestionType } from './single-option-question.entity';
 
-@Entity({ name: 'multiOptionQuestion' })
-export class MultiOptionQuestion {
+@Entity({ name: 'manyOfQuestion' })
+export class ManyOfQuestion {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
