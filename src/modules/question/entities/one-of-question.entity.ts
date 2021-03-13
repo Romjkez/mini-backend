@@ -44,12 +44,13 @@ export class OneOfQuestion {
 
   @ApiModelProperty({ type: Option, isArray: true })
   @OneToMany(() => Option, option => option.question, { eager: true, onDelete: 'CASCADE', cascade: true })
+  @JoinColumn()
   options: Array<Option>;
 
   @ApiModelProperty({ type: Option })
-  @OneToOne(() => Option, { eager: true, onDelete: 'CASCADE', cascade: true })
+  @OneToOne(() => Option, { lazy: true, onDelete: 'CASCADE', cascade: true })
   @JoinColumn()
-  answer: Option;
+  answer: Promise<Option>;
 
   @ApiModelProperty()
   @Column({ type: 'smallint', comment: 'Question order inside the test' })

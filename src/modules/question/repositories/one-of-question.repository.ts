@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 @EntityRepository(OneOfQuestion)
 export class OneOfQuestionRepository extends Repository<OneOfQuestion> {
   async insertMany(questions: Array<CreateOneOfQuestionDto>): Promise<Array<OneOfQuestion>> {
-    const markedQuestions = (questions as Array<Partial<OneOfQuestion>>).map(q => {
+    const markedQuestions = (questions as any).map(q => {
       q.uuid = uuidv4();
       console.log(q);
       return q;

@@ -50,7 +50,7 @@ export class QuestionService {
   }
 
   getById(id: number) {
-    return this.oneOfQRepo.findOneOrFail(id);
+    return this.oneOfQRepo.findOneOrFail(id, {});
   }
 
   update(id: number, dto: any): Observable<any> {
