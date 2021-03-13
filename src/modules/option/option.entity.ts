@@ -1,8 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import { OneOfQuestion } from '../question/entities/one-of-question.entity';
 
 @Entity({ name: 'option' })
 export class Option {
@@ -33,4 +34,7 @@ export class Option {
     comment: 'Identifier of option for ordering inside order questions',
   })
   order?: number;
+
+  @ManyToOne(() => OneOfQuestion, q => q.options)
+  question: OneOfQuestion;
 }

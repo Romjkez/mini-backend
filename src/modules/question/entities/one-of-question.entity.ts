@@ -43,12 +43,11 @@ export class OneOfQuestion {
   text: string;
 
   @ApiModelProperty({ type: Option, isArray: true })
-  @OneToMany(() => Option, option => option.id, { eager: true, onDelete: 'CASCADE', cascade: true })
-  @JoinColumn()
+  @OneToMany(() => Option, option => option.question, { eager: true, onDelete: 'CASCADE', cascade: true })
   options: Array<Option>;
 
   @ApiModelProperty({ type: Option })
-  @OneToOne(() => Option, option => option.id, { eager: true, onDelete: 'CASCADE', cascade: true })
+  @OneToOne(() => Option, { eager: true, onDelete: 'CASCADE', cascade: true })
   @JoinColumn()
   answer: Option;
 
