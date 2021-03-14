@@ -4,7 +4,7 @@ import {
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, MaxLength } from 'class-validator';
 
-export class CreateOptionDto {
+export class CreateOrderOptionDto {
   @IsString()
   @MaxLength(255)
   @IsNotEmpty()

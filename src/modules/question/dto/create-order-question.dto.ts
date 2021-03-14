@@ -9,23 +9,27 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { CreateOptionDto } from '../../option/dto/create-option.dto';
 import { Type } from 'class-transformer';
+import { CreateOrderOptionDto } from '../../option/dto/create-order-option.dto';
 
-export class CreateManyOfQuestionDto {
-  @ApiModelProperty({ minLength: 3, maxLength: 255, example: 'Which cars were designed by MINI?' })
+export class CreateOrderQuestionDto {
+  @ApiModelProperty({
+    minLength: 3,
+    maxLength: 255,
+    example: 'Put the cars in the right order by the year they released',
+  })
   @IsString()
   @MinLength(3)
   @MaxLength(255)
   @IsNotEmpty()
   text: string;
 
-  @ApiModelProperty({ isArray: true, type: CreateOptionDto, nullable: false })
+  @ApiModelProperty({ isArray: true, type: CreateOrderOptionDto, nullable: false })
   @IsArray()
-  @Type(() => CreateOptionDto)
+  @Type(() => CreateOrderOptionDto)
   @ValidateNested({ each: true })
   @IsNotEmpty()
-  options: Array<CreateOptionDto>;
+  options: Array<CreateOrderOptionDto>;
 
   @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false })
   @IsInt()
