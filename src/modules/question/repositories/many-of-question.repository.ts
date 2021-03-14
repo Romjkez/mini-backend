@@ -1,17 +1,11 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { ManyOfQuestion } from '../entities/many-of-question.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateManyOfQuestionDto } from '../dto/create-many-of-question.dto';
 
 @EntityRepository(ManyOfQuestion)
 export class ManyOfQuestionRepository extends Repository<ManyOfQuestion> {
 
   async insertMany(questions: Array<CreateManyOfQuestionDto>): Promise<Array<ManyOfQuestion>> {
-    const markedQuestions = (questions as Array<Partial<ManyOfQuestion>>).map(q => {
-      q.uuid = uuidv4();
-      return q;
-    });
-
-    return this.save(markedQuestions);
+    return this.save(questions);
   }
 }
