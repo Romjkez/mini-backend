@@ -24,7 +24,6 @@ export class CreateOptionDto {
   @IsNotEmpty()
   @IsInt()
   @IsPositive()
-  @IsOptional()
-  @ApiModelPropertyOptional({ nullable: true, example: 1, minimum: 1 })
-  order?: number;
+  @ApiModelProperty({ nullable: true, example: 1, minimum: 1 })
+  order: number;
 }
