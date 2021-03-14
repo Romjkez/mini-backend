@@ -3,15 +3,15 @@ import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-prop
 import { Option } from '../../option/entities/option.entity';
 import { QuestionType } from '../models/question-type';
 
-@Entity({ name: 'manyOfQuestion' })
-export class ManyOfQuestion {
+@Entity({ name: 'orderQuestion' })
+export class OrderQuestion {
   @ApiModelProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiModelProperty({ type: 'string', enum: Object.values(QuestionType), default: QuestionType.MultipleOf })
-  @Column({ type: 'enum', enum: QuestionType, default: QuestionType.MultipleOf })
-  readonly type: QuestionType.MultipleOf;
+  @ApiModelProperty({ type: 'string', enum: Object.values(QuestionType), default: QuestionType.Order })
+  @Column({ type: 'enum', enum: QuestionType, default: QuestionType.Order })
+  readonly type: QuestionType.Order;
 
   @ApiModelProperty()
   @Column({ type: 'varchar' })
@@ -20,7 +20,7 @@ export class ManyOfQuestion {
   @ApiModelProperty({ type: Option, isArray: true })
   @OneToMany(() => Option, option => option.question, { eager: true, onDelete: 'CASCADE', cascade: true })
   @JoinColumn()
-  options: Array<Option<ManyOfQuestion>>;
+  options: Array<Option<OrderQuestion>>;
 
   @ApiModelProperty()
   @Column({ type: 'smallint', comment: 'Question order inside the test' })

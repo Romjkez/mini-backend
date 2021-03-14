@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Option } from './option.entity';
+import { Option } from './entities/option.entity';
 import { OptionService } from './option.service';
 
 @Module({

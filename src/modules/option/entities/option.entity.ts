@@ -3,10 +3,12 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { OneOfQuestion } from '../question/entities/one-of-question.entity';
+import { OneOfQuestion } from '../../question/entities/one-of-question.entity';
+import { ManyOfQuestion } from '../../question/entities/many-of-question.entity';
+import { OrderQuestion } from '../../question/entities/order-question.entity';
 
 @Entity({ name: 'option' })
-export class Option {
+export class Option<Q> {
   @ApiModelProperty({
     type: 'integer',
     minimum: 1,
@@ -26,9 +28,13 @@ export class Option {
   @Column({ type: 'varchar', nullable: true })
   url?: string;
 
-  @ApiModelPropertyOptional({ nullable: true, example: 1 })
+  @ApiModelProperty({ type: 'boolean', nullable: true, example: false })
+  @Column({ type: 'boolean', nullable: true })
+  isCorrect?: boolean;
+
+  @ApiModelPropertyOptional({ nullable: true, example: 1, description: 'Only for OrderQuestion' })
   @Column({
-    type: 'smallint',
+    type: 'integer',
     unsigned: true,
     nullable: true,
     comment: 'Identifier of option for ordering inside order questions',
@@ -36,5 +42,7 @@ export class Option {
   order?: number;
 
   @ManyToOne(() => OneOfQuestion, q => q.options)
-  question: OneOfQuestion;
+  @ManyToOne(() => ManyOfQuestion, q => q.options)
+  @ManyToOne(() => OrderQuestion, q => q.options)
+  question: Q;
 }

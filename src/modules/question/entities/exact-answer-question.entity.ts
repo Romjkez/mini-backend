@@ -1,12 +1,12 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { QuestionType } from './one-of-question.entity';
+import { QuestionType } from '../models/question-type';
 
 @Entity({ name: 'exactAnswerQuestion' })
 export class ExactAnswerQuestion {
   @ApiModelProperty()
-  @PrimaryGeneratedColumn({ unsigned: true })
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ApiModelProperty({ nullable: false, example: '3123e029-da13-4b68-9bb9-b28d6331814b' })
   @Column({ type: 'uuid', unique: true, comment: 'Unique question identifier among all types of questions' })
@@ -14,7 +14,7 @@ export class ExactAnswerQuestion {
 
   @ApiModelProperty({ type: 'string', enum: Object.values(QuestionType), default: QuestionType.ExactAnswer })
   @Column({ type: 'enum', enum: QuestionType, default: QuestionType.ExactAnswer })
-  readonly type: QuestionType.OneOf;
+  readonly type: QuestionType.ExactAnswer;
 
   @ApiModelProperty()
   @Column({ type: 'varchar' })

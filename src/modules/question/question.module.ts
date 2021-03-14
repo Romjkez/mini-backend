@@ -5,7 +5,7 @@ import { QuestionController } from './question.controller';
 import { OneOfQuestionRepository } from './repositories/one-of-question.repository';
 import { ManyOfQuestionRepository } from './repositories/many-of-question.repository';
 import { ExactAnswerQuestionRepository } from './repositories/exact-answer-question.repository';
-import { Option } from '../option/option.entity';
+import { Option } from '../option/entities/option.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
