@@ -27,13 +27,6 @@ export class CreateManyOfQuestionDto {
   @IsNotEmpty()
   options: Array<CreateOptionDto>;
 
-  @ApiModelProperty({ type: CreateOptionDto, nullable: false })
-  @IsArray()
-  @Type(() => CreateOptionDto)
-  @ValidateNested({ each: true })
-  @IsNotEmpty()
-  answer: Array<CreateOptionDto>;
-
   @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false })
   @IsInt()
   @IsPositive()

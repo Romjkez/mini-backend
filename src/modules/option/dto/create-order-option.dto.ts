@@ -2,7 +2,7 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsBooleanString, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, MaxLength } from 'class-validator';
 
 export class CreateOptionDto {
   @IsString()
@@ -21,8 +21,10 @@ export class CreateOptionDto {
   })
   url?: string;
 
-  @IsBooleanString()
   @IsNotEmpty()
-  @ApiModelProperty({ nullable: false, example: false, type: 'boolean' })
-  isCorrect: boolean;
+  @IsInt()
+  @IsPositive()
+  @IsOptional()
+  @ApiModelPropertyOptional({ nullable: true, example: 1, minimum: 1 })
+  order?: number;
 }
