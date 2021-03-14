@@ -1,31 +1,36 @@
-import { CreateOneOfQuestionBulkDto } from '../../question/dto/create-one-of-question-bulk.dto';
-import { CreateManyOfQuestionBulkDto } from '../../question/dto/create-many-of-question-bulk.dto';
-import { CreateExactAnswerQuestionBulkDto } from '../../question/dto/create-exact-answer-question-bulk.dto';
 import { Type } from 'class-transformer';
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsInt, IsNotEmpty, IsOptional, IsPositive, ValidateNested } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsOptional, IsPositive, ValidateNested } from 'class-validator';
 import { CreateQuestionBulkDto } from '../../question/dto/create-question-bulk.dto';
+import { CreateOneOfQuestionDto } from '../../question/dto/create-one-of-question.dto';
+import { CreateManyOfQuestionDto } from '../../question/dto/create-many-of-question.dto';
+import { CreateExactAnswerQuestionDto } from '../../question/dto/create-exact-answer-question.dto';
+import { CreateOrderQuestionDto } from '../../question/dto/create-order-question.dto';
 
 export class CreateTestDto extends CreateQuestionBulkDto {
-  // todo check validation, replace with Array<Single> if needed
-  // todo remove ValidateNested if it is ok
-  @ApiModelPropertyOptional({ type: CreateManyOfQuestionBulkDto, nullable: true })
-  @Type(() => CreateOneOfQuestionBulkDto)
+  @IsArray()
+  @Type(() => CreateOneOfQuestionDto)
   @ValidateNested({ each: true })
   @IsOptional()
-  oneOfQuestions?: CreateOneOfQuestionBulkDto;
+  oneOfQuestions?: Array<CreateOneOfQuestionDto>;
 
-  @ApiModelPropertyOptional({ type: CreateManyOfQuestionBulkDto, nullable: true })
-  @Type(() => CreateManyOfQuestionBulkDto)
+  @IsArray()
+  @Type(() => CreateManyOfQuestionDto)
   @ValidateNested({ each: true })
   @IsOptional()
-  manyOfQuestions?: CreateManyOfQuestionBulkDto;
+  manyOfQuestions?: Array<CreateManyOfQuestionDto>;
 
-  @ApiModelPropertyOptional({ type: CreateExactAnswerQuestionBulkDto, nullable: true })
-  @Type(() => CreateManyOfQuestionBulkDto)
+  @IsArray()
+  @Type(() => CreateExactAnswerQuestionDto)
   @ValidateNested({ each: true })
   @IsOptional()
-  exactAnswerQuestions?: CreateExactAnswerQuestionBulkDto;
+  exactAnswerQuestions?: Array<CreateExactAnswerQuestionDto>;
+
+  @IsArray()
+  @Type(() => CreateOrderQuestionDto)
+  @ValidateNested({ each: true })
+  @IsOptional()
+  orderQuestions?: Array<CreateOrderQuestionDto>;
 
   @ApiModelPropertyOptional({ nullable: true, example: 1 })
   @IsOptional()

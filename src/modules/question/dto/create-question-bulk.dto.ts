@@ -1,11 +1,32 @@
-import { CreateOneOfQuestionBulkDto } from './create-one-of-question-bulk.dto';
-import { CreateManyOfQuestionBulkDto } from './create-many-of-question-bulk.dto';
-import { CreateExactAnswerQuestionBulkDto } from './create-exact-answer-question-bulk.dto';
+import { CreateOneOfQuestionDto } from './create-one-of-question.dto';
+import { CreateManyOfQuestionDto } from './create-many-of-question.dto';
+import { CreateExactAnswerQuestionDto } from './create-exact-answer-question.dto';
+import { CreateOrderQuestionDto } from './create-order-question.dto';
+import { IsArray, IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateQuestionBulkDto {
-  oneOfQuestions?: CreateOneOfQuestionBulkDto;
+  @IsArray()
+  @Type(() => CreateOneOfQuestionDto)
+  @ValidateNested({ each: true })
+  @IsOptional()
+  oneOfQuestions?: Array<CreateOneOfQuestionDto>;
 
-  manyOfQuestions?: CreateManyOfQuestionBulkDto;
+  @IsArray()
+  @Type(() => CreateManyOfQuestionDto)
+  @ValidateNested({ each: true })
+  @IsOptional()
+  manyOfQuestions?: Array<CreateManyOfQuestionDto>;
 
-  exactAnswerQuestions?: CreateExactAnswerQuestionBulkDto;
+  @IsArray()
+  @Type(() => CreateExactAnswerQuestionDto)
+  @ValidateNested({ each: true })
+  @IsOptional()
+  exactAnswerQuestions?: Array<CreateExactAnswerQuestionDto>;
+
+  @IsArray()
+  @Type(() => CreateOrderQuestionDto)
+  @ValidateNested({ each: true })
+  @IsOptional()
+  orderQuestions?: Array<CreateOrderQuestionDto>;
 }

@@ -20,15 +20,15 @@ export class QuestionService {
   async createBulk(dto: CreateQuestionBulkDto): Promise<Questions> {
     const result: Questions = {};
     if (dto.oneOfQuestions) {
-      result.oneOfQuestions = await this.oneOfQRepo.insertMany(dto.oneOfQuestions.data);
+      result.oneOfQuestions = await this.oneOfQRepo.insertMany(dto.oneOfQuestions);
     }
 
     if (dto.manyOfQuestions) {
-      result.manyOfQuestions = await this.manyOfQRepo.insertMany(dto.manyOfQuestions.data);
+      result.manyOfQuestions = await this.manyOfQRepo.insertMany(dto.manyOfQuestions);
     }
 
     if (dto.exactAnswerQuestions) {
-      result.exactAnswerQuestions = await this.exactAnswerQRepo.insertMany(dto.exactAnswerQuestions.data);
+      result.exactAnswerQuestions = await this.exactAnswerQRepo.insertMany(dto.exactAnswerQuestions);
     }
 
     return result;
