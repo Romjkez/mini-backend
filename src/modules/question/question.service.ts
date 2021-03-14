@@ -34,7 +34,7 @@ export class QuestionService {
     return result;
   }
 
-  async getById(id: number) {
+  async getById(id: string) {
     return this.oneOfQRepo.findOneOrFail(id, {});
   }
 

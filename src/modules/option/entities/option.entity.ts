@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import {
   ApiModelProperty,
   ApiModelPropertyOptional,
@@ -41,8 +41,8 @@ export class Option<Q> {
   })
   order?: number;
 
-  @ManyToOne(() => OneOfQuestion, q => q.options)
-  @ManyToOne(() => ManyOfQuestion, q => q.options)
-  @ManyToOne(() => OrderQuestion, q => q.options)
+  @ManyToMany(() => OneOfQuestion, q => q.options)
+  @ManyToMany(() => ManyOfQuestion, q => q.options)
+  @ManyToMany(() => OrderQuestion, q => q.options)
   question: Q;
 }

@@ -9,7 +9,6 @@ module.exports = {
   entities: [
     `dist/**/*.entity.{ts,js}`
   ],
-  logging: true,
   synchronize: true
   /*migrations: [
     `${baseDir}/migration/!**!/!*.{ts,js}`,

@@ -20,7 +20,7 @@ export class QuestionController {
 
   // todo remove
   @Get(':id')
-  async getById(@Param('id') id: number) {
+  async getById(@Param('id') id: string) {
     return this.questionService.getById(id);
   }
 
