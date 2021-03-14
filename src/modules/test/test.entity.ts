@@ -11,28 +11,31 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { OneOfQuestion } from '../question/entities/one-of-question.entity';
-import { Questions } from '../question/models/questions.model';
-import { ManyOfQuestion } from '../question/entities/many-of-question.entity';
+import { OneOfQuestionEntity } from '../question/entities/one-of-question.entity';
+import { ManyOfQuestionEntity } from '../question/entities/many-of-question.entity';
 import { ExactAnswerQuestion } from '../question/entities/exact-answer-question.entity';
+import { OrderQuestionEntity } from '../question/entities/order-question.entity';
 
 @Entity({ name: 'test' })
-export class Test extends Questions {
+export class Test {
   @ApiModelProperty()
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ManyToMany(() => OneOfQuestion, q => q.id)
+  @ManyToMany(() => OneOfQuestionEntity, q => q.id)
   @JoinTable()
-  oneOfQuestions: Array<OneOfQuestion>;
+  oneOfQuestions: Array<OneOfQuestionEntity>;
 
-  @ManyToMany(() => ManyOfQuestion, q => q.id)
+  @ManyToMany(() => ManyOfQuestionEntity, q => q.id)
   @JoinTable()
-  manyOfQuestions: Array<ManyOfQuestion>;
+  manyOfQuestions: Array<ManyOfQuestionEntity>;
 
   @ManyToMany(() => ExactAnswerQuestion, q => q.id)
   @JoinTable()
   exactAnswerQuestions: Array<ExactAnswerQuestion>;
+
+  @ManyToMany(() => OrderQuestionEntity, q => q.id)
+  orderQuestions: Array<OrderQuestionEntity>;
 
   @ApiModelProperty()
   @Column({ type: 'boolean', default: true })

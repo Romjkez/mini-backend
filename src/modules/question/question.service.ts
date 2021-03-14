@@ -6,6 +6,7 @@ import { ExactAnswerQuestionRepository } from './repositories/exact-answer-quest
 import { CreateQuestionBulkDto } from './dto/create-question-bulk.dto';
 import { Questions } from './models/questions.model';
 import { Observable } from 'rxjs';
+import { OrderQuestionRepository } from './repositories/order-question.repository';
 
 @Injectable()
 export class QuestionService {
@@ -14,7 +15,9 @@ export class QuestionService {
               @InjectRepository(ManyOfQuestionRepository)
               private readonly manyOfQRepo: ManyOfQuestionRepository,
               @InjectRepository(ExactAnswerQuestionRepository)
-              private readonly exactAnswerQRepo: ExactAnswerQuestionRepository) {
+              private readonly exactAnswerQRepo: ExactAnswerQuestionRepository,
+              @InjectRepository(OrderQuestionRepository)
+              private readonly orderQRepo: OrderQuestionRepository) {
   }
 
   async createBulk(dto: CreateQuestionBulkDto): Promise<Questions> {
@@ -29,6 +32,10 @@ export class QuestionService {
 
     if (dto.exactAnswerQuestions) {
       result.exactAnswerQuestions = await this.exactAnswerQRepo.insertMany(dto.exactAnswerQuestions);
+    }
+
+    if (dto.orderQuestions) {
+      result.orderQuestions = await this.orderQRepo.insertMany(dto.orderQuestions);
     }
 
     return result;

@@ -1,7 +1,7 @@
-import { OneOfQuestion } from '../entities/one-of-question.entity';
-import { ManyOfQuestion } from '../entities/many-of-question.entity';
 import { ExactAnswerQuestion } from '../entities/exact-answer-question.entity';
-import { OrderQuestion } from '../entities/order-question.entity';
+import { OrderQuestion } from './order-question.model';
+import { OneOfQuestion } from './one-of-question.model';
+import { ManyOfQuestion } from './many-of-question.model';
 
 export class Questions {
   oneOfQuestions?: Array<OneOfQuestion>;
