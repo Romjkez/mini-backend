@@ -10,6 +10,10 @@ import { OptionModule } from './modules/option/option.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserAnswerModule } from './modules/user-answer/user-answer.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ExerciseModule } from './modules/exercise/exercise.module';
+import { ExerciseService } from './modules/exercise/exercise.service';
+import { ExerciseController } from './modules/exercise/exercise.controller';
+import { TagModule } from './modules/tag/tag.module';
 
 @Module({
   imports: [
@@ -23,8 +27,10 @@ import { ScheduleModule } from '@nestjs/schedule';
     AuthModule,
     UserAnswerModule,
     ScheduleModule.forRoot(),
+    ExerciseModule,
+    TagModule,
   ],
-  controllers: [AppController],
-  providers: [],
+  controllers: [AppController, ExerciseController],
+  providers: [ExerciseService],
 })
 export class AppModule {}
