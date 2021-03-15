@@ -27,7 +27,7 @@ export class CreateOneOfQuestionDto {
   @IsNotEmpty()
   options: Array<CreateOptionDto>;
 
-  @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false })
+  @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false, example: 4 })
   @IsInt()
   @IsPositive()
   @IsNotEmpty()

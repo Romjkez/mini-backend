@@ -15,7 +15,7 @@ export class CreateExactAnswerQuestionDto {
   @IsNotEmpty()
   answer: string;
 
-  @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false })
+  @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false, example: 2 })
   @IsInt()
   @IsPositive()
   @IsNotEmpty()

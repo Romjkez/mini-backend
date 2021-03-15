@@ -31,7 +31,7 @@ export class CreateOrderQuestionDto {
   @IsNotEmpty()
   options: Array<CreateOrderOptionDto>;
 
-  @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false })
+  @ApiModelProperty({ type: 'integer', minimum: 1, nullable: false, example: 3 })
   @IsInt()
   @IsPositive()
   @IsNotEmpty()

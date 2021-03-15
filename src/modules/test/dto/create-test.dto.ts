@@ -39,10 +39,10 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @IsNotEmpty()
   order?: number;
 
-  @ApiModelPropertyOptional({ nullable: true, example: 1 })
+  /*@ApiModelPropertyOptional({ nullable: true, example: 1 })
   @IsOptional()
   @IsInt()
   @IsPositive()
   @IsNotEmpty()
-  exercise?: number;
+  exercise?: number;*/
 }

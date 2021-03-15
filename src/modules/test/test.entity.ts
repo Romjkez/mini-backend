@@ -22,19 +22,20 @@ export class Test {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ManyToMany(() => OneOfQuestionEntity, q => q.id)
+  @ManyToMany(() => OneOfQuestionEntity, q => q.id, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   oneOfQuestions: Array<OneOfQuestionEntity>;
 
-  @ManyToMany(() => ManyOfQuestionEntity, q => q.id)
+  @ManyToMany(() => ManyOfQuestionEntity, q => q.id, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   manyOfQuestions: Array<ManyOfQuestionEntity>;
 
-  @ManyToMany(() => ExactAnswerQuestion, q => q.id)
+  @ManyToMany(() => ExactAnswerQuestion, q => q.id, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   exactAnswerQuestions: Array<ExactAnswerQuestion>;
 
-  @ManyToMany(() => OrderQuestionEntity, q => q.id)
+  @ManyToMany(() => OrderQuestionEntity, q => q.id, { cascade: true, onDelete: 'CASCADE' })
+  @JoinTable()
   orderQuestions: Array<OrderQuestionEntity>;
 
   @ApiModelProperty()
