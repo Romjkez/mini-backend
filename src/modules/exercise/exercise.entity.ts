@@ -1,6 +1,17 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Tag } from '../tag/tag.entity';
+import { Test } from '../test/test.entity';
+import { Article } from '../article/article.entity';
 
 
 @Entity('exercise')
@@ -24,6 +35,16 @@ export class ExerciseEntity {
   @ApiModelProperty()
   @Column({ type: 'boolean', default: true })
   isVisible: boolean;
+
+  @ApiModelProperty()
+  @OneToMany(() => Test, t => t.id)
+  @JoinColumn()
+  tests: Array<Test>;
+
+  @ApiModelProperty()
+  @OneToMany(() => Article, a => a.id)
+  @JoinColumn()
+  articles: Array<Article>;
 
   @ApiModelProperty({ type: Tag, isArray: true })
   @ManyToMany(() => Tag, tag => tag.id, { eager: true })
