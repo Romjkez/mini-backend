@@ -11,8 +11,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserAnswerModule } from './modules/user-answer/user-answer.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ExerciseModule } from './modules/exercise/exercise.module';
-import { ExerciseService } from './modules/exercise/exercise.service';
-import { ExerciseController } from './modules/exercise/exercise.controller';
 import { TagModule } from './modules/tag/tag.module';
 
 @Module({
@@ -30,7 +28,7 @@ import { TagModule } from './modules/tag/tag.module';
     ExerciseModule,
     TagModule,
   ],
-  controllers: [AppController, ExerciseController],
-  providers: [ExerciseService],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}
