@@ -9,6 +9,7 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
+      APP_NAME: 'MINI Study'
     restart: unless-stopped
     env_file:
       - .env

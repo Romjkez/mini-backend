@@ -27,6 +27,8 @@ import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
 import { SimpleUser } from './models/simple-user.model';
 import { convertUserEntityToSimpleUser } from './utils/convert-user-entity-to-simple-user';
+import { MailerService } from '@nestjs-modules/mailer';
+import { getPlainWelcomeText, getWelcomeText } from '../../templates/welcome';
 
 @Injectable()
 export class UserService {
@@ -34,6 +36,7 @@ export class UserService {
     @InjectRepository(UserRepository) private readonly userRepo: UserRepository,
     @Inject('SALT_ROUNDS') private readonly saltRounds: number,
     private readonly logger: Logger,
+    private readonly mailerService: MailerService,
   ) {
     logger.setContext('UserService');
   }
@@ -47,6 +50,13 @@ export class UserService {
     return this.userRepo.insertOne({ ...dto, password }, this.saltRounds)
       .pipe(
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
+        tap(async () => this.mailerService.sendMail({
+          from: `"${process.env.APP_NAME}" <${process.env.MAIL_USER}>`,
+          to: dto.email,
+          subject: `Добро пожаловать в ${process.env.APP_NAME}!`,
+          html: getWelcomeText({ email: dto.email, password }),
+          text: getPlainWelcomeText({ email: dto.email, password }),
+        })),
         catchError(err => {
           console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
