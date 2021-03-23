@@ -1,12 +1,11 @@
 import { Injectable, InternalServerErrorException, Logger, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Article } from './article.entity';
 import { from, Observable } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
-import { SimpleArticle } from './models/simple-article.model';
+import { Article } from './models/article.model';
 import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 import { ArticleRepository } from './article.repository';
 
@@ -33,7 +32,7 @@ export class ArticleService {
   }
 
   getById(id: number): Observable<Article> {
-    return from(this.articleRepo.findOneOrFail(id, { relations: ARTICLE_RELATIONS }))
+    return from(this.articleRepo.getById(id))
       .pipe(
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
@@ -42,7 +41,7 @@ export class ArticleService {
       );
   }
 
-  getMany(dto: GetManyArticlesDto): Observable<GetManyResponseDto<SimpleArticle>> {
+  getMany(dto: GetManyArticlesDto): Observable<GetManyResponseDto<Article>> {
     throw new NotImplementedException();
   }
 
@@ -57,7 +56,7 @@ export class ArticleService {
   update(id: number, dto: UpdateArticleDto): Observable<Article> {
     return from(this.articleRepo.update(id, dto))
       .pipe(
-        switchMap(() => from(this.articleRepo.findOne(id, { relations: ARTICLE_RELATIONS }))),
+        switchMap(() => from(this.articleRepo.getById(id))),
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);

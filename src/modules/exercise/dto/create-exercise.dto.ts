@@ -4,10 +4,10 @@ import {
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 export class CreateExerciseDto {
-  @ApiModelProperty()
+  @ApiModelProperty({ description: 'Title of the exercise' })
   title: string;
 
-  @ApiModelPropertyOptional({ default: true })
+  @ApiModelPropertyOptional({ default: true, description: 'If the exercise should be visible to non-admin users' })
   isVisible?: boolean;
 
   @ApiModelProperty({ type: 'integer', isArray: true })

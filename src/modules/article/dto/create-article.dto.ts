@@ -22,6 +22,12 @@ export class CreateArticleDto {
   @IsNotEmpty()
   content: string;
 
+  @ApiModelPropertyOptional({ example: null, nullable: true })
+  @IsNotEmpty()
+  @IsString()
+  @IsOptional()
+  video?: string;
+
   @ApiModelPropertyOptional({ example: 'https://avtotachki.com/wp-content/uploads/2020/12/37.jpg' })
   @IsString()
   @IsOptional()

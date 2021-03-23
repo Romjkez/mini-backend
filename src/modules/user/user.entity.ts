@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Article } from '../article/article.entity';
+import { ArticleEntity } from '../article/article.entity';
 import { FinishedTest } from '../finished-test/finished-test.entity';
 import { SimpleUser } from './models/simple-user.model';
 import { UserRole } from './models/user-role.enum';
@@ -62,21 +62,21 @@ export class UserEntity extends SimpleUser {
   })
   bannedAt?: Date;
 
-  @Column({ type: 'real', unsigned: true, nullable: true, comment: 'Average test score' })
+  @Column({ type: 'real', nullable: true, comment: 'Average test score' })
   rating: number;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.EMPLOYEE, nullable: false, comment: 'User role' })
   role: UserRole;
 
-  @ManyToMany(() => Article, async article => article.finishedBy)
+  @ManyToMany(() => ArticleEntity, async article => article.finishedBy, { lazy: true })
   @JoinTable()
-  finishedArticles: Promise<Array<Article>>;
+  finishedArticles: Promise<Array<ArticleEntity>>;
 
-  @ManyToMany(() => FinishedTest, async test => test.finishedBy)
+  @ManyToMany(() => FinishedTest, async test => test.finishedBy, { lazy: true })
   @JoinTable()
   finishedTests: Promise<Array<FinishedTest>>;
 
-  @ManyToMany(() => Article, async article => article.favoriteFor)
+  @ManyToMany(() => ArticleEntity, async article => article.favoriteFor, { lazy: true })
   @JoinTable()
-  favoriteArticles: Promise<Array<Article>>;
+  favoriteArticles: Promise<Array<ArticleEntity>>;
 }

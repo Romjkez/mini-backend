@@ -1,13 +1,12 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, NotImplementedException, Param, Post, Put } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { IdDto } from '../../common/dto/id.dto';
 import { Observable } from 'rxjs';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { Article } from './article.entity';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
-import { SimpleArticle } from './models/simple-article.model';
+import { Article } from './models/article.model';
 import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 import { AddFinishedByDto } from './dto/add-finished-by.dto';
 
@@ -17,29 +16,28 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {
   }
 
+  @ApiCreatedResponse({ type: Article })
   @Post()
   createOne(@Body() dto: CreateArticleDto): Observable<Article> {
     return this.articleService.createOne(dto);
   }
 
-
+  @ApiOkResponse({ type: Article })
   @Get(':id')
-  getById(@Param() params: IdDto) {
+  getById(@Param() params: IdDto): Observable<Article> {
     return this.articleService.getById(params.id);
   }
 
   @Post(':articleId/finishedBy/:userId')
   addFinishedBy(@Param() dto: AddFinishedByDto) {
-    return null;
+    throw new NotImplementedException();
   }
-
 
   @Post(':id/hide')
   @HttpCode(200)
   hide(@Param() params: IdDto): Observable<void> {
     return this.articleService.hide(params.id);
   }
-
 
   @Post(':id/show')
   @HttpCode(200)
@@ -49,16 +47,14 @@ export class ArticleController {
 
   @Post('getMany')
   @HttpCode(200)
-  getMany(@Body() dto: GetManyArticlesDto): Observable<GetManyResponseDto<SimpleArticle>> {
+  getMany(@Body() dto: GetManyArticlesDto): Observable<GetManyResponseDto<Article>> {
     return this.articleService.getMany(dto);
   }
-
 
   @Put(':id')
   update(@Param() params: IdDto, @Body() dto: UpdateArticleDto): Observable<Article> {
     return this.articleService.update(params.id, dto);
   }
-
 
   @Delete(':id')
   delete(@Param() params: IdDto): Observable<void> {

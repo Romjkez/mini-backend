@@ -11,7 +11,7 @@ import {
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Tag } from '../tag/tag.entity';
 import { Test } from '../test/test.entity';
-import { Article } from '../article/article.entity';
+import { ArticleEntity } from '../article/article.entity';
 
 
 @Entity('exercise')
@@ -42,9 +42,9 @@ export class ExerciseEntity {
   tests: Array<Test>;
 
   @ApiModelProperty()
-  @OneToMany(() => Article, a => a.id)
+  @OneToMany(() => ArticleEntity, a => a.id)
   @JoinColumn()
-  articles: Array<Article>;
+  articles: Array<ArticleEntity>;
 
   @ApiModelProperty({ type: Tag, isArray: true })
   @ManyToMany(() => Tag, tag => tag.id, { eager: true })
