@@ -4,6 +4,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,6 +16,7 @@ import { OneOfQuestionEntity } from '../question/entities/one-of-question.entity
 import { ManyOfQuestionEntity } from '../question/entities/many-of-question.entity';
 import { ExactAnswerQuestion } from '../question/entities/exact-answer-question.entity';
 import { OrderQuestionEntity } from '../question/entities/order-question.entity';
+import { ExerciseEntity } from '../exercise/exercise.entity';
 
 @Entity({ name: 'test' })
 export class Test {
@@ -54,5 +56,6 @@ export class Test {
   @Column({ type: 'smallint', nullable: true })
   order?: number;
 
-  // exercise: object
+  @ManyToOne(() => ExerciseEntity, e => e.tests)
+  exercise: ExerciseEntity;
 }

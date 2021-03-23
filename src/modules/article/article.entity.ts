@@ -4,10 +4,12 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
+import { ExerciseEntity } from '../exercise/exercise.entity';
 
 @Entity({ name: 'article' })
 export class ArticleEntity {
@@ -26,10 +28,6 @@ export class ArticleEntity {
   @Column({ type: 'boolean', default: true })
   isVisible: boolean;
 
-  @JoinTable()
-  @ManyToMany(() => UserEntity, async user => user.finishedArticles, { lazy: true })
-  finishedBy: Promise<Array<UserEntity>>;
-
   @Column({ type: 'varchar', default: null, nullable: true })
   previewUrl?: string;
 
@@ -40,6 +38,13 @@ export class ArticleEntity {
   updatedAt?: number;
 
   @JoinTable()
+  @ManyToMany(() => UserEntity, async user => user.finishedArticles, { lazy: true })
+  finishedBy: Promise<Array<UserEntity>>;
+
+  @JoinTable()
   @ManyToMany(() => UserEntity, async user => user.favoriteArticles, { lazy: true })
   favoriteFor: Promise<Array<UserEntity>>;
+
+  @ManyToOne(() => ExerciseEntity, e => e.articles)
+  exercise: ExerciseEntity;
 }

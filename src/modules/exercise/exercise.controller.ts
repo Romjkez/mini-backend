@@ -13,7 +13,7 @@ export class ExerciseController {
   }
 
   @Post()
-  createOne(@Body() dto: CreateExerciseDto): Observable<ExerciseEntity> {
+  createOne(@Body() dto: CreateExerciseDto): Promise<ExerciseEntity> {
     return this.exerciseService.createOne(dto);
   }
 

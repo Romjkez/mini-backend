@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -37,16 +37,15 @@ export class ExerciseEntity {
   isVisible: boolean;
 
   @ApiModelProperty()
-  @OneToMany(() => Test, t => t.id)
-  @JoinColumn()
+  @OneToMany(() => Test, t => t.exercise)
   tests: Array<Test>;
 
   @ApiModelProperty()
-  @OneToMany(() => ArticleEntity, a => a.id)
-  @JoinColumn()
+  @OneToMany(() => ArticleEntity, a => a.exercise)
   articles: Array<ArticleEntity>;
 
   @ApiModelProperty({ type: Tag, isArray: true })
-  @ManyToMany(() => Tag, tag => tag.id, { eager: true })
+  @ManyToMany(() => Tag, tag => tag.exercises)
+  @JoinTable()
   tags: Array<Tag>;
 }
