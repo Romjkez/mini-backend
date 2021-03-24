@@ -6,7 +6,7 @@ const MAX_PER_PAGE = 100;
 export const DEFAULT_PER_PAGE = 15;
 export const DEFAULT_PAGE = 1;
 
-export class GetManyDto {
+export abstract class GetManyDto {
   @IsOptional()
   @Transform(Number)
   @IsInt()

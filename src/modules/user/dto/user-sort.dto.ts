@@ -1,39 +1,34 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
-import { MIN_FIRSTNAME_LENGTH, MIN_LASTNAME_LENGTH } from './create-user.dto';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { Transform } from 'class-transformer';
 import { SortType } from '../../../common/models/sort-type.enum';
 
 export class UserSortDto {
   @IsOptional()
-  @IsString()
-  @MinLength(MIN_FIRSTNAME_LENGTH)
+  @IsEnum(SortType)
   @IsNotEmpty()
   @ApiModelPropertyOptional({ description: 'First name', enum: Object.keys(SortType) })
   firstName?: SortType;
 
   @IsOptional()
-  @IsString()
-  @MinLength(MIN_LASTNAME_LENGTH)
+  @IsEnum(SortType)
   @IsNotEmpty()
   @ApiModelPropertyOptional({ description: 'Last name', enum: Object.keys(SortType) })
   lastName?: SortType;
 
   @IsOptional()
-  @IsEmail()
+  @IsEnum(SortType)
   @IsNotEmpty()
   @ApiModelPropertyOptional({ description: 'Email', enum: Object.keys(SortType) })
   email?: SortType;
 
   @IsOptional()
   @IsNotEmpty()
-  @IsString()
+  @IsEnum(SortType)
   @ApiModelPropertyOptional({ description: 'Employer of user', enum: Object.keys(SortType) })
   company?: SortType;
 
   @IsOptional()
-  @Transform(Boolean)
-  @IsBoolean()
+  @IsEnum(SortType)
   @IsNotEmpty()
   @ApiModelPropertyOptional({
     description: 'If user prefers to hide profile from users rating',
@@ -42,5 +37,8 @@ export class UserSortDto {
   isPrivate?: SortType;
 
   @ApiModelPropertyOptional({ description: 'Average test score', enum: Object.keys(SortType) })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(SortType)
   rating?: SortType;
 }
