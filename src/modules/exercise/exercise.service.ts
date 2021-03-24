@@ -5,18 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateExerciseDto, CreateExerciseInternalDto } from './dto/create-exercise.dto';
 import { from, Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { Test } from '../test/test.entity';
-import { ArticleRepository } from '../article/article.repository';
-import { Tag } from '../tag/tag.entity';
 
 export const EXERCISE_RELATIONS = ['tests', 'articles', 'tags'];
 
 @Injectable()
 export class ExerciseService {
   constructor(@InjectRepository(ExerciseEntity) private readonly exerciseRepo: Repository<ExerciseEntity>,
-              @InjectRepository(Test) private readonly testRepo: Repository<Test>,
-              @InjectRepository(ArticleRepository) private readonly articleRepo: ArticleRepository,
-              @InjectRepository(Tag) private readonly tagRepo: Repository<Tag>,
               private readonly logger: Logger) {
     logger.setContext('ExerciseService');
   }
@@ -25,9 +19,9 @@ export class ExerciseService {
     const dtoWithRelations: CreateExerciseInternalDto = {
       title: dto.title,
       isVisible: dto.isVisible,
-      tests: await this.testRepo.findByIds(dto.tests),
-      tags: await this.tagRepo.findByIds(dto.tags),
-      articles: await this.articleRepo.findByIds(dto.articles),
+      tests: dto.tests.map(id => ({ id })),
+      tags: dto.tags.map(id => ({ id })),
+      articles: dto.articles.map(id => ({ id })),
     };
 
     return from(this.exerciseRepo.save(dtoWithRelations))
