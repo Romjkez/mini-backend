@@ -1,10 +1,15 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotImplementedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ExerciseEntity } from './exercise.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateExerciseDto, CreateExerciseInternalDto } from './dto/create-exercise.dto';
+import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { from, Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { SimpleExercise } from './model/simple-exercise.model';
+import { convertCreateExerciseDtoToInternal } from './utlis/convert-create-exercise-dto-to-internal';
+import { GetManyExercisesDto } from './dto/get-many-exercises.dto';
+import { DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
+import { calculateQueryOffset } from '../../common/utils';
 
 export const EXERCISE_RELATIONS = ['tests', 'articles', 'tags'];
 
@@ -15,20 +20,12 @@ export class ExerciseService {
     logger.setContext('ExerciseService');
   }
 
-  async createOne(dto: CreateExerciseDto): Promise<ExerciseEntity> {
-    const dtoWithRelations: CreateExerciseInternalDto = {
-      title: dto.title,
-      isVisible: dto.isVisible,
-      tests: dto.tests.map(id => ({ id })),
-      tags: dto.tags.map(id => ({ id })),
-      articles: dto.articles.map(id => ({ id })),
-    };
-
-    return from(this.exerciseRepo.save(dtoWithRelations))
+  createOne(dto: CreateExerciseDto): Observable<ExerciseEntity> {
+    return from(this.exerciseRepo.save(convertCreateExerciseDtoToInternal(dto)))
       .pipe(
         switchMap(async (exercise: ExerciseEntity) =>
           this.exerciseRepo.findOne(exercise.id, { relations: EXERCISE_RELATIONS })),
-      ).toPromise();
+      );
   }
 
   getById(id: number): Observable<ExerciseEntity> {
@@ -39,5 +36,19 @@ export class ExerciseService {
           throw new InternalServerErrorException(err);
         }),
       );
+  }
+
+  getMany(dto: GetManyExercisesDto): Observable<SimpleExercise> {
+    const entityName = 'exercise';
+    let qb = this.exerciseRepo.createQueryBuilder(entityName)
+      .limit(dto?.perPage || DEFAULT_PER_PAGE)
+      .offset(calculateQueryOffset(dto?.perPage, dto?.page));
+    // todo add and count relations
+
+    if (dto.sort) {}
+
+    if (dto.filter) {}
+
+    throw new NotImplementedException();
   }
 }

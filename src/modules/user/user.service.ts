@@ -29,6 +29,7 @@ import { SimpleUser } from './models/simple-user.model';
 import { convertUserEntityToSimpleUser } from './utils/convert-user-entity-to-simple-user';
 import { MailerService } from '@nestjs-modules/mailer';
 import { getPlainWelcomeText, getWelcomeText } from '../../templates/welcome';
+import { calculateQueryOffset } from '../../common/utils';
 
 @Injectable()
 export class UserService {
@@ -107,7 +108,7 @@ export class UserService {
     const entityName = 'user';
     let qb = this.userRepo.createQueryBuilder(entityName)
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
-      .offset(dto?.perPage * (dto?.page - 1) || DEFAULT_PAGE - 1);
+      .offset(calculateQueryOffset(dto?.perPage, dto?.page));
 
     if (dto.sort) {
       qb = addUserSort(qb, dto.sort, entityName);

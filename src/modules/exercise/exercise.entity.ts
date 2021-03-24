@@ -26,11 +26,11 @@ export class ExerciseEntity {
 
   @ApiModelProperty()
   @CreateDateColumn()
-  createdAt: number;
+  createdAt: Date;
 
   @ApiModelProperty()
   @UpdateDateColumn()
-  updatedAt: number;
+  updatedAt: Date;
 
   @ApiModelProperty()
   @Column({ type: 'boolean', default: true })

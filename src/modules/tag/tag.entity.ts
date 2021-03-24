@@ -4,11 +4,11 @@ import { ExerciseEntity } from '../exercise/exercise.entity';
 
 @Entity('tag')
 export class Tag {
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 1 })
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 'Clubman' })
   @Column({ nullable: false, type: 'varchar', length: 50 })
   text: string;
 
