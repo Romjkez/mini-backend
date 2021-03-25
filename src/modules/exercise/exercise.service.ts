@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger, NotImplementedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ExerciseEntity } from './exercise.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +10,8 @@ import { convertCreateExerciseDtoToInternal } from './utlis/convert-create-exerc
 import { GetManyExercisesDto } from './dto/get-many-exercises.dto';
 import { DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
 import { calculateQueryOffset } from '../../common/utils';
+import { addExerciseSort } from './utlis/add-exercise-sort';
+import { addExerciseFilter } from './utlis/add-exercise-filter';
 
 export const EXERCISE_RELATIONS = ['tests', 'articles', 'tags'];
 
@@ -38,17 +40,23 @@ export class ExerciseService {
       );
   }
 
-  getMany(dto: GetManyExercisesDto): Observable<SimpleExercise> {
+  getMany(dto: GetManyExercisesDto): Observable<Array<SimpleExercise>> {
     const entityName = 'exercise';
-    let qb = this.exerciseRepo.createQueryBuilder(entityName)
+    let qb = (this.exerciseRepo as unknown as Repository<SimpleExercise>).createQueryBuilder(entityName)
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
-      .offset(calculateQueryOffset(dto?.perPage, dto?.page));
-    // todo add and count relations
+      .offset(calculateQueryOffset(dto?.perPage, dto?.page))
+      .loadRelationCountAndMap('exercise.articles', 'exercise.articles')
+      .loadRelationCountAndMap('exercise.tests', 'exercise.tests')
+      .leftJoinAndSelect('exercise.tags', 'tags');
 
-    if (dto.sort) {}
+    if (dto.sort) {
+      qb = addExerciseSort(qb, dto.sort, entityName);
+    }
 
-    if (dto.filter) {}
+    if (dto.filter) {
+      qb = addExerciseFilter(qb, dto.filter, entityName);
+    }
 
-    throw new NotImplementedException();
+    return from(qb.getMany());
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, NotImplementedException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ExerciseService } from './exercise.service';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
@@ -27,7 +27,7 @@ export class ExerciseController {
   @ApiOkResponse({ type: SimpleExercise, isArray: true })
   @Post('getMany')
   @HttpCode(200)
-  getMany(@Body() dto: GetManyExercisesDto): Observable<SimpleExercise> {
-    throw new NotImplementedException();
+  getMany(@Body() dto: GetManyExercisesDto): Observable<Array<SimpleExercise>> {
+    return this.exerciseService.getMany(dto);
   }
 }
