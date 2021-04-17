@@ -17,6 +17,7 @@ import { ManyOfQuestionEntity } from '../question/entities/many-of-question.enti
 import { ExactAnswerQuestion } from '../question/entities/exact-answer-question.entity';
 import { OrderQuestionEntity } from '../question/entities/order-question.entity';
 import { ExerciseEntity } from '../exercise/exercise.entity';
+import { Tag } from '../tag/tag.entity';
 
 @Entity({ name: 'test' })
 export class Test {
@@ -58,4 +59,9 @@ export class Test {
 
   @ManyToOne(() => ExerciseEntity, e => e.tests)
   exercise: ExerciseEntity;
+
+  @ApiModelProperty()
+  @ManyToMany(() => Tag, t => t.tests)
+  @JoinTable()
+  tags: Array<Tag>;
 }

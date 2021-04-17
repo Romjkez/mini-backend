@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ExerciseEntity } from '../exercise/exercise.entity';
+import { Tag } from '../tag/tag.entity';
 
 @Entity({ name: 'article' })
 export class ArticleEntity {
@@ -47,4 +48,8 @@ export class ArticleEntity {
 
   @ManyToOne(() => ExerciseEntity, e => e.articles)
   exercise: ExerciseEntity;
+
+  @JoinTable()
+  @ManyToMany(() => Tag, t => t.articles)
+  tags: Array<Tag>;
 }

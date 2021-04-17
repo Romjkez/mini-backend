@@ -5,7 +5,7 @@ import {
 import { Tag } from '../../tag/tag.entity';
 import { ArticleEntity } from '../../article/article.entity';
 import { Test } from '../../test/test.entity';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateExerciseDto {
@@ -23,12 +23,15 @@ export class CreateExerciseDto {
   isVisible?: boolean;
 
   @ApiModelProperty({ type: 'integer', isArray: true })
+  @IsArray()
   tests: Array<number>;
 
   @ApiModelProperty({ type: 'integer', isArray: true })
+  @IsArray()
   articles: Array<number>;
 
   @ApiModelProperty({ type: 'integer', isArray: true })
+  @IsArray()
   tags: Array<number>;
 }
 

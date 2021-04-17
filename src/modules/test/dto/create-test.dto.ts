@@ -1,5 +1,8 @@
 import { Type } from 'class-transformer';
-import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import {
+  ApiModelProperty,
+  ApiModelPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { IsArray, IsInt, IsNotEmpty, IsOptional, IsPositive, ValidateNested } from 'class-validator';
 import { CreateQuestionBulkDto } from '../../question/dto/create-question-bulk.dto';
 import { CreateOneOfQuestionDto } from '../../question/dto/create-one-of-question.dto';
@@ -39,10 +42,7 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @IsNotEmpty()
   order?: number;
 
-  /*@ApiModelPropertyOptional({ nullable: true, example: 1 })
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  @IsNotEmpty()
-  exercise?: number;*/
+  @ApiModelProperty({ type: 'integer', isArray: true })
+  @IsArray()
+  tags: Array<number>;
 }

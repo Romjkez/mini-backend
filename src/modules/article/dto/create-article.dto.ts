@@ -2,7 +2,7 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateArticleDto {
   @ApiModelProperty({ example: 'История основателей MINI' })
@@ -34,4 +34,8 @@ export class CreateArticleDto {
   @IsNotEmpty()
   @MinLength(3)
   previewUrl?: string;
+
+  @ApiModelProperty({ type: 'integer', isArray: true })
+  @IsArray()
+  tags: Array<number>;
 }

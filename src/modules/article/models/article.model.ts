@@ -2,7 +2,7 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Tag } from '../../tag/tag.entity';
 
 export class Article {
   @ApiModelProperty({ example: 1 })
@@ -30,10 +30,11 @@ export class Article {
   previewUrl?: string;
 
   @ApiModelProperty({ readOnly: true })
-  @CreateDateColumn({ type: Date })
   createdAt: Date;
 
   @ApiModelProperty()
-  @UpdateDateColumn({ type: Date, nullable: true })
   updatedAt?: Date;
+
+  @ApiModelProperty({ isArray: true, type: Tag })
+  tags: Array<Tag>;
 }
