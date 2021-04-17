@@ -1,14 +1,13 @@
 import { UserEntity } from '../user.entity';
-import { ArticleEntity } from '../../article/article.entity';
 import { User } from '../models/user.model';
-import { FinishedTest } from '../../finished-test/finished-test.entity';
 
 /**
  * Renamed by TypeORM fields
  */
 export interface UserEntityRelations {
-  __finishedTests__: Array<FinishedTest>;
-  __finishedArticles__: Array<ArticleEntity>
+  __finishedTests__: number;
+  __finishedArticles__: number;
+  __favoriteArticles__: number;
 }
 
 export function convertUserEntityToUser(user: UserEntity & UserEntityRelations): User {
@@ -25,6 +24,7 @@ export function convertUserEntityToUser(user: UserEntity & UserEntityRelations):
     rating: user.rating,
     finishedArticles: user.__finishedArticles__,
     finishedTests: user.__finishedTests__,
+    favoriteArticles: user.__favoriteArticles__,
     role: user.role,
   };
 }

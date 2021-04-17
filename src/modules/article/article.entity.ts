@@ -38,11 +38,9 @@ export class ArticleEntity {
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt?: number;
 
-  @JoinTable()
   @ManyToMany(() => UserEntity, async user => user.finishedArticles, { lazy: true })
   finishedBy: Promise<Array<UserEntity>>;
 
-  @JoinTable()
   @ManyToMany(() => UserEntity, async user => user.favoriteArticles, { lazy: true })
   favoriteFor: Promise<Array<UserEntity>>;
 

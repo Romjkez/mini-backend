@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
@@ -11,6 +11,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { GetManyUsersDto } from './dto/get-many-users.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { SimpleUser } from './models/simple-user.model';
+import { AddFinishedByDto } from '../article/dto/add-finished-by.dto';
+import { ArticleEntity } from '../article/article.entity';
+import { GetManyQueryDto } from '../../common/dto/get-many.dto';
+import { Test } from '../test/test.entity';
 
 // @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('bearer')
@@ -38,6 +42,7 @@ export class UserController {
     return this.userService.getById(params.id);
   }
 
+  // Made POST method for swagger ui (no need to describe each query param in decorator)
   @ApiOkResponse({ type: GetManyResponseDto })
   @Post('getMany')
   @HttpCode(200)
@@ -76,4 +81,27 @@ export class UserController {
   delete(@Param() params: IdDto): Observable<void> {
     return this.userService.delete(params.id);
   }
+
+  @ApiOkResponse({ type: null, description: 'No response body expected' })
+  @Post(':userId/articles/:articleId')
+  @HttpCode(200)
+  addFinishedBy(@Param() dto: AddFinishedByDto) {
+    return this.userService.addFinishedBy(dto);
+  }
+
+  @Get(':id/articles/finished')
+  getFinishedArticles(@Param() params: IdDto, @Query() dto: GetManyQueryDto): Observable<Array<ArticleEntity>> {
+    return this.userService.getFinishedArticles(params.id, dto);
+  }
+
+  @Get(':id/tests/finished')
+  getFinishedTests(@Param() params: IdDto, @Query() dto: GetManyQueryDto): Observable<Array<Test>> {
+    return this.userService.getFinishedTests(params.id, dto);
+  }
+
+  @Get(':id/articles/favorite')
+  getFavoriteArticles(@Param() params: IdDto, @Query() dto: GetManyQueryDto): Observable<Array<ArticleEntity>> {
+    return this.userService.getFavoriteArticles(params.id, dto);
+  }
+
 }

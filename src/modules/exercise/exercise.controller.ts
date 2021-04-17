@@ -24,6 +24,7 @@ export class ExerciseController {
     return this.exerciseService.getById(dto.id);
   }
 
+  // Made POST method for swagger ui (no need to describe each query param in decorator)
   @ApiOkResponse({ type: SimpleExercise, isArray: true })
   @Post('getMany')
   @HttpCode(200)

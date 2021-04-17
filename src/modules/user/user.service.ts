@@ -10,7 +10,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from './user.entity';
@@ -24,12 +24,17 @@ import { SortType } from '../../common/models/sort-type.enum';
 import { addUserFilter } from './utils/add-user-filter';
 import { addUserSort } from './utils/add-user-sort';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
-import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE, GetManyDto } from '../../common/dto/get-many.dto';
 import { SimpleUser } from './models/simple-user.model';
 import { convertUserEntityToSimpleUser } from './utils/convert-user-entity-to-simple-user';
 import { MailerService } from '@nestjs-modules/mailer';
 import { getPlainWelcomeText, getWelcomeText } from '../../templates/welcome';
 import { calculateQueryOffset } from '../../common/utils';
+import { AddFinishedByDto } from '../article/dto/add-finished-by.dto';
+import { ArticleEntity } from '../article/article.entity';
+import { Test } from '../test/test.entity';
+
+export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
 @Injectable()
 export class UserService {
@@ -91,14 +96,33 @@ export class UserService {
   }
 
   getById(id: number): Observable<User> {
-    return from(this.userRepo.findOneOrFail(id, { relations: ['finishedTests', 'finishedArticles'] }))
+    const qb = this.userRepo.createQueryBuilder('user')
+      .select()
+      .where('user.id = :id', { id })
+      .loadRelationCountAndMap('user.finishedTests', 'user.finishedTests')
+      .loadRelationCountAndMap('user.finishedArticles', 'user.finishedArticles')
+      .loadRelationCountAndMap('user.favoriteArticles', 'user.favoriteArticles');
+
+    return from(qb.getOne())
       .pipe(
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
       );
   }
 
+  getFinishedArticles(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
+    throw new NotImplementedException();
+  }
+
+  getFinishedTests(id: number, dto: GetManyDto): Observable<Array<Test>> {
+    throw new NotImplementedException();
+  }
+
+  getFavoriteArticles(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
+    throw new NotImplementedException();
+  }
+
   getByEmail(email: string): Observable<User> {
-    return from(this.userRepo.findOneOrFail({ email }, { relations: ['finishedTests', 'finishedArticles'] }))
+    return from(this.userRepo.findOneOrFail({ email }, { relations: USER_RELATIONS }))
       .pipe(
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
       );
@@ -139,7 +163,7 @@ export class UserService {
   update(id: number, dto: UpdateUserDto): Observable<User> {
     return from(this.userRepo.update(id, dto))
       .pipe(
-        switchMap(() => from(this.userRepo.findOne(id, { relations: ['finishedArticles', 'finishedTests'] }))),
+        switchMap(() => from(this.userRepo.findOne(id, { relations: USER_RELATIONS }))),
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
@@ -201,6 +225,28 @@ export class UserService {
 
   delete(id: number): Observable<void> {
     throw new NotImplementedException();
+  }
+
+  addFinishedBy(dto: AddFinishedByDto): Observable<void> {
+    const qb = this.userRepo.createQueryBuilder()
+      .relation('finishedArticles')
+      .of(dto.userId);
+
+    return from(qb.add(dto.articleId))
+      .pipe(
+        catchError(err => {
+          if (err?.code === '23505') {
+            return of();
+          }
+          console.log(err);
+          this.logger.error(err);
+          if (err?.code == '23503') {
+            throw new BadRequestException('One of or both IDs represent not existing entities');
+          }
+          throw new InternalServerErrorException(err);
+        }),
+        mapTo(null),
+      );
   }
 
   private generatePassword(): string {

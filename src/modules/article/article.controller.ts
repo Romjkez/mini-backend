@@ -8,7 +8,6 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { Article } from './models/article.model';
 import { GetManyArticlesDto } from './dto/get-many-articles.dto';
-import { AddFinishedByDto } from './dto/add-finished-by.dto';
 
 @ApiTags('article')
 @Controller('article')
@@ -28,13 +27,6 @@ export class ArticleController {
     return this.articleService.getById(params.id);
   }
 
-  @ApiOkResponse({ type: null, description: 'No response body expected' })
-  @Post(':articleId/finishedBy/:userId')
-  @HttpCode(200)
-  addFinishedBy(@Param() dto: AddFinishedByDto) {
-    return this.articleService.addFinishedBy(dto);
-  }
-
   @Post(':id/hide')
   @HttpCode(200)
   hide(@Param() params: IdDto): Observable<void> {
@@ -47,6 +39,7 @@ export class ArticleController {
     return this.articleService.show(params.id);
   }
 
+  // Made POST method for swagger ui (no need to describe each query param in decorator)
   @Post('getMany')
   @HttpCode(200)
   getMany(@Body() dto: GetManyArticlesDto): Observable<GetManyResponseDto<Article>> {

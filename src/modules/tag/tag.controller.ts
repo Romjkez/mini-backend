@@ -24,6 +24,7 @@ export class TagController {
     return this.tagService.createBulk(dto.data);
   }
 
+  // Made POST method for swagger ui (no need to describe each query param in decorator)
   @Post('getMany')
   @HttpCode(200)
   getMany(@Body() dto: GetManyTagsDto): Observable<GetManyResponseDto<Tag>> {
