@@ -9,6 +9,7 @@ import { CreateOneOfQuestionDto } from '../../question/dto/create-one-of-questio
 import { CreateManyOfQuestionDto } from '../../question/dto/create-many-of-question.dto';
 import { CreateExactAnswerQuestionDto } from '../../question/dto/create-exact-answer-question.dto';
 import { CreateOrderQuestionDto } from '../../question/dto/create-order-question.dto';
+import { Tag } from '../../tag/tag.entity';
 
 export class CreateTestDto extends CreateQuestionBulkDto {
   @IsArray()
@@ -45,4 +46,13 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @ApiModelProperty({ type: 'integer', isArray: true })
   @IsArray()
   tags: Array<number>;
+}
+
+export class CreateTestInternalDto {
+  oneOfQuestions?: Array<CreateOneOfQuestionDto>;
+  manyOfQuestions?: Array<CreateManyOfQuestionDto>;
+  exactAnswerQuestions?: Array<CreateExactAnswerQuestionDto>;
+  orderQuestions?: Array<CreateOrderQuestionDto>;
+  order?: number;
+  tags: Array<Partial<Tag>>;
 }

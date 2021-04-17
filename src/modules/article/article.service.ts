@@ -9,7 +9,7 @@ import { Article } from './models/article.model';
 import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 import { ArticleRepository } from './article.repository';
 
-export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy'];
+export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy', 'tags'];
 
 @Injectable()
 export class ArticleService {

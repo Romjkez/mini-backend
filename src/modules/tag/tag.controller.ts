@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { Tag } from './tag.entity';
 import { CreateTagBulkDto } from './dto/create-tag-bulk.dto';
 import { GetManyTagsDto } from './dto/get-many-tags.dto';
+import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 
 @ApiTags('tag')
 @Controller('tag')
@@ -25,7 +26,7 @@ export class TagController {
 
   @Post('getMany')
   @HttpCode(200)
-  getMany(@Body() dto: GetManyTagsDto): Observable<Array<Tag>> {
+  getMany(@Body() dto: GetManyTagsDto): Observable<GetManyResponseDto<Tag>> {
     return this.tagService.getMany(dto);
   }
 }

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateTestDto } from './dto/create-test.dto';
 import { from, Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { convertCreateTestDtoToInternal } from './utils/convert-create-test-dto-to-internal';
 
 @Injectable()
 export class TestService {
@@ -14,7 +15,7 @@ export class TestService {
   }
 
   createOne(dto: CreateTestDto): Observable<Test> {
-    return from(this.testRepo.save(dto))
+    return from(this.testRepo.save(convertCreateTestDtoToInternal(dto)))
       .pipe(
         switchMap(async test => this.testRepo.findOne(test.id, {
           relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions'],

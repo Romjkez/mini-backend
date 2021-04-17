@@ -17,5 +17,6 @@ export function convertRawArticleToArticle(rawArticle: Article & ArticleRelation
     updatedAt: rawArticle.updatedAt,
     finishedBy: rawArticle.__finishedBy__,
     favoriteFor: rawArticle.__favoriteFor__,
+    tags: rawArticle.__tags__,
   };
 }

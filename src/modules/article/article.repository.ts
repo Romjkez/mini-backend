@@ -6,6 +6,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { Article } from './models/article.model';
 import { ArticleRelationsInfo } from './models/article-relations-info';
 import { convertRawArticleToArticle } from './utils';
+import { convertCreateArticleDtoToInternal } from './utils/convert-create-article-dto-to-internal';
 
 @EntityRepository(ArticleEntity)
 export class ArticleRepository extends Repository<ArticleEntity> {
@@ -14,12 +15,13 @@ export class ArticleRepository extends Repository<ArticleEntity> {
    * @param dto
    */
   insertOne(dto: CreateArticleDto): Observable<Article> {
-    return from(super.save(dto))
+    return from(super.save(convertCreateArticleDtoToInternal(dto)))
       .pipe(
         switchMap(async article => this.createQueryBuilder('article')
           .leftJoinAndSelect('article.favoriteFor', 'favoriteFor')
           .loadRelationCountAndMap('article.favoriteFor', 'article.favoriteFor')
           .loadRelationCountAndMap('article.finishedBy', 'article.finishedBy')
+          .loadRelationIdAndMap('article.tags', 'article.tags')
           .where('article.id = :id', { id: article.id })
           .getOne(),
         ),
@@ -39,6 +41,7 @@ export class ArticleRepository extends Repository<ArticleEntity> {
         .leftJoinAndSelect('article.favoriteFor', 'favoriteFor')
         .loadRelationCountAndMap('article.favoriteFor', 'article.favoriteFor')
         .loadRelationCountAndMap('article.finishedBy', 'article.finishedBy')
+        .loadRelationIdAndMap('article.tags', 'article.tags')
         .where('article.id = :id', { id })
         .getOne())
       .pipe(

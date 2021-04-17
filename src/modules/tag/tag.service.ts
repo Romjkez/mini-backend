@@ -5,9 +5,10 @@ import { Repository } from 'typeorm';
 import { from, Observable } from 'rxjs';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { GetManyTagsDto } from './dto/get-many-tags.dto';
-import { DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
 import { calculateQueryOffset } from '../../common/utils';
 import { catchError, map } from 'rxjs/operators';
+import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 
 @Injectable()
 export class TagService {
@@ -24,15 +25,17 @@ export class TagService {
     return from(this.tagRepo.save(dto));
   }
 
-  getMany(dto: GetManyTagsDto): Observable<Array<Tag>> {
-    const entityName='tag'
-    let qb = this.tagRepo.createQueryBuilder(entityName)
+  getMany(dto: GetManyTagsDto): Observable<GetManyResponseDto<Tag>> {
+    const entityName = 'tag';
+    const qb = this.tagRepo.createQueryBuilder(entityName)
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
       .offset(calculateQueryOffset(dto?.perPage, dto?.page));
 
-    if(dto.sort) {
+    // TODO: apply sort
+    if (dto.sort) {
     }
 
+    // TODO: apply filtering
     if(dto.filter) {}
 
     return from(qb.getManyAndCount())
@@ -43,7 +46,10 @@ export class TagService {
         }),
         map(res=>{
           return {
-
+            data: res[0],
+            perPage: dto?.perPage || DEFAULT_PER_PAGE,
+            page: dto?.page || DEFAULT_PAGE,
+            totalItems: res[1],
           }
         }),
       )
