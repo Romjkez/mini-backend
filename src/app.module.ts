@@ -13,6 +13,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ExerciseModule } from './modules/exercise/exercise.module';
 import { TagModule } from './modules/tag/tag.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     MailerModule.forRoot({
       transport: `smtp://${process.env.MAIL_USER}:${process.env.MAIL_PASSWORD}@${process.env.MAIL_HOST}`,
     }),
+    ConfigModule,
   ],
   controllers: [AppController],
   providers: [],
