@@ -1,6 +1,12 @@
-import { Injectable, InternalServerErrorException, Logger, NotImplementedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotImplementedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -8,13 +14,14 @@ import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { Article } from './models/article.model';
 import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 import { ArticleRepository } from './article.repository';
+import { AddFinishedByDto } from './dto/add-finished-by.dto';
 
 export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy', 'tags'];
 
 @Injectable()
 export class ArticleService {
   constructor(@InjectRepository(ArticleRepository) private readonly articleRepo: ArticleRepository,
-    private readonly logger: Logger,
+              private readonly logger: Logger,
   ) {
     logger.setContext('ArticleService');
   }
@@ -45,8 +52,26 @@ export class ArticleService {
     throw new NotImplementedException();
   }
 
-  addFinishedBy(): Observable<void> {
-    throw new NotImplementedException();
+  addFinishedBy(dto: AddFinishedByDto): Observable<void> {
+    const qb = this.articleRepo.createQueryBuilder()
+      .relation('finishedBy')
+      .of(dto.articleId);
+
+    return from(qb.add(dto.userId))
+      .pipe(
+        catchError(err => {
+          if (err?.code === '23505') {
+            return of();
+          }
+          console.log(err);
+          this.logger.error(err);
+          if (err?.code == '23503') {
+            throw new BadRequestException('One of or both IDs represent not existing entities');
+          }
+          throw new InternalServerErrorException(err);
+        }),
+        mapTo(null),
+      );
   }
 
   addFavoriteFor(): Observable<void> {

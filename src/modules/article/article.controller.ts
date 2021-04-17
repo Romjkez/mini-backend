@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, NotImplementedException, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { IdDto } from '../../common/dto/id.dto';
@@ -28,9 +28,11 @@ export class ArticleController {
     return this.articleService.getById(params.id);
   }
 
+  @ApiOkResponse({ type: null, description: 'No response body expected' })
   @Post(':articleId/finishedBy/:userId')
+  @HttpCode(200)
   addFinishedBy(@Param() dto: AddFinishedByDto) {
-    throw new NotImplementedException();
+    return this.articleService.addFinishedBy(dto);
   }
 
   @Post(':id/hide')

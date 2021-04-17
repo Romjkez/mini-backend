@@ -1,19 +1,14 @@
-import { Transform } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsNumberString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 export class AddFinishedByDto {
   @ApiModelProperty()
-  @Transform(Number)
-  @IsInt()
-  @IsPositive()
+  @IsNumberString()
   @IsNotEmpty()
   articleId: number;
 
   @ApiModelProperty()
-  @Transform(Number)
-  @IsInt()
-  @IsPositive()
+  @IsNumberString()
   @IsNotEmpty()
   userId: number;
 }
