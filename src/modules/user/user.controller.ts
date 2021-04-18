@@ -11,10 +11,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { GetManyUsersDto } from './dto/get-many-users.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { SimpleUser } from './models/simple-user.model';
-import { AddFinishedByDto } from '../article/dto/add-finished-by.dto';
 import { ArticleEntity } from '../article/article.entity';
 import { GetManyQueryDto } from '../../common/dto/get-many.dto';
 import { Test } from '../test/test.entity';
+import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
+import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 
 // @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('bearer')
@@ -83,10 +84,17 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: null, description: 'No response body expected' })
-  @Post(':userId/articles/:articleId')
+  @Post(':userId/articles/finished/:articleId')
   @HttpCode(200)
-  addFinishedBy(@Param() dto: AddFinishedByDto) {
-    return this.userService.addFinishedBy(dto);
+  addFinishedArticle(@Param() dto: AddFinishedArticleDto) {
+    return this.userService.addFinishedArticle(dto);
+  }
+
+  @ApiOkResponse({ type: null, description: 'No response body expected' })
+  @Post(':userId/articles/favorite/:articleId')
+  @HttpCode(200)
+  addFavoriteArticle(@Param() dto: AddFavoriteArticleDto): Observable<void> {
+    return this.userService.addFavoriteArticle(dto);
   }
 
   @Get(':id/articles/finished')

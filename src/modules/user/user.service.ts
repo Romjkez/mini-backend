@@ -30,9 +30,11 @@ import { convertUserEntityToSimpleUser } from './utils/convert-user-entity-to-si
 import { MailerService } from '@nestjs-modules/mailer';
 import { getPlainWelcomeText, getWelcomeText } from '../../templates/welcome';
 import { calculateQueryOffset } from '../../common/utils';
-import { AddFinishedByDto } from '../article/dto/add-finished-by.dto';
+
 import { ArticleEntity } from '../article/article.entity';
 import { Test } from '../test/test.entity';
+import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
+import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -227,9 +229,31 @@ export class UserService {
     throw new NotImplementedException();
   }
 
-  addFinishedBy(dto: AddFinishedByDto): Observable<void> {
+  addFinishedArticle(dto: AddFinishedArticleDto): Observable<void> {
     const qb = this.userRepo.createQueryBuilder()
       .relation('finishedArticles')
+      .of(dto.userId);
+
+    return from(qb.add(dto.articleId))
+      .pipe(
+        catchError(err => {
+          if (err?.code === '23505') {
+            return of();
+          }
+          console.log(err);
+          this.logger.error(err);
+          if (err?.code == '23503') {
+            throw new BadRequestException('One of or both IDs represent not existing entities');
+          }
+          throw new InternalServerErrorException(err);
+        }),
+        mapTo(null),
+      );
+  }
+
+  addFavoriteArticle(dto: AddFavoriteArticleDto): Observable<void> {
+    const qb = this.userRepo.createQueryBuilder()
+      .relation('favoriteArticles')
       .of(dto.userId);
 
     return from(qb.add(dto.articleId))
