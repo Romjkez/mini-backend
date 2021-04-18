@@ -16,6 +16,7 @@ import { GetManyQueryDto } from '../../common/dto/get-many.dto';
 import { Test } from '../test/test.entity';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
+import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
 
 // @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('bearer')
@@ -95,6 +96,13 @@ export class UserController {
   @HttpCode(200)
   addFavoriteArticle(@Param() dto: AddFavoriteArticleDto): Observable<void> {
     return this.userService.addFavoriteArticle(dto);
+  }
+
+  @ApiOkResponse({ type: null, description: 'No response body expected' })
+  @HttpCode(200)
+  @Delete(':userId/articles/favorite/:articleId')
+  removeFavoriteArticle(@Param() dto: RemoveFavoriteArticleDto): Observable<void> {
+    return this.userService.removeFavoriteArticle(dto);
   }
 
   @Get(':id/articles/finished')

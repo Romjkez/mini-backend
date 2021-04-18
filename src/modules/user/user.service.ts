@@ -35,6 +35,7 @@ import { ArticleEntity } from '../article/article.entity';
 import { Test } from '../test/test.entity';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
+import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -262,6 +263,26 @@ export class UserService {
           if (err?.code === '23505') {
             return of();
           }
+          console.log(err);
+          this.logger.error(err);
+          if (err?.code == '23503') {
+            throw new BadRequestException('One of or both IDs represent not existing entities');
+          }
+          throw new InternalServerErrorException(err);
+        }),
+        mapTo(null),
+      );
+  }
+
+  removeFavoriteArticle(dto: RemoveFavoriteArticleDto): Observable<void> {
+    const qb = this.userRepo.createQueryBuilder()
+      .relation('favoriteArticles')
+      .of(dto.userId);
+
+    // TODO: check of relation exists before deletion (now no errors)
+    return from(qb.remove(dto.articleId))
+      .pipe(
+        catchError(err => {
           console.log(err);
           this.logger.error(err);
           if (err?.code == '23503') {
