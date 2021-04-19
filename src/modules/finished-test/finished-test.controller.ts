@@ -1,6 +1,7 @@
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { FinishedTestService } from './finished-test.service';
+import { CreateFinishedTestDto } from './dto/create-finished-test.dto';
 
 @ApiTags('finished test')
 @Controller('finished-test')
@@ -9,6 +10,7 @@ export class FinishedTestController {
   }
 
   @Post()
-  createOne() {
+  createOne(@Body() dto: CreateFinishedTestDto): any {
+    return this.finishedTestService.createOne(dto);
   }
 }
