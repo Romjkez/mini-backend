@@ -2,7 +2,11 @@ import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-prop
 import { IsArray, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateUserAnswerDto {
-  @ApiModelProperty({ type: 'integer', description: 'ID of answered question' })
+  @ApiModelProperty({
+    type: 'string',
+    description: 'ID of answered question',
+    example: 'da7e2127-24f6-4eaa-ac1b-8528a9be543f',
+  })
   @IsUUID('all')
   question: string;
 
@@ -10,6 +14,7 @@ export class CreateUserAnswerDto {
     type: 'integer',
     isArray: true,
     description: 'IDs of selected options. For order questions order matters',
+    example: [1],
   })
   @IsArray()
   @IsNotEmpty()

@@ -5,7 +5,6 @@ import { ArticleModule } from './modules/article/article.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuestionModule } from './modules/question/question.module';
 import { TestModule } from './modules/test/test.module';
-import { FinishedTest } from './modules/finished-test/finished-test.entity';
 import { OptionModule } from './modules/option/option.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserAnswerModule } from './modules/user-answer/user-answer.module';
@@ -14,6 +13,7 @@ import { ExerciseModule } from './modules/exercise/exercise.module';
 import { TagModule } from './modules/tag/tag.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
+import { FinishedTestModule } from './modules/finished-test/finished-test.module';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { ConfigModule } from '@nestjs/config';
     ArticleModule,
     QuestionModule,
     TestModule,
-    FinishedTest,
+    FinishedTestModule,
     OptionModule,
     AuthModule,
     UserAnswerModule,

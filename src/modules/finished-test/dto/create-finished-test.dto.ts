@@ -15,6 +15,7 @@ export class CreateFinishedTestDto {
   @IsPositive()
   test: number;
 
+  @ApiModelProperty({ type: CreateUserAnswerDto, isArray: true })
   @Type(() => UserAnswer)
   @ValidateNested()
   @IsArray()

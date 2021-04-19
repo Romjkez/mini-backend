@@ -43,7 +43,7 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @IsNotEmpty()
   order?: number;
 
-  @ApiModelProperty({ type: 'integer', isArray: true })
+  @ApiModelProperty({ type: 'integer', isArray: true, example: [1] })
   @IsArray()
   tags: Array<number>;
 }
