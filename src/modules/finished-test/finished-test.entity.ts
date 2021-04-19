@@ -15,7 +15,7 @@ export class FinishedTest {
   finishedBy: Promise<Array<UserEntity>>;
 
   @ApiModelProperty({ type: UserAnswer, isArray: true })
-  @OneToMany(() => UserAnswer, answer => answer.finishedTest)
+  @OneToMany(() => UserAnswer, answer => answer.finishedTest, { cascade: true })
   answers: Array<UserAnswer>;
 
   @ApiModelProperty({ type: Test })
@@ -24,7 +24,7 @@ export class FinishedTest {
 
   @ApiModelProperty({ readOnly: true })
   @CreateDateColumn({ type: 'timestamp' })
-  finishedAt: number;
+  finishedAt: Date;
 
   @ApiModelProperty({ readOnly: true })
   @Column({ type: 'real' })

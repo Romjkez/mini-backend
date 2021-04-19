@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FinishedTest } from './finished-test.entity';
-import { Repository } from 'typeorm';
+import { FinishedTestRepository } from './finished-test.repository';
 
 @Injectable()
 export class FinishedTestService {
-  constructor(@InjectRepository(FinishedTest) private readonly finishedTestRepo: Repository<FinishedTest>) {
+  constructor(private readonly finishedTestRepo: FinishedTestRepository) {
+  }
+
+  createOne() {
   }
 }

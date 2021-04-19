@@ -17,7 +17,9 @@ export class UserAnswer {
 
   @ApiModelProperty({ type: OneOfQuestionEntity, isArray: true })
   @OneToMany(() => OneOfQuestionEntity, q => q.id)
-  question: Array<OneOfQuestionEntity>;
+  @OneToMany(() => ManyOfQuestionEntity, q => q.id)
+  @OneToMany(() => OrderQuestionEntity, q => q.id)
+  question: Array<OneOfQuestionEntity | ManyOfQuestionEntity | OrderQuestionEntity>;
 
   @ApiModelProperty({ type: Option, isArray: true })
   @OneToMany(() => Option, option => option.id)
