@@ -23,6 +23,6 @@ export class ManyOfQuestionAnswerEntity {
   isCorrect: boolean;
 
   @ApiModelProperty({ type: FinishedTest })
-  @ManyToMany(() => FinishedTest, test => test.answers)
+  @ManyToMany(() => FinishedTest, test => test.manyOfQuestionAnswers)
   finishedTest: FinishedTest;
 }

@@ -22,6 +22,6 @@ export class ExactAnswerQuestionAnswerEntity {
   isCorrect: boolean;
 
   @ApiModelProperty({ type: FinishedTest })
-  @ManyToMany(() => FinishedTest, test => test.answers)
+  @ManyToMany(() => FinishedTest, test => test.exactAnswerQuestionAnswer)
   finishedTest: FinishedTest;
 }

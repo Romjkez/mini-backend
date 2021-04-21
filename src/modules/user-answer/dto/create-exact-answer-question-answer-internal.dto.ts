@@ -1,7 +1,7 @@
-import { ExactAnswerQuestionAnswerEntity } from '../entities/exact-answer-question-answer.entity';
+import { ExactAnswerQuestion } from '../../question/entities/exact-answer-question.entity';
 
 export class CreateExactAnswerQuestionAnswerInternalDto {
-  question: Partial<ExactAnswerQuestionAnswerEntity>;
+  question: Partial<ExactAnswerQuestion>;
   answer: string;
   isCorrect: boolean;
 }

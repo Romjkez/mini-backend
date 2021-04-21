@@ -24,6 +24,6 @@ export class OrderQuestionAnswerEntity {
   isCorrect: boolean;
 
   @ApiModelProperty({ type: FinishedTest })
-  @ManyToMany(() => FinishedTest, test => test.answers)
+  @ManyToMany(() => FinishedTest, test => test.orderQuestionAnswers)
   finishedTest: FinishedTest;
 }
