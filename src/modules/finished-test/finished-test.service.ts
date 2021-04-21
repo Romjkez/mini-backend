@@ -5,7 +5,7 @@ import { TestService } from '../test/test.service';
 import { filter, tap } from 'rxjs/operators';
 import { Injectable } from '@nestjs/common';
 import { Test } from '../test/test.entity';
-import { CreateUserAnswerDto } from '../user-answer/dto/create-user-answer.dto';
+import { CreateOneOfQuestionAnswerDto } from '../user-answer/dto/create-one-of-question-answer.dto';
 
 @Injectable()
 export class FinishedTestService {
@@ -30,7 +30,7 @@ export class FinishedTestService {
  * @param test
  * @param answers
  */
-function testIsCompleted(test: Test, answers: Array<CreateUserAnswerDto>): boolean {
+function testIsCompleted(test: Test, answers: Array<CreateOneOfQuestionAnswerDto>): boolean {
   return [...test.manyOfQuestions, ...test.oneOfQuestions, ...test.exactAnswerQuestions, ...test.orderQuestions]
     .every(question => answers.some(answer => answer.question === question.id));
 }
