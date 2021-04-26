@@ -7,7 +7,8 @@ export function buildOrderQuestionTestResult(answer: CreateOrderQuestionAnswerDt
   return {
     question: { id: question.id },
     answer: answer.answer.map(answerId => ({ id: answerId })),
-    isCorrect: answer.answer.every((answerId, i) =>
-      question.options.findIndex(option => option.id === answerId && option.order === i)),
+    // check if every option is at the right position (as in question right answer)
+    isCorrect: answer.answer.length === question.options.length && answer.answer.every((answerId, i) =>
+      question.options.findIndex(option => option.id === answerId && option.order === i + 1) !== -1),
   };
 }

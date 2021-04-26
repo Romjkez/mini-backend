@@ -10,7 +10,7 @@ export class FinishedTestService {
   }
 
   createOne(dto: CreateFinishedTestInternalDto) {
-    console.log(1);
+    console.log(dto);
   }
 }
 

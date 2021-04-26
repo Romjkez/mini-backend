@@ -14,7 +14,7 @@ import { calculateTestResult } from './calculate-test-result';
  */
 export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestDto)
   : CreateFinishedTestInternalDto | null {
-  let completed: boolean = true;
+  let testCompleted: boolean = true;
   const createFinishedTestInternalDto: CreateFinishedTestInternalDto = {
     user: { id: dto.user },
     result: 0,
@@ -30,7 +30,7 @@ export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestD
     const answerIndex = dto.oneOfQuestionAnswers.findIndex(answer => answer.question === test.oneOfQuestions[i].id);
 
     if (answerIndex === -1) {
-      completed = false;
+      testCompleted = false;
       break;
     } else { // Build test result by checking if answer is correct
       createFinishedTestInternalDto.oneOfQuestionAnswers.push(
@@ -39,13 +39,13 @@ export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestD
     }
   }
 
-  if (completed !== false) {
+  if (testCompleted !== false) {
 
     for (let i = 0; i < test.manyOfQuestions.length; i++) {
       const answerIndex = dto.manyOfQuestionAnswers.findIndex(answer => answer.question === test.manyOfQuestions[i].id);
 
       if (answerIndex === -1) {
-        completed = false;
+        testCompleted = false;
         break;
       } else {
         createFinishedTestInternalDto.manyOfQuestionAnswers.push(
@@ -55,14 +55,14 @@ export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestD
     }
   }
 
-  if (completed !== false) {
+  if (testCompleted !== false) {
 
     for (let i = 0; i < test.exactAnswerQuestions.length; i++) {
       const answerIndex = dto.exactAnswerQuestionAnswers
         .findIndex(answer => answer.question === test.exactAnswerQuestions[i].id);
 
       if (answerIndex === -1) {
-        completed = false;
+        testCompleted = false;
         break;
       } else {
         createFinishedTestInternalDto.exactAnswerQuestionAnswers.push(
@@ -72,13 +72,13 @@ export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestD
     }
   }
 
-  if (completed !== false) {
+  if (testCompleted !== false) {
 
     for (let i = 0; i < test.orderQuestions.length; i++) {
       const answerIndex = dto.orderQuestionAnswers.findIndex(answer => answer.question === test.orderQuestions[i].id);
 
       if (answerIndex === -1) {
-        completed = false;
+        testCompleted = false;
         break;
       } else {
         createFinishedTestInternalDto.orderQuestionAnswers.push(
@@ -88,9 +88,9 @@ export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestD
     }
   }
 
-  if (completed !== false) {
+  if (testCompleted !== false) {
     createFinishedTestInternalDto.result = calculateTestResult(createFinishedTestInternalDto);
   }
 
-  return completed ? createFinishedTestInternalDto : null;
+  return testCompleted ? createFinishedTestInternalDto : null;
 }

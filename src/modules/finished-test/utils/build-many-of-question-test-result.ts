@@ -4,12 +4,13 @@ import { CreateManyOfQuestionAnswerInternalDto } from '../../user-answer/dto/cre
 
 export function buildManyOfQuestionTestResult(answer: CreateManyOfQuestionAnswerDto, question: ManyOfQuestionEntity)
   : CreateManyOfQuestionAnswerInternalDto {
+  const correctAnswers = question.options.filter(option => option.isCorrect);
+
   return {
     answer: answer.answer.map(answerId => ({ id: answerId })),
     question: { id: question.id },
-    // Check if every answerId is among correct options
-    isCorrect: answer.answer.every(answerId =>
-      question.options.find(option => option.isCorrect && option.id === answerId) !== undefined,
-    ),
+    // Check if correct answer is presented
+    isCorrect: answer.answer.length === correctAnswers.length &&
+      correctAnswers.every(option => answer.answer.includes(option.id)),
   };
 }
