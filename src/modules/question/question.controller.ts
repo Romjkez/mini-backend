@@ -1,17 +1,36 @@
-import { Crud, CrudController } from '@nestjsx/crud';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller } from '@nestjs/common';
-import { SingleOptionQuestion } from './entities/single-option-question.entity';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { QuestionService } from './question.service';
+import { from, Observable } from 'rxjs';
+import { IdDto } from '../../common/dto/id.dto';
+import { CreateQuestionBulkDto } from './dto/create-question-bulk.dto';
+import { Questions } from './models/questions.model';
 
-@Crud({
-  model: {
-    type: SingleOptionQuestion,
-  },
-})
 @ApiTags('question')
 @Controller('question')
-export class QuestionController implements CrudController<SingleOptionQuestion> {
-  constructor(public service: QuestionService) {
+export class QuestionController {
+  constructor(private readonly questionService: QuestionService) {
+  }
+
+  // todo remove
+  @Post('bulk')
+  createBulk(@Body() dto: CreateQuestionBulkDto): Observable<Questions> {
+    return from(this.questionService.createBulk(dto));
+  }
+
+  // todo remove
+  @Get(':id')
+  async getById(@Param('id') id: string) {
+    return this.questionService.getById(id);
+  }
+
+  @Put(':id')
+  update(@Param() params: IdDto, @Body() dto: any): Observable<any> {
+    return this.questionService.update(params.id, dto);
+  }
+
+  @Delete(':id')
+  delete(@Param() params: IdDto): Observable<void> {
+    return this.questionService.delete(params.id);
   }
 }

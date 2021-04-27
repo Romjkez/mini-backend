@@ -17,7 +17,7 @@ export function addUserFilter(qb: SelectQueryBuilder<UserEntity>, filter: UserFi
     qb = qb.andWhere(`"${entityName}"."company" ILIKE :company`, { company: `%${filter.company}%` });
   }
 
-  if (filter.isPrivate) {
+  if (typeof filter.isPrivate === 'boolean') {
     qb = qb.andWhere(`"${entityName}"."isPrivate"=:isPrivate`, { isPrivate: filter.isPrivate });
   }
 

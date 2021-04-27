@@ -10,6 +10,12 @@ export class UpdateArticleDto {
   @IsOptional()
   title: string;
 
+  @ApiModelPropertyOptional({ example: 'https://www.youtube.com/watch?v=mU4TZ99yAdo' })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  video?: string;
+
   @ApiModelPropertyOptional({
     // eslint-disable-next-line max-len
     example: 'Леонард Перси Лорд, 1-й барон Lambury KBE 1896 года рождения был значимым человеком в британской автомобильной промышленности. Окончил школу с внушительным техническим уклоном, однако в 16 лет вынужден был уйти в свободное плавание после потери отца. \n',

@@ -4,6 +4,7 @@ import { forkJoin, from, Observable, of } from 'rxjs';
 import * as bcrypt from 'bcrypt';
 import { map, switchMap } from 'rxjs/operators';
 import { CreateUserInternalDto } from './dto/create-user-internal.dto';
+import { USER_RELATIONS } from './user.service';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -17,7 +18,7 @@ export class UserRepository extends Repository<UserEntity> {
       .pipe(
         switchMap(hash => from(super.save({ ...dto, password: hash }))),
         switchMap(user =>
-          from(this.findOne(user.id, { relations: ['finishedArticles', 'finishedTests'] }))),
+          from(this.findOne(user.id, { relations: USER_RELATIONS }))),
       );
   }
 
@@ -36,7 +37,7 @@ export class UserRepository extends Repository<UserEntity> {
         }))),
         switchMap(dto => from(super.save(dto, { chunk: 5000 }))),
         map(users => users.map(user => user.id)),
-        switchMap(usersIds => from(super.findByIds(usersIds, { relations: ['finishedArticles', 'finishedTests'] }))),
+        switchMap(usersIds => from(super.findByIds(usersIds, { relations: USER_RELATIONS }))),
       );
   }
 }

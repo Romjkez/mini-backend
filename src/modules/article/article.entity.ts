@@ -1,55 +1,53 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
 import {
-  ApiModelProperty,
-  ApiModelPropertyOptional,
-} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { UserEntity } from '../user/user.entity';
+import { ExerciseEntity } from '../exercise/exercise.entity';
+import { Tag } from '../tag/tag.entity';
 
 @Entity({ name: 'article' })
-export class Article {
-  @ApiModelProperty()
+export class ArticleEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ApiModelProperty()
   @Column({ length: 150, type: 'varchar' })
   title: string;
 
   @Column({ type: 'varchar', nullable: true })
-  @ApiModelPropertyOptional()
   video?: string;
 
-  @ApiModelPropertyOptional()
   @Column({ type: 'text', nullable: true })
   content?: string;
 
-  @ApiModelProperty()
   @Column({ type: 'boolean', default: true })
   isVisible: boolean;
 
-  /*
-  @ApiModelProperty({ type: 'integer', default: 0 })
-  @Column({ type: 'int', default: 0 })
-  finishedCount: number;
-  */
-
-  @ApiModelProperty({ type: UserEntity, isArray: true })
-  @ManyToMany(() => UserEntity, async user => user.finishedArticles)
-  finishedBy: Promise<Array<UserEntity>>;
-
-  @ApiModelPropertyOptional({ example: 'https://avtotachki.com/wp-content/uploads/2020/12/37.jpg' })
   @Column({ type: 'varchar', default: null, nullable: true })
   previewUrl?: string;
 
-  @ApiModelProperty({ readOnly: true })
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: number;
 
-  @ApiModelProperty()
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt?: number;
 
-  @ApiModelProperty()
-  @ManyToMany(() => UserEntity, async user => user.favoriteArticles)
+  @ManyToMany(() => UserEntity, async user => user.finishedArticles, { lazy: true })
+  finishedBy: Promise<Array<UserEntity>>;
+
+  @ManyToMany(() => UserEntity, async user => user.favoriteArticles, { lazy: true })
   favoriteFor: Promise<Array<UserEntity>>;
+
+  @ManyToOne(() => ExerciseEntity, e => e.articles)
+  exercise: ExerciseEntity;
+
+  @JoinTable()
+  @ManyToMany(() => Tag, t => t.articles)
+  tags: Array<Tag>;
 }

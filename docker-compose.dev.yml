@@ -9,6 +9,7 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: development
+      APP_NAME: 'MINI Study'
       DB_PASS: 'qwerty'
       DB_NAME: 'mini'
       DB_USER: 'mini-user'
@@ -16,8 +17,9 @@ services:
       JWT_EXPIRATION: '3600s'
       REFRESH_EXPIRATION: '30d'
       JWT_SECRET: 'e58a2d8d7d5ba535816e7b302743dfa13e85e9bfcd03c1baa3cdbfdfcac71325b1b08dd6f1e214509bdb5ca551be6d6d3def3973fe12f27814b7d49a76327bf3'
-    env_file:
-      - .env
+      MAIL_USER: 'b509768e5a264a'
+      MAIL_PASSWORD: 'ac53e08c65f943'
+      MAIL_HOST: 'smtp.mailtrap.io'
     command: "yarn run start:dev"
 
   db:
@@ -29,5 +31,3 @@ services:
       POSTGRES_PASSWORD: 'qwerty'
       POSTGRES_USER: 'mini-user'
       POSTGRES_DB: 'mini'
-    env_file:
-      - .env

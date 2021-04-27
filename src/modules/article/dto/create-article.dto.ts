@@ -2,7 +2,8 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { Tag } from '../../tag/tag.entity';
 
 export class CreateArticleDto {
   @ApiModelProperty({ example: 'История основателей MINI' })
@@ -22,10 +23,28 @@ export class CreateArticleDto {
   @IsNotEmpty()
   content: string;
 
+  @ApiModelPropertyOptional({ example: null, nullable: true })
+  @IsNotEmpty()
+  @IsString()
+  @IsOptional()
+  video?: string;
+
   @ApiModelPropertyOptional({ example: 'https://avtotachki.com/wp-content/uploads/2020/12/37.jpg' })
   @IsString()
   @IsOptional()
   @IsNotEmpty()
   @MinLength(3)
   previewUrl?: string;
+
+  @ApiModelProperty({ type: 'integer', isArray: true })
+  @IsArray()
+  tags: Array<number>;
+}
+
+export class CreateArticleInternalDto {
+  title: string;
+  content: string;
+  video?: string;
+  previewUrl?: string;
+  tags: Array<Partial<Tag>>;
 }
