@@ -4,6 +4,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   NotImplementedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -108,6 +109,12 @@ export class UserService {
 
     return from(qb.getOne())
       .pipe(
+        map(user => {
+          if (user === undefined) {
+            throw new NotFoundException();
+          }
+          return user;
+        }),
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
       );
   }
