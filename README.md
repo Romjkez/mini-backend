@@ -1,7 +1,7 @@
 # MINI Study: backend
 Backend for the MINI mobile app and admin panel
 
-# Local launching
+# Starting app locally
 1) Install Docker Desktop for you OS
 2) Clone this repository
 3) Run `docker-compose -f docker-compose.dev.yml up --build -d` in the project folder 
