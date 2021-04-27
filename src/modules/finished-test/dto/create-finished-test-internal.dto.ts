@@ -13,4 +13,5 @@ export class CreateFinishedTestInternalDto {
   orderQuestionAnswers: Array<Partial<CreateOrderQuestionAnswerInternalDto>>;
   exactAnswerQuestionAnswers: Array<Partial<CreateExactAnswerQuestionAnswerInternalDto>>;
   result: number;
+  correctAnswers: number;
 }

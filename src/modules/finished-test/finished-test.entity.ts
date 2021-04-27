@@ -44,4 +44,8 @@ export class FinishedTest {
   @ApiModelProperty({ readOnly: true })
   @Column({ type: 'real' })
   result: number;
+
+  @ApiModelProperty({ readOnly: true })
+  @Column({ type: 'smallint' })
+  correctAnswers: number;
 }

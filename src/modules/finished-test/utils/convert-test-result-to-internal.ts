@@ -23,6 +23,7 @@ export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestD
     manyOfQuestionAnswers: [],
     orderQuestionAnswers: [],
     exactAnswerQuestionAnswers: [],
+    correctAnswers: 0,
   };
 
   for (let i = 0; i < test.oneOfQuestions.length; i++) {
@@ -89,7 +90,9 @@ export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestD
   }
 
   if (testCompleted !== false) {
-    createFinishedTestInternalDto.result = calculateTestResult(createFinishedTestInternalDto);
+    const { correctAnswers, result } = calculateTestResult(createFinishedTestInternalDto);
+    createFinishedTestInternalDto.result = result;
+    createFinishedTestInternalDto.correctAnswers = correctAnswers;
   }
 
   return testCompleted ? createFinishedTestInternalDto : null;
