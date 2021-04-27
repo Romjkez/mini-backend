@@ -20,8 +20,6 @@ services:
       MAIL_USER: 'b509768e5a264a'
       MAIL_PASSWORD: 'ac53e08c65f943'
       MAIL_HOST: 'smtp.mailtrap.io'
-    env_file:
-      - .env
     command: "yarn run start:dev"
 
   db:
@@ -33,5 +31,3 @@ services:
       POSTGRES_PASSWORD: 'qwerty'
       POSTGRES_USER: 'mini-user'
       POSTGRES_DB: 'mini'
-    env_file:
-      - .env
