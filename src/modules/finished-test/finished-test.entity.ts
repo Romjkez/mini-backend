@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { UserEntity } from '../user/user.entity';
 import { Test } from '../test/test.entity';
@@ -14,8 +14,8 @@ export class FinishedTest {
   id: number;
 
   @ApiModelProperty({ type: UserEntity })
-  @ManyToMany(() => UserEntity, async user => user.finishedTests)
-  finishedBy: Promise<UserEntity>;
+  @ManyToOne(() => UserEntity, user => user.finishedTests)
+  finishedBy: UserEntity;
 
   @ApiModelProperty({ type: OneOfQuestionAnswerEntity, isArray: true })
   @OneToMany(() => OneOfQuestionAnswerEntity, answer => answer.finishedTest, { cascade: true })

@@ -28,6 +28,8 @@ export class TestService {
       );
   }
 
+  // TODO add update method, restrict updating when there is at least 1 related finishedTest
+
   getById(id: number): Observable<Test> {
     return from(this.testRepo.findOneOrFail(id, {
       relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions'],

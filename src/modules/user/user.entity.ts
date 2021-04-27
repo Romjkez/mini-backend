@@ -5,6 +5,7 @@ import {
   Index,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -72,9 +73,9 @@ export class UserEntity extends SimpleUser {
   @JoinTable()
   finishedArticles: Promise<Array<ArticleEntity>>;
 
-  @ManyToMany(() => FinishedTest, async test => test.finishedBy, { lazy: true })
+  @OneToMany(() => FinishedTest, test => test.finishedBy)
   @JoinTable()
-  finishedTests: Promise<Array<FinishedTest>>;
+  finishedTests: Array<FinishedTest>;
 
   @ManyToMany(() => ArticleEntity, async article => article.favoriteFor, { lazy: true })
   @JoinTable()

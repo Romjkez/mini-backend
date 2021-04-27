@@ -9,8 +9,18 @@ export class FinishedTestService {
               private readonly testService: TestService) {
   }
 
-  createOne(dto: CreateFinishedTestInternalDto) {
-    console.log(dto);
+  async createOne(dto: CreateFinishedTestInternalDto) {
+    const alias = 'finishedTest';
+    const finishedTests = await this.finishedTestRepo.createQueryBuilder(alias)
+      .loadRelationCountAndMap(`${alias}.finishedBy`, `${alias}.finishedBy`)
+      .getMany();
+
+    if (finishedTests.length === 0) {
+      console.log(dto);
+      await this.finishedTestRepo.save(dto);
+    } else {
+      console.log('FINISHED !=0');
+    }
   }
 }
 
