@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { FinishedTest } from '../../finished-test/finished-test.entity';
 import { ExactAnswerQuestion } from '../../question/entities/exact-answer-question.entity';
@@ -22,6 +22,6 @@ export class ExactAnswerQuestionAnswerEntity {
   isCorrect: boolean;
 
   @ApiModelProperty({ type: FinishedTest })
-  @ManyToMany(() => FinishedTest, test => test.exactAnswerQuestionAnswer)
+  @ManyToOne(() => FinishedTest, test => test.exactAnswerQuestionAnswer)
   finishedTest: FinishedTest;
 }
