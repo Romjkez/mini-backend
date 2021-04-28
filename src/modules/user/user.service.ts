@@ -101,7 +101,6 @@ export class UserService {
 
   getById(id: number): Observable<User> {
     const qb = this.userRepo.createQueryBuilder('user')
-      .select()
       .where('user.id = :id', { id })
       .loadRelationCountAndMap('user.finishedTests', 'user.finishedTests')
       .loadRelationCountAndMap('user.finishedArticles', 'user.finishedArticles')

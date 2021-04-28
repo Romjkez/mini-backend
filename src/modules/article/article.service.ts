@@ -35,6 +35,7 @@ export class ArticleService {
     return from(this.articleRepo.getById(id))
       .pipe(
         catchError(err => {
+          console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
         }),
@@ -42,11 +43,7 @@ export class ArticleService {
   }
 
   getMany(dto: GetManyArticlesDto): Observable<GetManyResponseDto<Article>> {
-    throw new NotImplementedException();
-  }
-
-  addFavoriteFor(): Observable<void> {
-    throw new NotImplementedException();
+    return;
   }
 
   update(id: number, dto: UpdateArticleDto): Observable<Article> {

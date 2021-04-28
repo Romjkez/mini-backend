@@ -38,16 +38,13 @@ export class ArticleRepository extends Repository<ArticleEntity> {
   getById(id: number): Observable<Article> {
     return from(
       this.createQueryBuilder('article')
-        .leftJoinAndSelect('article.favoriteFor', 'favoriteFor')
         .loadRelationCountAndMap('article.favoriteFor', 'article.favoriteFor')
         .loadRelationCountAndMap('article.finishedBy', 'article.finishedBy')
-        .loadRelationIdAndMap('article.tags', 'article.tags')
         .where('article.id = :id', { id })
+        .leftJoinAndSelect('article.tags', 'tags')
         .getOne())
       .pipe(
-        map(article => {
-          return convertRawArticleToArticle(article as unknown as Article & ArticleRelationsInfo);
-        }),
+        map(article => convertRawArticleToArticle(article as unknown as Article & ArticleRelationsInfo)),
       );
   }
 }
