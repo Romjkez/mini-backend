@@ -1,26 +1,23 @@
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { IsInt, IsNumberString, IsOptional, IsPositive, Max } from 'class-validator';
-import { Transform } from 'class-transformer';
 
 const MAX_PER_PAGE = 100;
 export const DEFAULT_PER_PAGE = 15;
 export const DEFAULT_PAGE = 1;
 
 interface IGetManyDto {
-  page: number;
-  perPage: number;
+  page?: number;
+  perPage?: number;
 }
 
 export abstract class GetManyDto implements IGetManyDto {
   @IsOptional()
-  @Transform(Number)
   @IsInt()
   @IsPositive()
   @ApiModelPropertyOptional({ description: 'Number of page to show', example: 1, minimum: 1, default: 1 })
-  page: number;
+  page?: number;
 
   @IsOptional()
-  @Transform(Number)
   @IsInt()
   @IsPositive()
   @Max(MAX_PER_PAGE)
@@ -31,14 +28,14 @@ export abstract class GetManyDto implements IGetManyDto {
     minimum: 1,
     default: DEFAULT_PER_PAGE,
   })
-  perPage: number;
+  perPage?: number;
 }
 
 export class GetManyQueryDto implements IGetManyDto {
   @IsOptional()
   @IsNumberString()
   @ApiModelPropertyOptional({ description: 'Number of page to show', example: 1, minimum: 1, default: 1 })
-  page: number;
+  page?: number;
 
   @IsOptional()
   @IsNumberString()
@@ -49,5 +46,5 @@ export class GetManyQueryDto implements IGetManyDto {
     minimum: 1,
     default: DEFAULT_PER_PAGE,
   })
-  perPage: number;
+  perPage?: number;
 }
