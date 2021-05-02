@@ -33,8 +33,8 @@ export class User extends SimpleUser {
   @ApiModelProperty({ description: 'Account ban date-time (activation status)' })
   bannedAt?: Date;
 
-  @ApiModelProperty({ description: 'Average test score' })
-  rating: number;
+  @ApiModelProperty({ description: 'Average test score', nullable: true })
+  rating?: number;
 
   @ApiModelProperty({ type: Number, example: 23 })
   finishedArticles: number;

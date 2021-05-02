@@ -21,5 +21,5 @@ export class SimpleUser {
 
   @ApiModelProperty() bannedAt?: Date;
 
-  @ApiModelProperty({ example: 4.51 }) rating: number;
+  @ApiModelProperty({ example: 4.51, nullable: true }) rating?: number;
 }
