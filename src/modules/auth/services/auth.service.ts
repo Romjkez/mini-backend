@@ -67,7 +67,7 @@ export class AuthService {
             return zip(
               from(this.jwtService.signAsync(accessTokenPayload)),
               from(this.jwtService.signAsync(refreshTokenPayload,
-                { expiresIn: '60s' })),
+                { expiresIn: process.env.REFRESH_EXPIRATION })),
               of(refreshTokenPayload.sub),
             );
           }
