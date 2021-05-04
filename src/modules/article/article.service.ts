@@ -21,6 +21,7 @@ export class ArticleService {
   }
 
   createOne(dto: CreateArticleDto): Observable<Article> {
+    // todo проверять наличие тегов в DTO
     return from(this.articleRepo.insertOne(dto))
       .pipe(
         catchError(err => {
