@@ -4,12 +4,6 @@ import { CreateFinishedTestInternalDto } from './dto/create-finished-test-intern
 import { from, Observable, of, zip } from 'rxjs';
 import { FinishedTest } from './finished-test.entity';
 import { catchError, switchMap } from 'rxjs/operators';
-import { Repository } from 'typeorm';
-import { ExactAnswerQuestionAnswerEntity } from '../user-answer/entities/exact-answer-question-answer.entity';
-import { OneOfQuestionAnswerEntity } from '../user-answer/entities/one-of-question-answer.entity';
-import { ManyOfQuestionAnswerEntity } from '../user-answer/entities/many-of-question-answer.entity';
-import { OrderQuestionAnswerEntity } from '../user-answer/entities/order-question-answer.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '../user/user.service';
 
 const FINISHED_TEST_RELATIONS: Array<string> = [
@@ -21,14 +15,6 @@ const FINISHED_TEST_RELATIONS: Array<string> = [
 export class FinishedTestService {
   constructor(private readonly finishedTestRepo: FinishedTestRepository,
               private readonly logger: Logger,
-              @InjectRepository(OneOfQuestionAnswerEntity)
-              private readonly oneOfAnswerQRepo: Repository<OneOfQuestionAnswerEntity>,
-              @InjectRepository(ManyOfQuestionAnswerEntity)
-              private readonly manyOfAnswerQRepo: Repository<ManyOfQuestionAnswerEntity>,
-              @InjectRepository(OrderQuestionAnswerEntity)
-              private readonly orderAnswerQRepo: Repository<OrderQuestionAnswerEntity>,
-              @InjectRepository(ExactAnswerQuestionAnswerEntity)
-              private readonly exactAnswerQRepo: Repository<ExactAnswerQuestionAnswerEntity>,
               private readonly userService: UserService) {
     logger.setContext('FinishedTestService');
   }
