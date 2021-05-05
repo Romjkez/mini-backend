@@ -14,7 +14,7 @@ import { UserService } from '../user/user.service';
 
 const FINISHED_TEST_RELATIONS: Array<string> = [
   'oneOfQuestionAnswers', 'manyOfQuestionAnswers', 'orderQuestionAnswers',
-  'exactAnswerQuestionAnswer', 'finishedBy', 'test',
+  'exactAnswerQuestionAnswers', 'finishedBy', 'test',
 ];
 
 @Injectable()
@@ -39,7 +39,7 @@ export class FinishedTestService {
       .getCount();
 
     if (finishedTestsCount === 0) {
-      console.log(0);
+      console.log(JSON.stringify(dto, null, 2));
       return from(this.finishedTestRepo.save(dto))
         .pipe(
           switchMap(res => zip(of(res), this.userService.updateRating(dto.finishedBy.id, dto.result))),
@@ -61,6 +61,14 @@ export class FinishedTestService {
       if (answer) {
         throw new ForbiddenException('TEST_ALREADY_TAKEN');
       }
+      const userAnswers = await this.finishedTestRepo.createQueryBuilder('finishedTest')
+        .select('finishedTest.correctAnswers')
+        .loadRelationCountAndMap('finishedTest.oneOfQuestionAnswers', 'finishedTest.oneOfQuestionAnswers')
+        .loadRelationCountAndMap('finishedTest.manyOfQuestionAnswers', 'finishedTest.manyOfQuestionAnswers')
+        .loadRelationCountAndMap('finishedTest.orderQuestionAnswers', 'finishedTest.orderQuestionAnswers')
+        .loadRelationCountAndMap('finishedTest.exactAnswerQuestionAnswers', 'finishedTest.exactAnswerQuestionAnswers')
+        .getMany();
+      console.log(JSON.stringify(userAnswers, null, 2));
       console.log('FINISHED !=0');
     }
   }

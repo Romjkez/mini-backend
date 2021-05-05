@@ -23,6 +23,6 @@ export class ExactAnswerQuestionAnswerEntity {
   isCorrect: boolean;
 
   @ApiModelProperty({ type: FinishedTest })
-  @ManyToOne(() => FinishedTest, test => test.exactAnswerQuestionAnswer)
+  @ManyToOne(() => FinishedTest, test => test.exactAnswerQuestionAnswers)
   finishedTest: FinishedTest;
 }

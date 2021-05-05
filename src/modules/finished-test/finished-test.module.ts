@@ -8,6 +8,7 @@ import { OrderQuestionAnswerEntity } from '../user-answer/entities/order-questio
 import { ManyOfQuestionAnswerEntity } from '../user-answer/entities/many-of-question-answer.entity';
 import { OneOfQuestionAnswerEntity } from '../user-answer/entities/one-of-question-answer.entity';
 import { UserModule } from '../user/user.module';
+import { TestModule } from '../test/test.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -16,7 +17,7 @@ import { UserModule } from '../user/user.module';
     OrderQuestionAnswerEntity,
     ManyOfQuestionAnswerEntity,
     OneOfQuestionAnswerEntity,
-  ]), UserModule],
+  ]), TestModule, UserModule],
   providers: [FinishedTestService, Logger],
   controllers: [FinishedTestController],
   exports: [FinishedTestService],

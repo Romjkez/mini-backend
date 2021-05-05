@@ -34,7 +34,7 @@ export class FinishedTest {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  exactAnswerQuestionAnswer: Array<ExactAnswerQuestionAnswerEntity>;
+  exactAnswerQuestionAnswers: Array<ExactAnswerQuestionAnswerEntity>;
 
   @ApiModelProperty({ type: Test })
   @ManyToOne(() => Test, test => test.id)
