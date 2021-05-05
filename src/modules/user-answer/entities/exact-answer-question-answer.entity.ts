@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { FinishedTest } from '../../finished-test/finished-test.entity';
 import { ExactAnswerQuestion } from '../../question/entities/exact-answer-question.entity';
@@ -11,14 +11,15 @@ export class ExactAnswerQuestionAnswerEntity {
   id: number;
 
   @ApiModelProperty({ type: ExactAnswerQuestion, isArray: true })
-  @OneToMany(() => ExactAnswerQuestion, q => q.id)
+  @ManyToOne(() => ExactAnswerQuestion, { eager: true })
   question: ExactAnswerQuestion;
 
-  @ApiModelProperty({ type: 'string' })
+  @ApiModelProperty({ type: 'string', nullable: false })
+  @Column({ type: 'varchar', nullable: false })
   answer: string;
 
-  @ApiModelProperty({ type: 'boolean' })
-  @Column({ type: 'boolean', nullable: false })
+  @ApiModelProperty({ type: 'boolean', readOnly: true })
+  @Column({ type: 'boolean', nullable: false, readonly: true })
   isCorrect: boolean;
 
   @ApiModelProperty({ type: FinishedTest })

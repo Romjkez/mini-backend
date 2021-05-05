@@ -3,6 +3,8 @@ import { OneOfQuestionEntity } from '../../question/entities/one-of-question.ent
 import { ManyOfQuestionEntity } from '../../question/entities/many-of-question.entity';
 import { OrderQuestionEntity } from '../../question/entities/order-question.entity';
 import { BaseOption } from '../models/base-option.model';
+import { OrderQuestionAnswerEntity } from '../../user-answer/entities/order-question-answer.entity';
+import { ManyOfQuestionAnswerEntity } from '../../user-answer/entities/many-of-question-answer.entity';
 
 @Entity({ name: 'option' })
 export class Option<Q> extends BaseOption {
@@ -30,4 +32,8 @@ export class Option<Q> extends BaseOption {
   @ManyToMany(() => ManyOfQuestionEntity, q => q.options)
   @ManyToMany(() => OrderQuestionEntity, q => q.options)
   question: Q;
+
+  @ManyToMany(() => OrderQuestionAnswerEntity, a => a.answer, { onDelete: 'CASCADE' })
+  @ManyToMany(() => ManyOfQuestionAnswerEntity, a => a.answer, { onDelete: 'CASCADE' })
+  answer: Array<OrderQuestionAnswerEntity | ManyOfQuestionAnswerEntity>;
 }
