@@ -37,6 +37,7 @@ import { Test } from '../test/test.entity';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
+import { UpdateResult } from 'typeorm';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -155,6 +156,7 @@ export class UserService {
     return from(qb.getManyAndCount())
       .pipe(
         catchError(err => {
+          console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
         }),
@@ -165,6 +167,17 @@ export class UserService {
             page: dto?.page || DEFAULT_PAGE,
             totalItems: res[1],
           };
+        }),
+      );
+  }
+
+  updateRating(id: number, value: number): Observable<UpdateResult> {
+    return from(this.userRepo.update(id, { rating: value }))
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
         }),
       );
   }

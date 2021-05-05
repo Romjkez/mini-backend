@@ -1,7 +1,7 @@
 import { FinishedTestRepository } from './finished-test.repository';
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateFinishedTestInternalDto } from './dto/create-finished-test-internal.dto';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of, zip } from 'rxjs';
 import { FinishedTest } from './finished-test.entity';
 import { catchError, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
@@ -10,6 +10,7 @@ import { OneOfQuestionAnswerEntity } from '../user-answer/entities/one-of-questi
 import { ManyOfQuestionAnswerEntity } from '../user-answer/entities/many-of-question-answer.entity';
 import { OrderQuestionAnswerEntity } from '../user-answer/entities/order-question-answer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserService } from '../user/user.service';
 
 const FINISHED_TEST_RELATIONS: Array<string> = [
   'oneOfQuestionAnswers', 'manyOfQuestionAnswers', 'orderQuestionAnswers',
@@ -27,7 +28,8 @@ export class FinishedTestService {
               @InjectRepository(OrderQuestionAnswerEntity)
               private readonly orderAnswerQRepo: Repository<OrderQuestionAnswerEntity>,
               @InjectRepository(ExactAnswerQuestionAnswerEntity)
-              private readonly exactAnswerQRepo: Repository<ExactAnswerQuestionAnswerEntity>) {
+              private readonly exactAnswerQRepo: Repository<ExactAnswerQuestionAnswerEntity>,
+              private readonly userService: UserService) {
     logger.setContext('FinishedTestService');
   }
 
@@ -38,10 +40,10 @@ export class FinishedTestService {
 
     if (finishedTestsCount === 0) {
       console.log(0);
-
       return from(this.finishedTestRepo.save(dto))
         .pipe(
-          switchMap(res => from(this.finishedTestRepo.findOne(res.id, {
+          switchMap(res => zip(of(res), this.userService.updateRating(dto.finishedBy.id, dto.result))),
+          switchMap(([finishedTest]) => from(this.finishedTestRepo.findOne(finishedTest.id, {
             relations: FINISHED_TEST_RELATIONS,
           }))),
           catchError(err => {
@@ -52,6 +54,13 @@ export class FinishedTestService {
         );
 
     } else {
+      const answer = await this.finishedTestRepo.findOne({
+        test: { id: dto.test.id },
+        finishedBy: { id: dto.finishedBy.id },
+      });
+      if (answer) {
+        throw new ForbiddenException('TEST_ALREADY_TAKEN');
+      }
       console.log('FINISHED !=0');
     }
   }
