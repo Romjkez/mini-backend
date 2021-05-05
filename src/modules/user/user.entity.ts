@@ -73,8 +73,7 @@ export class UserEntity extends SimpleUser {
   @JoinTable()
   finishedArticles: Array<ArticleEntity>;
 
-  @OneToMany(() => FinishedTest, test => test.finishedBy)
-  @JoinTable()
+  @OneToMany(() => FinishedTest, test => test.finishedBy, { onDelete: 'CASCADE' })
   finishedTests: Array<FinishedTest>;
 
   @ManyToMany(() => ArticleEntity, article => article.favoriteFor)
