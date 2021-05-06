@@ -70,7 +70,12 @@ export class FinishedTestRepository extends Repository<FinishedTest> {
           const updatedUserRating = +(totalCorrectAnswers / totalAnswers).toFixed(USER_RATING_PRECISION);
           return from(userService.updateRating(dto.finishedBy.id, updatedUserRating))
             .pipe(
-              map((r) => finishedTest),
+              catchError(err => {
+                console.error(err);
+                logger.error(err);
+                throw new InternalServerErrorException(err);
+              }),
+              map(() => finishedTest),
             );
         }),
         switchMap((finishedTest) => from(this.findOne(finishedTest.id, {
