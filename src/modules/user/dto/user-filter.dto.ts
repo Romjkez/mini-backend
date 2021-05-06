@@ -43,4 +43,10 @@ export class UserFilterDto {
   @IsNotEmpty()
   @ApiModelPropertyOptional({ description: 'User role', enum: Object.keys(UserRole) })
   role?: UserRole;
+
+  // Not a public filter field
+  @IsOptional()
+  @IsBoolean()
+  @IsNotEmpty()
+  rating?: boolean;
 }

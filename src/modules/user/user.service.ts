@@ -33,11 +33,11 @@ import { getPlainWelcomeText, getWelcomeText } from '../../templates/welcome';
 import { calculateQueryOffset } from '../../common/utils';
 
 import { ArticleEntity } from '../article/article.entity';
-import { Test } from '../test/test.entity';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
 import { UpdateResult } from 'typeorm';
+import { FinishedTest } from '../finished-test/finished-test.entity';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -123,7 +123,7 @@ export class UserService {
     throw new NotImplementedException();
   }
 
-  getFinishedTests(id: number, dto: GetManyDto): Observable<Array<Test>> {
+  getFinishedTests(id: number, dto: GetManyDto): Observable<Array<FinishedTest>> {
     throw new NotImplementedException();
   }
 
@@ -134,6 +134,11 @@ export class UserService {
   getByEmail(email: string): Observable<User> {
     return from(this.userRepo.findOneOrFail({ email }, { relations: USER_RELATIONS }))
       .pipe(
+        catchError(err => {
+          console.error(err);
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
       );
   }
