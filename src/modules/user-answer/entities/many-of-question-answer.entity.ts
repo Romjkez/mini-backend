@@ -1,9 +1,12 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { ManyOfQuestionEntity } from '../../question/entities/many-of-question.entity';
 import { Option } from '../../option/entities/option.entity';
 import { FinishedTest } from '../../finished-test/finished-test.entity';
 
+/**
+ * Answer to "Many of" question
+ */
 @Entity({ name: 'manyOfQuestionAnswer' })
 export class ManyOfQuestionAnswerEntity {
   @ApiModelProperty()
@@ -11,15 +14,16 @@ export class ManyOfQuestionAnswerEntity {
   id: number;
 
   @ApiModelProperty({ type: ManyOfQuestionAnswerEntity })
-  @OneToMany(() => ManyOfQuestionEntity, q => q.id)
+  @ManyToOne(() => ManyOfQuestionEntity, { eager: true })
   question: ManyOfQuestionEntity;
 
   @ApiModelProperty({ type: Option, isArray: true })
-  @OneToMany(() => Option, option => option.id)
+  @ManyToMany(() => Option, option => option.answer, { eager: true })
+  @JoinTable()
   answer: Array<Option<ManyOfQuestionEntity>>;
 
-  @ApiModelProperty({ type: 'boolean' })
-  @Column({ type: 'boolean', nullable: false })
+  @ApiModelProperty({ type: 'boolean', readOnly: true })
+  @Column({ type: 'boolean', nullable: false, readonly: true })
   isCorrect: boolean;
 
   @ApiModelProperty({ type: FinishedTest })

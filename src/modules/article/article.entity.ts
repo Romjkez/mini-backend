@@ -38,11 +38,11 @@ export class ArticleEntity {
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt?: number;
 
-  @ManyToMany(() => UserEntity, async user => user.finishedArticles, { lazy: true })
-  finishedBy: Promise<Array<UserEntity>>;
+  @ManyToMany(() => UserEntity, user => user.finishedArticles)
+  finishedBy: Array<UserEntity>;
 
-  @ManyToMany(() => UserEntity, async user => user.favoriteArticles, { lazy: true })
-  favoriteFor: Promise<Array<UserEntity>>;
+  @ManyToMany(() => UserEntity, user => user.favoriteArticles)
+  favoriteFor: Array<UserEntity>;
 
   @ManyToOne(() => ExerciseEntity, e => e.articles)
   exercise: ExerciseEntity;

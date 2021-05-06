@@ -16,7 +16,7 @@ export function convertTestResultToInternal(test: Test, dto: CreateFinishedTestD
   : CreateFinishedTestInternalDto | null {
   let testCompleted: boolean = true;
   const createFinishedTestInternalDto: CreateFinishedTestInternalDto = {
-    user: { id: dto.user },
+    finishedBy: { id: dto.finishedBy },
     result: 0,
     test: { id: test.id },
     oneOfQuestionAnswers: [],

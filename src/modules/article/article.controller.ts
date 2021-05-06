@@ -27,6 +27,12 @@ export class ArticleController {
     return this.articleService.getById(params.id);
   }
 
+  // Made POST method for swagger ui (no need to describe each query param in decorator)
+  @Post('getMany')
+  getMany(@Body() dto: GetManyArticlesDto): Observable<GetManyResponseDto<Article>> {
+    return this.articleService.getMany(dto);
+  }
+
   @Post(':id/hide')
   @HttpCode(200)
   hide(@Param() params: IdDto): Observable<void> {
@@ -37,13 +43,6 @@ export class ArticleController {
   @HttpCode(200)
   show(@Param() params: IdDto): Observable<void> {
     return this.articleService.show(params.id);
-  }
-
-  // Made POST method for swagger ui (no need to describe each query param in decorator)
-  @Post('getMany')
-  @HttpCode(200)
-  getMany(@Body() dto: GetManyArticlesDto): Observable<GetManyResponseDto<Article>> {
-    return this.articleService.getMany(dto);
   }
 
   @Put(':id')

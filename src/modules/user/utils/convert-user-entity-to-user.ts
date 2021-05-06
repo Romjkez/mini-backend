@@ -6,8 +6,8 @@ import { User } from '../models/user.model';
  */
 export interface UserEntityRelations {
   finishedTests: number;
-  __finishedArticles__: number;
-  __favoriteArticles__: number;
+  finishedArticles: number;
+  favoriteArticles: number;
 }
 
 export function convertUserEntityToUser(user: UserEntity & UserEntityRelations): User {
@@ -22,9 +22,9 @@ export function convertUserEntityToUser(user: UserEntity & UserEntityRelations):
     isPrivate: user.isPrivate,
     bannedAt: user.bannedAt,
     rating: user.rating,
-    finishedArticles: user.__finishedArticles__,
+    finishedArticles: user.finishedArticles,
     finishedTests: user.finishedTests,
-    favoriteArticles: user.__favoriteArticles__,
+    favoriteArticles: user.favoriteArticles,
     role: user.role,
   };
 }

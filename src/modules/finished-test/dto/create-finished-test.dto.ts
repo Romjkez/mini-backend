@@ -10,7 +10,7 @@ export class CreateFinishedTestDto {
   @ApiModelProperty({ type: 'integer', description: 'ID of user that finished the test' })
   @IsInt()
   @IsPositive()
-  user: number;
+  finishedBy: number;
 
   @ApiModelProperty({ type: 'integer', description: 'ID of finished test' })
   @IsInt()

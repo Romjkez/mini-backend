@@ -13,10 +13,13 @@ import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { SimpleUser } from './models/simple-user.model';
 import { ArticleEntity } from '../article/article.entity';
 import { GetManyQueryDto } from '../../common/dto/get-many.dto';
-import { Test } from '../test/test.entity';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
+import { FinishedTest } from '../finished-test/finished-test.entity';
+import { UserFilterDto } from './dto/user-filter.dto';
+import { UserSortDto } from './dto/user-sort.dto';
+import { SortType } from '../../common/models/sort-type.enum';
 
 // @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('bearer')
@@ -36,6 +39,15 @@ export class UserController {
   @ApiCreatedResponse({ type: User, isArray: true })
   createBulk(@Body() dto: CreateUserBulkDto): Observable<Array<User>> {
     return this.userService.createBulk(dto);
+  }
+
+
+  @Get('top')
+  getTopList(@Query() dto: GetManyQueryDto) {
+    const filter: UserFilterDto = { isPrivate: false, rating: true };
+    const sort: UserSortDto = { rating: SortType.DESC };
+    const finalDto: GetManyUsersDto = { filter, sort, page: dto?.page, perPage: dto?.perPage };
+    return this.userService.getMany(finalDto);
   }
 
   @ApiOkResponse({ type: User })
@@ -111,7 +123,7 @@ export class UserController {
   }
 
   @Get(':id/tests/finished')
-  getFinishedTests(@Param() params: IdDto, @Query() dto: GetManyQueryDto): Observable<Array<Test>> {
+  getFinishedTests(@Param() params: IdDto, @Query() dto: GetManyQueryDto): Observable<Array<FinishedTest>> {
     return this.userService.getFinishedTests(params.id, dto);
   }
 

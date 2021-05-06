@@ -18,20 +18,23 @@ export class FinishedTest {
   finishedBy: UserEntity;
 
   @ApiModelProperty({ type: OneOfQuestionAnswerEntity, isArray: true })
-  @OneToMany(() => OneOfQuestionAnswerEntity, answer => answer.finishedTest, { cascade: true })
+  @OneToMany(() => OneOfQuestionAnswerEntity, answer => answer.finishedTest, { cascade: true, onDelete: 'CASCADE' })
   oneOfQuestionAnswers: Array<OneOfQuestionAnswerEntity>;
 
   @ApiModelProperty({ type: ManyOfQuestionAnswerEntity, isArray: true })
-  @OneToMany(() => ManyOfQuestionAnswerEntity, answer => answer.finishedTest, { cascade: true })
+  @OneToMany(() => ManyOfQuestionAnswerEntity, answer => answer.finishedTest, { cascade: true, onDelete: 'CASCADE' })
   manyOfQuestionAnswers: Array<ManyOfQuestionAnswerEntity>;
 
   @ApiModelProperty({ type: OrderQuestionAnswerEntity, isArray: true })
-  @OneToMany(() => OrderQuestionAnswerEntity, answer => answer.finishedTest, { cascade: true })
+  @OneToMany(() => OrderQuestionAnswerEntity, answer => answer.finishedTest, { cascade: true, onDelete: 'CASCADE' })
   orderQuestionAnswers: Array<OrderQuestionAnswerEntity>;
 
   @ApiModelProperty({ type: ExactAnswerQuestionAnswerEntity, isArray: true })
-  @OneToMany(() => ExactAnswerQuestionAnswerEntity, answer => answer.finishedTest, { cascade: true })
-  exactAnswerQuestionAnswer: Array<ExactAnswerQuestionAnswerEntity>;
+  @OneToMany(() => ExactAnswerQuestionAnswerEntity, answer => answer.finishedTest, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  exactAnswerQuestionAnswers: Array<ExactAnswerQuestionAnswerEntity>;
 
   @ApiModelProperty({ type: Test })
   @ManyToOne(() => Test, test => test.id)

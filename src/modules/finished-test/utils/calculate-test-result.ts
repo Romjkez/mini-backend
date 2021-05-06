@@ -1,7 +1,9 @@
 import { CreateFinishedTestInternalDto } from '../dto/create-finished-test-internal.dto';
 
+export const USER_RATING_PRECISION: number = 3;
+
 /**
- * Calculate final test score with 2 symbols precision (after the comma)
+ * Calculate final test score with 3 symbols precision (after the comma)
  * @param dto
  */
 export function calculateTestResult(dto: CreateFinishedTestInternalDto): TestResult {
@@ -20,7 +22,7 @@ export function calculateTestResult(dto: CreateFinishedTestInternalDto): TestRes
     correctAnswers,
     result: +(correctAnswers /
       (dto.oneOfQuestionAnswers.length + dto.manyOfQuestionAnswers.length +
-        dto.exactAnswerQuestionAnswers.length + dto.orderQuestionAnswers.length)).toFixed(2),
+        dto.exactAnswerQuestionAnswers.length + dto.orderQuestionAnswers.length)).toFixed(USER_RATING_PRECISION),
   };
 }
 

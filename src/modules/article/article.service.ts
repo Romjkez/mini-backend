@@ -1,13 +1,16 @@
 import { Injectable, InternalServerErrorException, Logger, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, Observable } from 'rxjs';
-import { catchError, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { Article } from './models/article.model';
 import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 import { ArticleRepository } from './article.repository';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE, GetManyDto } from '../../common/dto/get-many.dto';
+import { calculateQueryOffset } from '../../common/utils';
+import { ArticleEntity } from './article.entity';
 
 export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy', 'tags'];
 
@@ -20,6 +23,7 @@ export class ArticleService {
   }
 
   createOne(dto: CreateArticleDto): Observable<Article> {
+    // todo проверять наличие тегов в DTO
     return from(this.articleRepo.insertOne(dto))
       .pipe(
         catchError(err => {
@@ -35,6 +39,7 @@ export class ArticleService {
     return from(this.articleRepo.getById(id))
       .pipe(
         catchError(err => {
+          console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
         }),
@@ -42,11 +47,23 @@ export class ArticleService {
   }
 
   getMany(dto: GetManyArticlesDto): Observable<GetManyResponseDto<Article>> {
-    throw new NotImplementedException();
-  }
+    return from(this.articleRepo.getMany(dto))
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
+        map(([result, count]) => {
+          return {
+            data: result,
+            perPage: dto.perPage || DEFAULT_PER_PAGE,
+            page: dto.page || DEFAULT_PAGE,
+            totalItems: count,
+          };
+        }),
+      );
 
-  addFavoriteFor(): Observable<void> {
-    throw new NotImplementedException();
   }
 
   update(id: number, dto: UpdateArticleDto): Observable<Article> {
@@ -82,6 +99,22 @@ export class ArticleService {
         }),
         mapTo(null),
       );
+  }
+
+  getFinishedOfUser(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
+    return from(this.articleRepo.createQueryBuilder('article')
+      .limit(dto?.perPage || DEFAULT_PER_PAGE)
+      .offset(calculateQueryOffset(dto?.perPage, dto?.page))
+      .innerJoin('article.finishedBy', 'finishedBy', 'finishedBy.id =:id', { id })
+      .getMany());
+  }
+
+  getFavoriteOfUser(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
+    return from(this.articleRepo.createQueryBuilder('article')
+      .limit(dto?.perPage || DEFAULT_PER_PAGE)
+      .offset(calculateQueryOffset(dto?.perPage, dto?.page))
+      .innerJoin('article.favoriteFor', 'favoriteFor', 'favoriteFor.id =:id', { id })
+      .getMany());
   }
 
   delete(id: number): Observable<void> {

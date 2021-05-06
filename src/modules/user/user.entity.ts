@@ -69,15 +69,14 @@ export class UserEntity extends SimpleUser {
   @Column({ type: 'enum', enum: UserRole, default: UserRole.EMPLOYEE, nullable: false, comment: 'User role' })
   role: UserRole;
 
-  @ManyToMany(() => ArticleEntity, async article => article.finishedBy, { lazy: true })
+  @ManyToMany(() => ArticleEntity, article => article.finishedBy)
   @JoinTable()
-  finishedArticles: Promise<Array<ArticleEntity>>;
+  finishedArticles: Array<ArticleEntity>;
 
-  @OneToMany(() => FinishedTest, test => test.finishedBy)
-  @JoinTable()
+  @OneToMany(() => FinishedTest, test => test.finishedBy, { onDelete: 'CASCADE' })
   finishedTests: Array<FinishedTest>;
 
-  @ManyToMany(() => ArticleEntity, async article => article.favoriteFor, { lazy: true })
+  @ManyToMany(() => ArticleEntity, article => article.favoriteFor)
   @JoinTable()
-  favoriteArticles: Promise<Array<ArticleEntity>>;
+  favoriteArticles: Array<ArticleEntity>;
 }

@@ -29,5 +29,13 @@ export function addUserFilter(qb: SelectQueryBuilder<UserEntity>, filter: UserFi
     qb = qb.andWhere(`"${entityName}"."role"=:role`, { role: filter.role });
   }
 
+  if (typeof filter.rating === 'boolean') {
+    if (filter.rating === true) {
+      qb = qb.andWhere(`"${entityName}"."rating" IS NOT NULL`);
+    } else {
+      qb = qb.andWhere(`"${entityName}"."rating" IS NULL`);
+    }
+  }
+
   return qb;
 }

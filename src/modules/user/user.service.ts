@@ -33,10 +33,12 @@ import { getPlainWelcomeText, getWelcomeText } from '../../templates/welcome';
 import { calculateQueryOffset } from '../../common/utils';
 
 import { ArticleEntity } from '../article/article.entity';
-import { Test } from '../test/test.entity';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
+import { UpdateResult } from 'typeorm';
+import { FinishedTest } from '../finished-test/finished-test.entity';
+import { ArticleService } from '../article/article.service';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -47,6 +49,7 @@ export class UserService {
     @Inject('SALT_ROUNDS') private readonly saltRounds: number,
     private readonly logger: Logger,
     private readonly mailerService: MailerService,
+    private readonly articleService: ArticleService,
   ) {
     logger.setContext('UserService');
   }
@@ -101,7 +104,6 @@ export class UserService {
 
   getById(id: number): Observable<User> {
     const qb = this.userRepo.createQueryBuilder('user')
-      .select()
       .where('user.id = :id', { id })
       .loadRelationCountAndMap('user.finishedTests', 'user.finishedTests')
       .loadRelationCountAndMap('user.finishedArticles', 'user.finishedArticles')
@@ -120,20 +122,25 @@ export class UserService {
   }
 
   getFinishedArticles(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
-    throw new NotImplementedException();
+    return this.articleService.getFinishedOfUser(id, dto);
   }
 
-  getFinishedTests(id: number, dto: GetManyDto): Observable<Array<Test>> {
+  getFinishedTests(id: number, dto: GetManyDto): Observable<Array<FinishedTest>> {
     throw new NotImplementedException();
   }
 
   getFavoriteArticles(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
-    throw new NotImplementedException();
+    return this.articleService.getFavoriteOfUser(id, dto);
   }
 
   getByEmail(email: string): Observable<User> {
     return from(this.userRepo.findOneOrFail({ email }, { relations: USER_RELATIONS }))
       .pipe(
+        catchError(err => {
+          console.error(err);
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
         map((user: UserEntity & UserEntityRelations) => convertUserEntityToUser(user)),
       );
   }
@@ -156,6 +163,7 @@ export class UserService {
     return from(qb.getManyAndCount())
       .pipe(
         catchError(err => {
+          console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
         }),
@@ -166,6 +174,17 @@ export class UserService {
             page: dto?.page || DEFAULT_PAGE,
             totalItems: res[1],
           };
+        }),
+      );
+  }
+
+  updateRating(id: number, value: number): Observable<UpdateResult> {
+    return from(this.userRepo.update(id, { rating: value }))
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
         }),
       );
   }

@@ -9,12 +9,14 @@ import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
 import { calculateQueryOffset } from '../../common/utils';
 import { catchError, map } from 'rxjs/operators';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
+import { addTagSort } from './utils/add-tag-sort';
+import { addTagFilter } from './utils/add-tag-filter';
 
 @Injectable()
 export class TagService {
   constructor(@InjectRepository(Tag) private readonly tagRepo: Repository<Tag>,
               private readonly logger: Logger) {
-    logger.setContext('TagService')
+    logger.setContext('TagService');
   }
 
   createOne(dto: CreateTagDto): Observable<Tag> {
@@ -27,31 +29,33 @@ export class TagService {
 
   getMany(dto: GetManyTagsDto): Observable<GetManyResponseDto<Tag>> {
     const entityName = 'tag';
-    const qb = this.tagRepo.createQueryBuilder(entityName)
+    let qb = this.tagRepo.createQueryBuilder(entityName)
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
       .offset(calculateQueryOffset(dto?.perPage, dto?.page));
 
-    // TODO: apply sort
     if (dto.sort) {
+      qb = addTagSort(qb, dto.sort, entityName);
     }
 
-    // TODO: apply filtering
-    if(dto.filter) {}
+    if (dto.filter) {
+      qb = addTagFilter(qb, dto.filter, entityName);
+    }
 
     return from(qb.getManyAndCount())
       .pipe(
         catchError(err => {
+          console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
         }),
-        map(res=>{
+        map(res => {
           return {
             data: res[0],
             perPage: dto?.perPage || DEFAULT_PER_PAGE,
             page: dto?.page || DEFAULT_PAGE,
             totalItems: res[1],
-          }
+          };
         }),
-      )
+      );
   }
 }

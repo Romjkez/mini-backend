@@ -15,8 +15,8 @@ export function convertRawArticleToArticle(rawArticle: Article & ArticleRelation
     previewUrl: rawArticle.previewUrl,
     createdAt: rawArticle.createdAt,
     updatedAt: rawArticle.updatedAt,
-    finishedBy: rawArticle.__finishedBy__,
-    favoriteFor: rawArticle.__favoriteFor__,
-    tags: rawArticle.__tags__,
+    finishedBy: rawArticle.finishedBy,
+    favoriteFor: rawArticle.favoriteFor,
+    tags: rawArticle.tags,
   };
 }

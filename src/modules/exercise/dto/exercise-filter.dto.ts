@@ -2,7 +2,7 @@ import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-mo
 import { IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class ExerciseFilterDto {
-  @ApiModelPropertyOptional({ description: 'Title of the exercise' })
+  @ApiModelPropertyOptional({ description: 'Title of the exercise', minLength: 3 })
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
