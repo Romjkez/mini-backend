@@ -38,6 +38,7 @@ import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
 import { UpdateResult } from 'typeorm';
 import { FinishedTest } from '../finished-test/finished-test.entity';
+import { ArticleService } from '../article/article.service';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -48,6 +49,7 @@ export class UserService {
     @Inject('SALT_ROUNDS') private readonly saltRounds: number,
     private readonly logger: Logger,
     private readonly mailerService: MailerService,
+    private readonly articleService: ArticleService,
   ) {
     logger.setContext('UserService');
   }
@@ -120,7 +122,7 @@ export class UserService {
   }
 
   getFinishedArticles(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
-    throw new NotImplementedException();
+    return this.articleService.getFinishedOfUser(id, dto);
   }
 
   getFinishedTests(id: number, dto: GetManyDto): Observable<Array<FinishedTest>> {
@@ -128,7 +130,7 @@ export class UserService {
   }
 
   getFavoriteArticles(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
-    throw new NotImplementedException();
+    return this.articleService.getFavoriteOfUser(id, dto);
   }
 
   getByEmail(email: string): Observable<User> {

@@ -8,7 +8,9 @@ import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { Article } from './models/article.model';
 import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 import { ArticleRepository } from './article.repository';
-import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE, GetManyDto } from '../../common/dto/get-many.dto';
+import { calculateQueryOffset } from '../../common/utils';
+import { ArticleEntity } from './article.entity';
 
 export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy', 'tags'];
 
@@ -97,6 +99,22 @@ export class ArticleService {
         }),
         mapTo(null),
       );
+  }
+
+  getFinishedOfUser(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
+    return from(this.articleRepo.createQueryBuilder('article')
+      .limit(dto?.perPage || DEFAULT_PER_PAGE)
+      .offset(calculateQueryOffset(dto?.perPage, dto?.page))
+      .innerJoin('article.finishedBy', 'finishedBy', 'finishedBy.id =:id', { id })
+      .getMany());
+  }
+
+  getFavoriteOfUser(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
+    return from(this.articleRepo.createQueryBuilder('article')
+      .limit(dto?.perPage || DEFAULT_PER_PAGE)
+      .offset(calculateQueryOffset(dto?.perPage, dto?.page))
+      .innerJoin('article.favoriteFor', 'favoriteFor', 'favoriteFor.id =:id', { id })
+      .getMany());
   }
 
   delete(id: number): Observable<void> {
