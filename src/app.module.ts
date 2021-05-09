@@ -14,6 +14,7 @@ import { TagModule } from './modules/tag/tag.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
 import { FinishedTestModule } from './modules/finished-test/finished-test.module';
+import { FinishedExerciseModule } from './modules/finished-exercise/finished-exercise.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { FinishedTestModule } from './modules/finished-test/finished-test.module
       transport: `smtp://${process.env.MAIL_USER}:${process.env.MAIL_PASSWORD}@${process.env.MAIL_HOST}`,
     }),
     ConfigModule,
+    FinishedExerciseModule,
   ],
   controllers: [AppController],
   providers: [],
