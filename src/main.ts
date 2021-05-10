@@ -21,6 +21,7 @@ export const swaggerOptions = new DocumentBuilder()
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   const document = SwaggerModule.createDocument(app, swaggerOptions.build());
   if (process.env.NODE_ENV !== 'production') {
     const outputPath = path.resolve(process.cwd(), 'openapi.json');
