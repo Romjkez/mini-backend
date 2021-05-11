@@ -51,5 +51,14 @@ export class FinishedTestService {
         }),
       );
   }
+
+  async hasUserFinishedTests(userId: number, testIds: Array<number>): Promise<Array<number>> {
+    return this.finishedTestRepo.createQueryBuilder('finishedTest')
+      .select('finishedTest.id')
+      .where('finishedTest.finishedBy=:user', { user: userId })
+      .andWhere('finishedTest.test IN (:...test)', { test: testIds })
+      .getMany()
+      .then(res => res.map(finishedTest => finishedTest.id));
+  }
 }
 

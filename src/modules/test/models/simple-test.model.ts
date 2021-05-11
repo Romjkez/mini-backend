@@ -6,7 +6,7 @@ import { Test } from '../test.entity';
 
 export class SimpleTest {
   @ApiModelProperty()
-  id: Pick<Test, 'id'>;
+  id: number;
 
   @ApiModelProperty()
   oneOfQuestions: number;
