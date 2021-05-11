@@ -16,7 +16,7 @@ import { FinishedTestService } from '../finished-test/finished-test.service';
 @Injectable()
 export class TestService {
   constructor(private readonly testRepo: TestRepository,
-              private readonly fTestService: FinishedTestService,
+              private readonly finTestService: FinishedTestService,
               private readonly logger: Logger) {
     logger.setContext('TestService');
   }
@@ -40,7 +40,7 @@ export class TestService {
       .pipe(
         switchMap(async res => {
           if (dto.jwtPayload.role === UserRole.EMPLOYEE) {
-            const searchResult = await this.fTestService.hasUserFinishedTests(
+            const searchResult = await this.finTestService.hasUserFinishedTests(
               dto.jwtPayload.sub, res[0].map(t => t.id));
 
             res[0] = setIsFinishedStatuses(res[0], searchResult);
