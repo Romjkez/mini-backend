@@ -1,4 +1,7 @@
-import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import {
+  ApiModelProperty,
+  ApiModelPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Test } from '../test.entity';
 
 export class SimpleTest {
@@ -22,6 +25,9 @@ export class SimpleTest {
 
   @ApiModelProperty({ readOnly: true })
   createdAt: Pick<Test, 'createdAt'>;
+
+  @ApiModelPropertyOptional({ description: 'Returned only to users with role EMPLOYEE' })
+  isFinished?: boolean;
 
   @ApiModelProperty()
   updatedAt?: Pick<Test, 'updatedAt'>;
