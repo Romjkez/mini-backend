@@ -1,5 +1,5 @@
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Param, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, UseInterceptors } from '@nestjs/common';
 import { TestService } from './test.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { Observable } from 'rxjs';
@@ -32,8 +32,12 @@ export class TestController {
     return this.testService.getMany(dto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ExtractJwtPayloadInterceptor)
+  @ApiOkResponse({ type: Test })
   @Get(':id')
-  getById(@Param() dto: IdDto) {
-    return this.testService.getById(dto.id);
+  getById(@Param() dto: IdDto, @Query() payload: ExtractedJwtPayload): Observable<Test> {
+    return this.testService.getById(dto.id, payload.jwtPayload);
   }
 }

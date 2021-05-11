@@ -68,4 +68,10 @@ export class Test {
   @ManyToMany(() => Tag, t => t.tests)
   @JoinTable()
   tags: Array<Tag>;
+
+  @ApiModelPropertyOptional({ description: 'Shown only to users with role EMPLOYEE' })
+  readonly isFavorite?: boolean;
+
+  @ApiModelPropertyOptional({ description: 'Shown only to users with role EMPLOYEE' })
+  readonly isFinished?: boolean;
 }

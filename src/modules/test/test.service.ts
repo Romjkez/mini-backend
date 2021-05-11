@@ -12,6 +12,7 @@ import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
 import { ExtractedJwtPayload } from '../../common/models/extracted-jwt-payload.model';
 import { UserRole } from '../user/models/user-role.enum';
 import { FinishedTestService } from '../finished-test/finished-test.service';
+import { JwtPayload } from '../auth/models/jwt-payload.model';
 
 @Injectable()
 export class TestService {
@@ -43,7 +44,7 @@ export class TestService {
             const searchResult = await this.finTestService.hasUserFinishedTests(
               dto.jwtPayload.sub, res[0].map(t => t.id));
 
-            res[0] = setIsFinishedStatuses(res[0], searchResult);
+            res[0] = setIsFinishedStatuses<SimpleTest>(res[0], searchResult);
           }
           return res;
         }),
@@ -65,11 +66,19 @@ export class TestService {
 
   // TODO add update method, restrict updating when there is at least 1 related finishedTest
 
-  getById(id: number): Observable<Test> {
+  getById(id: number, payload?: JwtPayload): Observable<Test> {
     return from(this.testRepo.findOneOrFail(id, {
       relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions'],
     }))
       .pipe(
+        switchMap(async res => {
+          if (payload?.role === UserRole.EMPLOYEE) {
+            const searchResult = await this.finTestService.hasUserFinishedTests(payload.sub, [res.id]);
+
+            res = setIsFinishedStatuses<Test>([res], searchResult)[0];
+          }
+          return res;
+        }),
         catchError(err => {
           console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
@@ -82,7 +91,8 @@ export class TestService {
   }
 }
 
-function setIsFinishedStatuses(tests: Array<SimpleTest>, finishedTestsIds: Array<number>): Array<SimpleTest> {
+function setIsFinishedStatuses<T extends { isFinished?, id }>(tests: Array<T>, finishedTestsIds: Array<number>)
+  : Array<T> {
   if (finishedTestsIds.length === 0) {
     return tests.map(test => {
       test.isFinished = false;
