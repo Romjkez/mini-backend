@@ -24,6 +24,6 @@ import { TaskService } from './services/task.service';
     }), TypeOrmModule.forFeature([UserRepository, RefreshToken])],
   providers: [AuthService, JwtStrategy, Logger, TaskService],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

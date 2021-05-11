@@ -13,6 +13,7 @@ import { ArticleEntity } from '../article/article.entity';
 import { FinishedTest } from '../finished-test/finished-test.entity';
 import { SimpleUser } from './models/simple-user.model';
 import { UserRole } from './models/user-role.enum';
+import { FinishedExerciseEntity } from '../finished-exercise/finished-exercise.entity';
 
 /**
  * Plain user object from database
@@ -79,4 +80,7 @@ export class UserEntity extends SimpleUser {
   @ManyToMany(() => ArticleEntity, article => article.favoriteFor)
   @JoinTable()
   favoriteArticles: Array<ArticleEntity>;
+
+  @OneToMany(() => FinishedExerciseEntity, e => e.finishedBy)
+  finishedExercises: Array<FinishedExerciseEntity>;
 }

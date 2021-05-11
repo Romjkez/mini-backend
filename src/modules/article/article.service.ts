@@ -11,6 +11,9 @@ import { ArticleRepository } from './article.repository';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE, GetManyDto } from '../../common/dto/get-many.dto';
 import { calculateQueryOffset } from '../../common/utils';
 import { ArticleEntity } from './article.entity';
+import { ExtractedJwtPayload } from '../../common/models/extracted-jwt-payload.model';
+import { UserRole } from '../user/models/user-role.enum';
+import { JwtPayload } from '../auth/models/jwt-payload.model';
 
 export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy', 'tags'];
 
@@ -35,9 +38,18 @@ export class ArticleService {
 
   }
 
-  getById(id: number): Observable<Article> {
+  getById(id: number, payload: JwtPayload): Observable<Article> {
     return from(this.articleRepo.getById(id))
       .pipe(
+        switchMap(async res => {
+          if (payload.role === UserRole.EMPLOYEE) {
+            const searchFinishedResult = await this.hasUserFinishedArticles(payload.sub, [res.id]);
+            const searchFavoriteResult = await this.hasUserLikedArticles(payload.sub, [res.id]);
+            res = setIsFinishedStatuses([res], searchFinishedResult)[0];
+            res = setIsFavoriteStatuses([res], searchFavoriteResult)[0];
+          }
+          return res;
+        }),
         catchError(err => {
           console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
@@ -46,9 +58,18 @@ export class ArticleService {
       );
   }
 
-  getMany(dto: GetManyArticlesDto): Observable<GetManyResponseDto<Article>> {
+  getMany(dto: GetManyArticlesDto & ExtractedJwtPayload): Observable<GetManyResponseDto<Article>> {
     return from(this.articleRepo.getMany(dto))
       .pipe(
+        switchMap(async res => {
+          if (dto.jwtPayload.role === UserRole.EMPLOYEE) {
+            const searchFinishedResult = await this.hasUserFinishedArticles(dto.jwtPayload.sub, res[0].map(a => a.id));
+            const searchFavoriteResult = await this.hasUserLikedArticles(dto.jwtPayload.sub, res[0].map(a => a.id));
+            res[0] = setIsFinishedStatuses(res[0], searchFinishedResult);
+            res[0] = setIsFavoriteStatuses(res[0], searchFavoriteResult);
+          }
+          return res;
+        }),
         catchError(err => {
           console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
@@ -117,7 +138,53 @@ export class ArticleService {
       .getMany());
   }
 
+  async hasUserFinishedArticles(userId: number, articlesIds: Array<number>): Promise<Array<number>> {
+    return this.articleRepo.createQueryBuilder('article')
+      .innerJoin('article.finishedBy', 'finishedBy', 'finishedBy.id=:userId', { userId })
+      .select('article.id')
+      .where('article.id IN (:...articlesIds)', { articlesIds })
+      .getMany()
+      .then(res => res.map(article => article.id));
+  }
+
+  async hasUserLikedArticles(userId: number, articlesIds: Array<number>): Promise<Array<number>> {
+    return this.articleRepo.createQueryBuilder('article')
+      .innerJoin('article.favoriteFor', 'favoriteFor', 'favoriteFor.id=:userId', { userId })
+      .select('article.id')
+      .where('article.id IN (:...articlesIds)', { articlesIds })
+      .getMany()
+      .then(res => res.map(article => article.id));
+  }
+
   delete(id: number): Observable<void> {
     throw new NotImplementedException();
   }
+}
+
+function setIsFinishedStatuses(articles: Array<Article>, articlesIds: Array<number>): Array<Article> {
+  if (articlesIds.length === 0) {
+    return articles.map(article => {
+      article.isFinished = false;
+      return article;
+    });
+  }
+  return articles.map(article => {
+    article.isFinished = articlesIds.includes(article.id);
+    return article;
+  });
+
+}
+
+function setIsFavoriteStatuses(articles: Array<Article>, articlesIds: Array<number>): Array<Article> {
+  if (articlesIds.length === 0) {
+    return articles.map(article => {
+      article.isFavorite = false;
+      return article;
+    });
+  }
+  return articles.map(article => {
+    article.isFavorite = articlesIds.includes(article.id);
+    return article;
+  });
+
 }

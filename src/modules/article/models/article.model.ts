@@ -37,4 +37,11 @@ export class Article {
 
   @ApiModelProperty({ isArray: true, type: Tag })
   tags: Array<Tag>;
+
+  @ApiModelPropertyOptional({ description: 'Shown only to users with role EMPLOYEE' })
+  isFavorite?: boolean;
+
+  @ApiModelPropertyOptional({ description: 'Shown only to users with role EMPLOYEE' })
+  isFinished?: boolean;
 }
+

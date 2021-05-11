@@ -25,18 +25,22 @@ export class Test {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
+  @ApiModelProperty()
   @ManyToMany(() => OneOfQuestionEntity, q => q.id, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   oneOfQuestions: Array<OneOfQuestionEntity>;
 
+  @ApiModelProperty()
   @ManyToMany(() => ManyOfQuestionEntity, q => q.id, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   manyOfQuestions: Array<ManyOfQuestionEntity>;
 
+  @ApiModelProperty()
   @ManyToMany(() => ExactAnswerQuestion, q => q.id, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   exactAnswerQuestions: Array<ExactAnswerQuestion>;
 
+  @ApiModelProperty()
   @ManyToMany(() => OrderQuestionEntity, q => q.id, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   orderQuestions: Array<OrderQuestionEntity>;
@@ -47,11 +51,11 @@ export class Test {
 
   @ApiModelProperty({ readOnly: true })
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt: number;
+  createdAt: Date;
 
   @ApiModelProperty()
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updatedAt?: number;
+  updatedAt?: Date;
 
   @ApiModelPropertyOptional({ nullable: true })
   @Column({ type: 'smallint', nullable: true })
@@ -64,4 +68,10 @@ export class Test {
   @ManyToMany(() => Tag, t => t.tests)
   @JoinTable()
   tags: Array<Tag>;
+
+  @ApiModelPropertyOptional({ description: 'Shown only to users with role EMPLOYEE' })
+  readonly isFavorite?: boolean;
+
+  @ApiModelPropertyOptional({ description: 'Shown only to users with role EMPLOYEE' })
+  readonly isFinished?: boolean;
 }
