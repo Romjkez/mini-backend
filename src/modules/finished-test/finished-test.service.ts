@@ -61,7 +61,7 @@ export class FinishedTestService {
   }
 
 
-  getFinishedTestsOfUser(id: number, dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<FinishedTestSimple>> {
+  getFinishedTestsOfUser(dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<FinishedTestSimple>> {
     return from(this.finishedTestRepo.createQueryBuilder('finishedTest')
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
       .offset(calculateQueryOffset(dto?.perPage, dto?.page))
@@ -69,7 +69,7 @@ export class FinishedTestService {
       .loadRelationCountAndMap('finishedTest.manyOfQuestionAnswers', 'finishedTest.manyOfQuestionAnswers')
       .loadRelationCountAndMap('finishedTest.orderQuestionAnswers', 'finishedTest.orderQuestionAnswers')
       .loadRelationCountAndMap('finishedTest.exactAnswerQuestionAnswers', 'finishedTest.exactAnswerQuestionAnswers')
-      .innerJoinAndSelect('finishedTest.finishedBy', 'finishedBy', 'finishedBy.id=:id', { id })
+      .innerJoinAndSelect('finishedTest.finishedBy', 'finishedBy', 'finishedBy.id=:id', { id: jwtPayload.sub })
       .leftJoinAndSelect('finishedTest.test', 'test')
       .getMany(),
     ).pipe(

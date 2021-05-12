@@ -61,7 +61,7 @@ export class ArticleService {
     return from(this.articleRepo.getMany(dto))
       .pipe(
         switchMap(async res => {
-          if (dto.jwtPayload.role === UserRole.EMPLOYEE) {
+          if (dto.jwtPayload.role === UserRole.EMPLOYEE && res[1] !== 0) {
             const searchFinishedResult = await this.hasUserFinishedArticles(dto.jwtPayload.sub, res[0].map(a => a.id));
             const searchFavoriteResult = await this.hasUserLikedArticles(dto.jwtPayload.sub, res[0].map(a => a.id));
             res[0] = setIsFinishedStatuses(res[0], searchFinishedResult);

@@ -40,7 +40,7 @@ export class TestService {
     return from(this.testRepo.getMany(dto))
       .pipe(
         switchMap(async res => {
-          if (dto.jwtPayload.role === UserRole.EMPLOYEE) {
+          if (dto.jwtPayload.role === UserRole.EMPLOYEE && res[1] !== 0) {
             const searchResult = await this.finTestService.hasUserFinishedTests(
               dto.jwtPayload.sub, res[0].map(t => t.id));
 

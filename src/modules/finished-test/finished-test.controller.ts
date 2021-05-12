@@ -30,10 +30,10 @@ export class FinishedTestController {
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get list of user\'s finished tests' })
   @UseInterceptors(ExtractJwtPayloadInterceptor)
-  @Get('user/:id')
-  getFinishedTests(@Param() params: IdDto, @Query() dto: GetManyQueryDto,
+  @Get('my')
+  getFinishedTests(@Query() dto: GetManyQueryDto,
                    @Query('jwtPayload') jwtPayload: JwtPayload): Observable<Array<FinishedTestSimple>> {
-    return this.finishedTestService.getFinishedTestsOfUser(params.id, dto, jwtPayload);
+    return this.finishedTestService.getFinishedTestsOfUser(dto, jwtPayload);
   }
 
   @ApiOperation({ summary: 'Get finished test by ID' })
