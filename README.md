@@ -1,6 +1,10 @@
 # MINI Study: backend
 Backend for the MINI mobile app and admin panel
 
+![GitHub top language](https://img.shields.io/github/languages/top/romjkez/mini-backend?style=flat-square)
+![GitHub](https://img.shields.io/github/license/romjkez/mini-backend?style=flat-square)
+
+
 # Starting app locally
 1) Install Docker Desktop for you OS
 2) Clone this repository
