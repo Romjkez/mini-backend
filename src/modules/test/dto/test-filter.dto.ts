@@ -1,6 +1,6 @@
 import { Test } from '../test.entity';
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class TestFilterDto {
   @ApiModelPropertyOptional({ type: 'boolean' })
@@ -8,4 +8,10 @@ export class TestFilterDto {
   @IsBoolean()
   @IsNotEmpty()
   isVisible?: Pick<Test, 'isVisible'>;
+
+  @ApiModelPropertyOptional({ type: 'string' })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  title?: Pick<Test, 'title'>;
 }

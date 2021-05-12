@@ -3,7 +3,17 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsArray, IsInt, IsNotEmpty, IsOptional, IsPositive, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
 import { CreateQuestionBulkDto } from '../../question/dto/create-question-bulk.dto';
 import { CreateOneOfQuestionDto } from '../../question/dto/create-one-of-question.dto';
 import { CreateManyOfQuestionDto } from '../../question/dto/create-many-of-question.dto';
@@ -12,24 +22,35 @@ import { CreateOrderQuestionDto } from '../../question/dto/create-order-question
 import { Tag } from '../../tag/tag.entity';
 
 export class CreateTestDto extends CreateQuestionBulkDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  @MinLength(3)
+  @ApiModelProperty({ minLength: 3, maxLength: 50 })
+  title: string;
+
+  @ApiModelPropertyOptional()
   @IsArray()
   @Type(() => CreateOneOfQuestionDto)
   @ValidateNested({ each: true })
   @IsOptional()
   oneOfQuestions?: Array<CreateOneOfQuestionDto>;
 
+  @ApiModelPropertyOptional()
   @IsArray()
   @Type(() => CreateManyOfQuestionDto)
   @ValidateNested({ each: true })
   @IsOptional()
   manyOfQuestions?: Array<CreateManyOfQuestionDto>;
 
+  @ApiModelPropertyOptional()
   @IsArray()
   @Type(() => CreateExactAnswerQuestionDto)
   @ValidateNested({ each: true })
   @IsOptional()
   exactAnswerQuestions?: Array<CreateExactAnswerQuestionDto>;
 
+  @ApiModelPropertyOptional()
   @IsArray()
   @Type(() => CreateOrderQuestionDto)
   @ValidateNested({ each: true })
@@ -49,6 +70,7 @@ export class CreateTestDto extends CreateQuestionBulkDto {
 }
 
 export class CreateTestInternalDto {
+  title: string;
   oneOfQuestions?: Array<CreateOneOfQuestionDto>;
   manyOfQuestions?: Array<CreateManyOfQuestionDto>;
   exactAnswerQuestions?: Array<CreateExactAnswerQuestionDto>;

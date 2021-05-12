@@ -9,5 +9,9 @@ export function addTestFilter(qb: SelectQueryBuilder<Test>, filter: TestFilterDt
     qb = qb.andWhere(`"${entityName}"."isVisible"=:isVisible`, { isVisible: filter.isVisible });
   }
 
+  if (filter.title) {
+    qb = qb.andWhere(`"${entityName}"."title"=:title`, { title: filter.title });
+  }
+
   return qb;
 }

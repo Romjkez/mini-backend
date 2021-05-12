@@ -11,7 +11,7 @@ export class Tag {
   id: number;
 
   @ApiModelProperty({ example: 'Clubman', maxLength: 20 })
-  @Column({ nullable: false, type: 'varchar', length: 20 })
+  @Column({ nullable: true, type: 'varchar', length: 20 })
   text: string;
 
   @ManyToMany(() => ExerciseEntity, e => e.tags)
