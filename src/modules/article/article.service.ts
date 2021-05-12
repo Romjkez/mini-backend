@@ -121,18 +121,18 @@ export class ArticleService {
       );
   }
 
-  getFinishedOfUser(id: number, dto: GetManyDto, jwtPayload: JwtPayload): Observable<Array<Article>> {
+  getFinishedOfUser(dto: GetManyDto, jwtPayload: JwtPayload): Observable<Array<Article>> {
     return from(this.articleRepo.createQueryBuilder('article')
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
       .offset(calculateQueryOffset(dto?.perPage, dto?.page))
-      .innerJoin('article.finishedBy', 'finishedBy', 'finishedBy.id =:id', { id })
+      .innerJoin('article.finishedBy', 'finishedBy', 'finishedBy.id =:id', { id: jwtPayload.sub })
       .loadRelationCountAndMap('article.favoriteFor', 'article.favoriteFor')
       .loadRelationCountAndMap('article.finishedBy', 'article.finishedBy')
       .leftJoinAndSelect('article.tags', 'tags')
       .getMany() as unknown as Promise<Array<Article>>)
       .pipe(
         switchMap(async res => {
-          if (jwtPayload.role === UserRole.EMPLOYEE) {
+          if (jwtPayload.role === UserRole.EMPLOYEE && res.length !== 0) {
             const searchFinishedResult = await this.hasUserFinishedArticles(jwtPayload.sub, res.map(a => a.id));
             const searchFavoriteResult = await this.hasUserLikedArticles(jwtPayload.sub, res.map(a => a.id));
             res = setIsFinishedStatuses(res, searchFinishedResult);
@@ -143,18 +143,18 @@ export class ArticleService {
       );
   }
 
-  getFavoriteOfUser(id: number, dto: GetManyDto, jwtPayload: JwtPayload): Observable<Array<Article>> {
+  getFavoriteOfUser(dto: GetManyDto, jwtPayload: JwtPayload): Observable<Array<Article>> {
     return from(this.articleRepo.createQueryBuilder('article')
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
       .offset(calculateQueryOffset(dto?.perPage, dto?.page))
-      .innerJoin('article.favoriteFor', 'favoriteFor', 'favoriteFor.id =:id', { id })
+      .innerJoin('article.favoriteFor', 'favoriteFor', 'favoriteFor.id =:id', { id: jwtPayload.sub })
       .loadRelationCountAndMap('article.favoriteFor', 'article.favoriteFor')
       .loadRelationCountAndMap('article.finishedBy', 'article.finishedBy')
       .leftJoinAndSelect('article.tags', 'tags')
       .getMany() as unknown as Promise<Array<Article>>)
       .pipe(
         switchMap(async res => {
-          if (jwtPayload.role === UserRole.EMPLOYEE) {
+          if (jwtPayload.role === UserRole.EMPLOYEE && res.length !== 0) {
             const searchFinishedResult = await this.hasUserFinishedArticles(jwtPayload.sub, res.map(a => a.id));
             const searchFavoriteResult = await this.hasUserLikedArticles(jwtPayload.sub, res.map(a => a.id));
             res = setIsFinishedStatuses(res, searchFinishedResult);

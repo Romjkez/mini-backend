@@ -120,12 +120,12 @@ export class UserService {
       );
   }
 
-  getFinishedArticles(id: number, dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<Article>> {
-    return this.articleService.getFinishedOfUser(id, dto, jwtPayload);
+  getFinishedArticles(dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<Article>> {
+    return this.articleService.getFinishedOfUser(dto, jwtPayload);
   }
 
-  getFavoriteArticles(id: number, dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<Article>> {
-    return this.articleService.getFavoriteOfUser(id, dto, jwtPayload);
+  getFavoriteArticles(dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<Article>> {
+    return this.articleService.getFavoriteOfUser(dto, jwtPayload);
   }
 
   getByEmail(email: string): Observable<User> {

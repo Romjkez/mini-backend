@@ -135,19 +135,19 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ExtractJwtPayloadInterceptor)
-  @Get(':id/articles/finished')
-  getFinishedArticles(@Param() params: IdDto, @Query() dto: GetManyQueryDto,
+  @Get('articles/finished')
+  getFinishedArticles(@Query() dto: GetManyQueryDto,
                       @Query('jwtPayload') jwtPayload: JwtPayload): Observable<Array<Article>> {
-    return this.userService.getFinishedArticles(params.id, dto, jwtPayload);
+    return this.userService.getFinishedArticles(dto, jwtPayload);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ExtractJwtPayloadInterceptor)
-  @Get(':id/articles/favorite')
-  getFavoriteArticles(@Param() params: IdDto, @Query() dto: GetManyQueryDto,
+  @Get('articles/favorite')
+  getFavoriteArticles(@Query() dto: GetManyQueryDto,
                       @Query('jwtPayload') jwtPayload: JwtPayload): Observable<Array<Article>> {
-    return this.userService.getFavoriteArticles(params.id, dto, jwtPayload);
+    return this.userService.getFavoriteArticles(dto, jwtPayload);
   }
 
 }
