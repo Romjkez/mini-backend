@@ -6,7 +6,10 @@ import { UserRepository } from './user.repository';
 import { ArticleModule } from '../article/article.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository]), ArticleModule],
+  imports: [
+    TypeOrmModule.forFeature([UserRepository]),
+    ArticleModule,
+  ],
   providers: [UserService, Logger,
     {
       provide: 'SALT_ROUNDS',

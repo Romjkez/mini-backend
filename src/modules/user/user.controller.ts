@@ -28,7 +28,6 @@ import { GetManyQueryDto } from '../../common/dto/get-many.dto';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
-import { FinishedTest } from '../finished-test/finished-test.entity';
 import { UserFilterDto } from './dto/user-filter.dto';
 import { UserSortDto } from './dto/user-sort.dto';
 import { SortType } from '../../common/models/sort-type.enum';
@@ -140,15 +139,6 @@ export class UserController {
   getFinishedArticles(@Param() params: IdDto, @Query() dto: GetManyQueryDto,
                       @Query('jwtPayload') jwtPayload: JwtPayload): Observable<Array<Article>> {
     return this.userService.getFinishedArticles(params.id, dto, jwtPayload);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(ExtractJwtPayloadInterceptor)
-  @Get(':id/tests/finished')
-  getFinishedTests(@Param() params: IdDto, @Query() dto: GetManyQueryDto,
-                   @Query('jwtPayload') jwtPayload: JwtPayload): Observable<Array<FinishedTest>> {
-    return this.userService.getFinishedTests(params.id, dto, jwtPayload);
   }
 
   @ApiBearerAuth()

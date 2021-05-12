@@ -35,7 +35,6 @@ import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
 import { UpdateResult } from 'typeorm';
-import { FinishedTest } from '../finished-test/finished-test.entity';
 import { ArticleService } from '../article/article.service';
 import { Article } from '../article/models/article.model';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
@@ -123,10 +122,6 @@ export class UserService {
 
   getFinishedArticles(id: number, dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<Article>> {
     return this.articleService.getFinishedOfUser(id, dto, jwtPayload);
-  }
-
-  getFinishedTests(id: number, dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<FinishedTest>> {
-    throw new NotImplementedException();
   }
 
   getFavoriteArticles(id: number, dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<Article>> {
