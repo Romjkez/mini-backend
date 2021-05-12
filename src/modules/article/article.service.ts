@@ -10,7 +10,6 @@ import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 import { ArticleRepository } from './article.repository';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE, GetManyDto } from '../../common/dto/get-many.dto';
 import { calculateQueryOffset } from '../../common/utils';
-import { ArticleEntity } from './article.entity';
 import { ExtractedJwtPayload } from '../../common/models/extracted-jwt-payload.model';
 import { UserRole } from '../user/models/user-role.enum';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
@@ -122,20 +121,48 @@ export class ArticleService {
       );
   }
 
-  getFinishedOfUser(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
+  getFinishedOfUser(id: number, dto: GetManyDto, jwtPayload: JwtPayload): Observable<Array<Article>> {
     return from(this.articleRepo.createQueryBuilder('article')
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
       .offset(calculateQueryOffset(dto?.perPage, dto?.page))
       .innerJoin('article.finishedBy', 'finishedBy', 'finishedBy.id =:id', { id })
-      .getMany());
+      .loadRelationCountAndMap('article.favoriteFor', 'article.favoriteFor')
+      .loadRelationCountAndMap('article.finishedBy', 'article.finishedBy')
+      .leftJoinAndSelect('article.tags', 'tags')
+      .getMany() as unknown as Promise<Array<Article>>)
+      .pipe(
+        switchMap(async res => {
+          if (jwtPayload.role === UserRole.EMPLOYEE) {
+            const searchFinishedResult = await this.hasUserFinishedArticles(jwtPayload.sub, res.map(a => a.id));
+            const searchFavoriteResult = await this.hasUserLikedArticles(jwtPayload.sub, res.map(a => a.id));
+            res = setIsFinishedStatuses(res, searchFinishedResult);
+            res = setIsFavoriteStatuses(res, searchFavoriteResult);
+          }
+          return res;
+        }),
+      );
   }
 
-  getFavoriteOfUser(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
+  getFavoriteOfUser(id: number, dto: GetManyDto, jwtPayload: JwtPayload): Observable<Array<Article>> {
     return from(this.articleRepo.createQueryBuilder('article')
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
       .offset(calculateQueryOffset(dto?.perPage, dto?.page))
       .innerJoin('article.favoriteFor', 'favoriteFor', 'favoriteFor.id =:id', { id })
-      .getMany());
+      .loadRelationCountAndMap('article.favoriteFor', 'article.favoriteFor')
+      .loadRelationCountAndMap('article.finishedBy', 'article.finishedBy')
+      .leftJoinAndSelect('article.tags', 'tags')
+      .getMany() as unknown as Promise<Array<Article>>)
+      .pipe(
+        switchMap(async res => {
+          if (jwtPayload.role === UserRole.EMPLOYEE) {
+            const searchFinishedResult = await this.hasUserFinishedArticles(jwtPayload.sub, res.map(a => a.id));
+            const searchFavoriteResult = await this.hasUserLikedArticles(jwtPayload.sub, res.map(a => a.id));
+            res = setIsFinishedStatuses(res, searchFinishedResult);
+            res = setIsFavoriteStatuses(res, searchFavoriteResult);
+          }
+          return res;
+        }),
+      );
   }
 
   async hasUserFinishedArticles(userId: number, articlesIds: Array<number>): Promise<Array<number>> {
