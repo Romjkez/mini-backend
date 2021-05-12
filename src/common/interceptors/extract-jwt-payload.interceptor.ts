@@ -19,7 +19,7 @@ export class ExtractJwtPayloadInterceptor implements NestInterceptor {
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
 
     if (!token) {
-      throw new UnauthorizedException('NO_TOKEN_FOUND');
+      throw new UnauthorizedException('NO_TOKEN_PROVIDED');
     }
     const payload = this.jwtService.decode(token) as JwtFullPayload;
     const payloadToMerge: ExtractedJwtPayload = {

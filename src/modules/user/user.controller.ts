@@ -35,6 +35,9 @@ import { Article } from '../article/models/article.model';
 import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwtPayloadInterceptor } from '../../common/interceptors/extract-jwt-payload.interceptor';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
+import { HasRolesGuard } from '../../common/guards/has-roles-guard.service';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from './models/user-role.enum';
 
 // @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('bearer')
@@ -94,12 +97,18 @@ export class UserController {
     return this.userService.update(params.id, dto);
   }
 
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard('jwt'), HasRolesGuard)
   @Post(':id/activate')
   @HttpCode(200)
   activate(@Param() params: IdDto): Observable<void> {
     return this.userService.activate(params.id);
   }
 
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard('jwt'), HasRolesGuard)
   @ApiOperation({ summary: 'Restrict user to sign-in, delete all refresh tokens' })
   @Post(':id/deactivate')
   @HttpCode(200)
@@ -107,6 +116,9 @@ export class UserController {
     return this.userService.deactivate(params.id);
   }
 
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard('jwt'), HasRolesGuard)
   @Delete(':id')
   delete(@Param() params: IdDto): Observable<void> {
     return this.userService.delete(params.id);
