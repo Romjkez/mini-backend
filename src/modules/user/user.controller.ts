@@ -40,7 +40,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from './models/user-role.enum';
 
 // @UseGuards(AuthGuard('jwt'))
-@ApiBearerAuth('bearer')
+// @ApiBearerAuth('bearer')
 @ApiTags('user')
 @Controller('user')
 export class UserController {
@@ -58,7 +58,6 @@ export class UserController {
   createBulk(@Body() dto: CreateUserBulkDto): Observable<Array<User>> {
     return this.userService.createBulk(dto);
   }
-
 
   @Get('top')
   getTopList(@Query() dto: GetManyQueryDto) {
