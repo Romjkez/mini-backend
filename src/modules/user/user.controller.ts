@@ -13,7 +13,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -100,6 +100,7 @@ export class UserController {
     return this.userService.activate(params.id);
   }
 
+  @ApiOperation({ summary: 'Restrict user to sign-in, delete all refresh tokens' })
   @Post(':id/deactivate')
   @HttpCode(200)
   deactivate(@Param() params: IdDto): Observable<void> {

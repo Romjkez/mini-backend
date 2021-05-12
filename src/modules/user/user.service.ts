@@ -38,6 +38,7 @@ import { UpdateResult } from 'typeorm';
 import { ArticleService } from '../article/article.service';
 import { Article } from '../article/models/article.model';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
+import { AuthService } from '../auth/services/auth.service';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -49,6 +50,7 @@ export class UserService {
     private readonly logger: Logger,
     private readonly mailerService: MailerService,
     private readonly articleService: ArticleService,
+    private readonly authService: AuthService,
   ) {
     logger.setContext('UserService');
   }
@@ -215,6 +217,7 @@ export class UserService {
     // TODO: check if user already deactivated and throw error
     return from(this.userRepo.update(id, { bannedAt: new Date() }))
       .pipe(
+        switchMap(() => this.authService.resetRefreshTokens(id)),
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
