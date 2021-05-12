@@ -26,6 +26,10 @@ export class Test {
   id: number;
 
   @ApiModelProperty()
+  @Column({ type: 'varchar', nullable: false })
+  title: string;
+
+  @ApiModelProperty()
   @ManyToMany(() => OneOfQuestionEntity, q => q.id, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   oneOfQuestions: Array<OneOfQuestionEntity>;
