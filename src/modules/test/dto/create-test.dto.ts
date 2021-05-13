@@ -29,6 +29,12 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @ApiModelProperty({ minLength: 3, maxLength: 50 })
   title: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  @ApiModelPropertyOptional()
+  previewUrl?: string;
+
   @ApiModelPropertyOptional()
   @IsArray()
   @Type(() => CreateOneOfQuestionDto)
@@ -71,6 +77,7 @@ export class CreateTestDto extends CreateQuestionBulkDto {
 
 export class CreateTestInternalDto {
   title: string;
+  previewUrl?: string;
   oneOfQuestions?: Array<CreateOneOfQuestionDto>;
   manyOfQuestions?: Array<CreateManyOfQuestionDto>;
   exactAnswerQuestions?: Array<CreateExactAnswerQuestionDto>;
