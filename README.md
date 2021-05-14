@@ -2,7 +2,7 @@
 Backend for the MINI mobile app and admin panel
 
 ![GitHub top language](https://img.shields.io/github/languages/top/romjkez/mini-backend?style=flat-square)
-![GitHub](https://img.shields.io/github/license/romjkez/mini-backend?style=flat-square)
+![GitHub](https://img.shields.io/badge/license-CC%20BY--NC--SA-blue?style=flat-square)
 
 
 # Starting app locally
