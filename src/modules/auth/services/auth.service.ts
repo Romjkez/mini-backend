@@ -1,8 +1,14 @@
-import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ValidateUserDto } from '../dto/validate-user.dto';
 import { from, Observable, of, zip } from 'rxjs';
 import { UserRepository } from '../../user/user.repository';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtToken } from '../models/jwt-token.model';
@@ -31,6 +37,12 @@ export class AuthService {
           }
           throw new UnauthorizedException(err);
         }),
+        map(user => {
+          if (user.bannedAt !== null) {
+            throw new ForbiddenException('USER_DEACTIVATED');
+          }
+          return user;
+        }),
         switchMap(user => zip(from(bcrypt.compare(dto.password, user.password)), of(user))),
         switchMap(([passwordValid, user]) => this.generateJwtToken(passwordValid, user)),
       );
@@ -49,6 +61,13 @@ export class AuthService {
           role: payload.role,
         } as Partial<UserEntity>)),
         tap(async () => await this.refreshTokenRepo.delete({ refreshToken })),
+      );
+  }
+
+  resetRefreshTokens(userId: number): Observable<void> {
+    return from(this.refreshTokenRepo.delete({ owner: { id: userId } }))
+      .pipe(
+        mapTo(null),
       );
   }
 

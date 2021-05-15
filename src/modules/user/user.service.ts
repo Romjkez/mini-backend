@@ -31,14 +31,16 @@ import { convertUserEntityToSimpleUser } from './utils/convert-user-entity-to-si
 import { MailerService } from '@nestjs-modules/mailer';
 import { getPlainWelcomeText, getWelcomeText } from '../../templates/welcome';
 import { calculateQueryOffset } from '../../common/utils';
-
-import { ArticleEntity } from '../article/article.entity';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
 import { UpdateResult } from 'typeorm';
-import { FinishedTest } from '../finished-test/finished-test.entity';
 import { ArticleService } from '../article/article.service';
+import { Article } from '../article/models/article.model';
+import { JwtPayload } from '../auth/models/jwt-payload.model';
+import { AuthService } from '../auth/services/auth.service';
+import { UserRole } from './models/user-role.enum';
+import { USER_SEED_DATA } from '../seeder/user-seed-data';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -50,14 +52,18 @@ export class UserService {
     private readonly logger: Logger,
     private readonly mailerService: MailerService,
     private readonly articleService: ArticleService,
+    private readonly authService: AuthService,
   ) {
     logger.setContext('UserService');
   }
 
-  createOne(dto: CreateUserDto): Observable<User> {
+  createOne(dto: CreateUserDto, isAdmin?: boolean): Observable<User> {
     const password = this.generatePassword();
     if (process.env.NODE_ENV !== 'production') {
       this.logger.debug(`${dto.email}:${password}`);
+    }
+    if (isAdmin) {
+      dto.role = UserRole.ADMIN;
     }
 
     return this.userRepo.insertOne({ ...dto, password }, this.saltRounds)
@@ -74,7 +80,7 @@ export class UserService {
           console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           if (err.code === '23505') {
-            throw new BadRequestException('User with such an email already exists');
+            throw new BadRequestException('EMAIL_ALREADY_EXISTS');
           }
           throw new InternalServerErrorException(err);
         }),
@@ -121,16 +127,12 @@ export class UserService {
       );
   }
 
-  getFinishedArticles(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
-    return this.articleService.getFinishedOfUser(id, dto);
+  getFinishedArticles(dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<Article>> {
+    return this.articleService.getFinishedOfUser(dto, jwtPayload);
   }
 
-  getFinishedTests(id: number, dto: GetManyDto): Observable<Array<FinishedTest>> {
-    throw new NotImplementedException();
-  }
-
-  getFavoriteArticles(id: number, dto: GetManyDto): Observable<Array<ArticleEntity>> {
-    return this.articleService.getFavoriteOfUser(id, dto);
+  getFavoriteArticles(dto: GetManyDto, jwtPayload?: JwtPayload): Observable<Array<Article>> {
+    return this.articleService.getFavoriteOfUser(dto, jwtPayload);
   }
 
   getByEmail(email: string): Observable<User> {
@@ -220,6 +222,7 @@ export class UserService {
     // TODO: check if user already deactivated and throw error
     return from(this.userRepo.update(id, { bannedAt: new Date() }))
       .pipe(
+        switchMap(() => this.authService.resetRefreshTokens(id)),
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
@@ -317,6 +320,23 @@ export class UserService {
           throw new InternalServerErrorException(err);
         }),
         mapTo(null),
+      );
+  }
+
+  seed(): Observable<number> {
+    return from(this.userRepo.findOne({ email: process.env.ADMIN_EMAIL }))
+      .pipe(
+        switchMap(result => {
+          if (result) {
+            this.logger.log('Users already exist. Skipping seeding...');
+            return of(result.id);
+          }
+          return from(this.createOne(USER_SEED_DATA, true))
+            .pipe(
+              map(user => user.id),
+              tap(userId => this.logger.log(`Successfully seeded users (ID: ${userId})`)),
+            );
+        }),
       );
   }
 

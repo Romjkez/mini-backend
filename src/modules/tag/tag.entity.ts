@@ -10,8 +10,8 @@ export class Tag {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ApiModelProperty({ example: 'Clubman' })
-  @Column({ nullable: false, type: 'varchar', length: 50 })
+  @ApiModelProperty({ example: 'Clubman', maxLength: 20 })
+  @Column({ nullable: true, type: 'varchar', length: 20 })
   text: string;
 
   @ManyToMany(() => ExerciseEntity, e => e.tags)

@@ -7,7 +7,11 @@ import { UserModule } from '../user/user.module';
 import { TestModule } from '../test/test.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FinishedTestRepository]), forwardRef(() => TestModule), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([FinishedTestRepository]),
+    forwardRef(() => TestModule),
+    forwardRef(() => UserModule),
+  ],
   providers: [FinishedTestService, Logger],
   controllers: [FinishedTestController],
   exports: [FinishedTestService],

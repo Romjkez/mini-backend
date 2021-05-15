@@ -20,6 +20,7 @@ services:
       MAIL_USER: 'b509768e5a264a'
       MAIL_PASSWORD: 'ac53e08c65f943'
       MAIL_HOST: 'smtp.mailtrap.io'
+      ADMIN_EMAIL: 'meshkov.ra@yandex.com'
     command: "yarn run start:dev"
 
   db:

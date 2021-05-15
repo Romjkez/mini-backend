@@ -1,6 +1,19 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -11,18 +24,23 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { GetManyUsersDto } from './dto/get-many-users.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { SimpleUser } from './models/simple-user.model';
-import { ArticleEntity } from '../article/article.entity';
 import { GetManyQueryDto } from '../../common/dto/get-many.dto';
 import { AddFavoriteArticleDto } from './dto/add-favorite-article.dto';
 import { AddFinishedArticleDto } from './dto/add-finished-article.dto';
 import { RemoveFavoriteArticleDto } from './dto/remove-favorite-article.dto';
-import { FinishedTest } from '../finished-test/finished-test.entity';
 import { UserFilterDto } from './dto/user-filter.dto';
 import { UserSortDto } from './dto/user-sort.dto';
 import { SortType } from '../../common/models/sort-type.enum';
+import { Article } from '../article/models/article.model';
+import { AuthGuard } from '@nestjs/passport';
+import { ExtractJwtPayloadInterceptor } from '../../common/interceptors/extract-jwt-payload.interceptor';
+import { JwtPayload } from '../auth/models/jwt-payload.model';
+import { HasRolesGuard } from '../../common/guards/has-roles-guard.service';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from './models/user-role.enum';
 
 // @UseGuards(AuthGuard('jwt'))
-@ApiBearerAuth('bearer')
+// @ApiBearerAuth('bearer')
 @ApiTags('user')
 @Controller('user')
 export class UserController {
@@ -40,7 +58,6 @@ export class UserController {
   createBulk(@Body() dto: CreateUserBulkDto): Observable<Array<User>> {
     return this.userService.createBulk(dto);
   }
-
 
   @Get('top')
   getTopList(@Query() dto: GetManyQueryDto) {
@@ -79,18 +96,28 @@ export class UserController {
     return this.userService.update(params.id, dto);
   }
 
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard('jwt'), HasRolesGuard)
   @Post(':id/activate')
   @HttpCode(200)
   activate(@Param() params: IdDto): Observable<void> {
     return this.userService.activate(params.id);
   }
 
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard('jwt'), HasRolesGuard)
+  @ApiOperation({ summary: 'Restrict user to sign-in, delete all refresh tokens' })
   @Post(':id/deactivate')
   @HttpCode(200)
   deactivate(@Param() params: IdDto): Observable<void> {
     return this.userService.deactivate(params.id);
   }
 
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard('jwt'), HasRolesGuard)
   @Delete(':id')
   delete(@Param() params: IdDto): Observable<void> {
     return this.userService.delete(params.id);
@@ -117,19 +144,22 @@ export class UserController {
     return this.userService.removeFavoriteArticle(dto);
   }
 
-  @Get(':id/articles/finished')
-  getFinishedArticles(@Param() params: IdDto, @Query() dto: GetManyQueryDto): Observable<Array<ArticleEntity>> {
-    return this.userService.getFinishedArticles(params.id, dto);
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ExtractJwtPayloadInterceptor)
+  @Get('articles/finished')
+  getFinishedArticles(@Query() dto: GetManyQueryDto,
+                      @Query('jwtPayload') jwtPayload: JwtPayload): Observable<Array<Article>> {
+    return this.userService.getFinishedArticles(dto, jwtPayload);
   }
 
-  @Get(':id/tests/finished')
-  getFinishedTests(@Param() params: IdDto, @Query() dto: GetManyQueryDto): Observable<Array<FinishedTest>> {
-    return this.userService.getFinishedTests(params.id, dto);
-  }
-
-  @Get(':id/articles/favorite')
-  getFavoriteArticles(@Param() params: IdDto, @Query() dto: GetManyQueryDto): Observable<Array<ArticleEntity>> {
-    return this.userService.getFavoriteArticles(params.id, dto);
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ExtractJwtPayloadInterceptor)
+  @Get('articles/favorite')
+  getFavoriteArticles(@Query() dto: GetManyQueryDto,
+                      @Query('jwtPayload') jwtPayload: JwtPayload): Observable<Array<Article>> {
+    return this.userService.getFavoriteArticles(dto, jwtPayload);
   }
 
 }
