@@ -3,6 +3,7 @@ import {
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { UserRole } from '../models/user-role.enum';
 
 export const MIN_FIRSTNAME_LENGTH = 2;
 export const MIN_LASTNAME_LENGTH = 2;
@@ -44,4 +45,6 @@ export class CreateUserDto {
     description: 'Employer of user',
   })
   company?: string;
+
+  role?: UserRole;
 }

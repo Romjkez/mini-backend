@@ -39,6 +39,8 @@ import { ArticleService } from '../article/article.service';
 import { Article } from '../article/models/article.model';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
 import { AuthService } from '../auth/services/auth.service';
+import { UserRole } from './models/user-role.enum';
+import { USER_SEED_DATA } from '../seeder/user-seed-data';
 
 export const USER_RELATIONS: Array<string> = ['finishedTests', 'finishedArticles', 'favoriteArticles'];
 
@@ -55,10 +57,13 @@ export class UserService {
     logger.setContext('UserService');
   }
 
-  createOne(dto: CreateUserDto): Observable<User> {
+  createOne(dto: CreateUserDto, isAdmin?: boolean): Observable<User> {
     const password = this.generatePassword();
     if (process.env.NODE_ENV !== 'production') {
       this.logger.debug(`${dto.email}:${password}`);
+    }
+    if (isAdmin) {
+      dto.role = UserRole.ADMIN;
     }
 
     return this.userRepo.insertOne({ ...dto, password }, this.saltRounds)
@@ -75,7 +80,7 @@ export class UserService {
           console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           if (err.code === '23505') {
-            throw new BadRequestException('User with such an email already exists');
+            throw new BadRequestException('EMAIL_ALREADY_EXISTS');
           }
           throw new InternalServerErrorException(err);
         }),
@@ -315,6 +320,23 @@ export class UserService {
           throw new InternalServerErrorException(err);
         }),
         mapTo(null),
+      );
+  }
+
+  seed(): Observable<number> {
+    return from(this.userRepo.findOne({ email: process.env.ADMIN_EMAIL }))
+      .pipe(
+        switchMap(result => {
+          if (result) {
+            this.logger.log('Users already exist. Skipping seeding...');
+            return of(result.id);
+          }
+          return from(this.createOne(USER_SEED_DATA, true))
+            .pipe(
+              map(user => user.id),
+              tap(userId => this.logger.log(`Successfully seeded users (ID: ${userId})`)),
+            );
+        }),
       );
   }
 
