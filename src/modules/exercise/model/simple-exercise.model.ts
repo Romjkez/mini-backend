@@ -1,4 +1,7 @@
-import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import {
+  ApiModelProperty,
+  ApiModelPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Tag } from '../../tag/tag.entity';
 
 export class SimpleExercise {
@@ -7,6 +10,9 @@ export class SimpleExercise {
 
   @ApiModelProperty({ example: 'Вводное упражнение' })
   title: string;
+
+  @ApiModelPropertyOptional({ nullable: true })
+  previewUrl?: string;
 
   @ApiModelProperty()
   createdAt: Date;
