@@ -33,7 +33,7 @@ export class AuthService {
         catchError(err => {
           this.logger.error(JSON.stringify(err, null, 2));
           if (err?.name === 'EntityNotFound') {
-            throw new UnauthorizedException('User not found');
+            throw new UnauthorizedException('USER_NOT_FOUND');
           }
           throw new UnauthorizedException(err);
         }),
@@ -64,6 +64,21 @@ export class AuthService {
       );
   }
 
+  /**
+   * Finish current user session
+   * @param token
+   */
+  logout(token: string): Observable<void> {
+    return from(this.refreshTokenRepo.delete({ refreshToken: token }))
+      .pipe(
+        mapTo(null),
+      );
+  }
+
+  /**
+   * Finish all user sessions
+   * @param userId
+   */
   resetRefreshTokens(userId: number): Observable<void> {
     return from(this.refreshTokenRepo.delete({ owner: { id: userId } }))
       .pipe(
@@ -90,7 +105,7 @@ export class AuthService {
               of(refreshTokenPayload.sub),
             );
           }
-          throw new UnauthorizedException('Email or password is invalid');
+          throw new UnauthorizedException('INVALID_CREDENTIALS');
         }),
         switchMap(([access, refresh, userId]) => {
           const saveRefreshTokenDto = {

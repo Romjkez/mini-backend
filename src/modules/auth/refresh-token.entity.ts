@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 
 @Entity('refreshTokens')
@@ -6,7 +6,8 @@ export class RefreshToken {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ type: 'varchar' })
+  @Index({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   refreshToken: string;
 
   @ManyToOne(() => UserEntity, user => user.id, { eager: true })
