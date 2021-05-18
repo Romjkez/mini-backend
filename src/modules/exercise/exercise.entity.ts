@@ -8,7 +8,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import {
+  ApiModelProperty,
+  ApiModelPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Tag } from '../tag/tag.entity';
 import { Test } from '../test/test.entity';
 import { ArticleEntity } from '../article/article.entity';
@@ -23,6 +26,10 @@ export class ExerciseEntity {
   @ApiModelProperty()
   @Column({ type: 'varchar', length: 200 })
   title: string;
+
+  @ApiModelPropertyOptional()
+  @Column({ type: 'varchar', nullable: true })
+  previewUrl?: string;
 
   @ApiModelProperty()
   @CreateDateColumn()

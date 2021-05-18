@@ -22,6 +22,12 @@ export class CreateExerciseDto {
   @IsOptional()
   isVisible?: boolean;
 
+  @ApiModelPropertyOptional({ nullable: true })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  previewUrl?: string;
+
   @ApiModelProperty({ type: 'integer', isArray: true })
   @IsArray()
   tests: Array<number>;
@@ -38,6 +44,7 @@ export class CreateExerciseDto {
 export class CreateExerciseInternalDto {
   title: string;
   isVisible?: boolean;
+  previewUrl?: string;
   tests: Array<Partial<Test>>;
   articles: Array<Partial<ArticleEntity>>;
   tags: Array<Partial<Tag>>;
