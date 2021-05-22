@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { ExerciseEntity } from '../exercise/exercise.entity';
 import { ArticleEntity } from '../article/article.entity';
@@ -11,7 +11,8 @@ export class Tag {
   id: number;
 
   @ApiModelProperty({ example: 'Clubman', maxLength: 20 })
-  @Column({ nullable: true, type: 'varchar', length: 20 })
+  @Index({ unique: true })
+  @Column({ nullable: true, type: 'varchar', length: 20, unique: true })
   text: string;
 
   @ManyToMany(() => ExerciseEntity, e => e.tags)
