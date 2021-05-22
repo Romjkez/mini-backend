@@ -22,7 +22,7 @@ export class CreateExerciseDto {
   @IsOptional()
   isVisible?: boolean;
 
-  @ApiModelPropertyOptional({ nullable: true })
+  @ApiModelPropertyOptional({ nullable: true, default: 'https://i.imgur.com/yLiIVxG.jpg' })
   @IsString()
   @IsNotEmpty()
   @IsOptional()

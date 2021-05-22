@@ -29,7 +29,7 @@ export class ArticleEntity {
   @Column({ type: 'boolean', default: true })
   isVisible: boolean;
 
-  @Column({ type: 'varchar', default: null, nullable: true })
+  @Column({ type: 'varchar', default: 'https://i.imgur.com/yLiIVxG.jpg', nullable: true })
   previewUrl?: string;
 
   @CreateDateColumn({ type: 'timestamp' })

@@ -29,7 +29,10 @@ export class CreateArticleDto {
   @IsOptional()
   video?: string;
 
-  @ApiModelPropertyOptional({ example: 'https://avtotachki.com/wp-content/uploads/2020/12/37.jpg' })
+  @ApiModelPropertyOptional({
+    example: 'https://avtotachki.com/wp-content/uploads/2020/12/37.jpg',
+    default: 'https://i.imgur.com/yLiIVxG.jpg',
+  })
   @IsString()
   @IsOptional()
   @IsNotEmpty()

@@ -32,7 +32,7 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  @ApiModelPropertyOptional()
+  @ApiModelPropertyOptional({ default: 'https://i.imgur.com/yLiIVxG.jpg' })
   previewUrl?: string;
 
   @ApiModelPropertyOptional()
