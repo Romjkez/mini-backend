@@ -13,5 +13,6 @@ export function convertUserEntityToSimpleUser(user: UserEntity): SimpleUser {
     rating: user.rating,
     company: user.company,
     bannedAt: user.bannedAt,
+    role: user.role,
   };
 }
