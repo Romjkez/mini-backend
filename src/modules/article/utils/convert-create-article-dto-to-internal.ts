@@ -3,7 +3,7 @@ import { CreateArticleDto, CreateArticleInternalDto } from '../dto/create-articl
 export function convertCreateArticleDtoToInternal(dto: CreateArticleDto): CreateArticleInternalDto {
   return {
     video: dto.video,
-    tags: Array.from(new Set(dto.tags)).map(id => ({ id })),
+    tags: dto.tags.map(tag => ({ text: tag })),
     title: dto.title,
     content: dto.content,
     previewUrl: dto.previewUrl,

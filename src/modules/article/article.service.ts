@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, Logger, NotImplementedExcepti
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, Observable } from 'rxjs';
 import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
-import { CreateArticleDto } from './dto/create-article.dto';
+import { CreateArticleDto, CreateArticleInternalDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { Article } from './models/article.model';
@@ -13,6 +13,7 @@ import { calculateQueryOffset } from '../../common/utils';
 import { ExtractedJwtPayload } from '../../common/models/extracted-jwt-payload.model';
 import { UserRole } from '../user/models/user-role.enum';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
+import { TagService } from '../tag/tag.service';
 
 export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy', 'tags'];
 
@@ -20,21 +21,22 @@ export const ARTICLE_RELATIONS = ['favoriteFor', 'finishedBy', 'tags'];
 export class ArticleService {
   constructor(@InjectRepository(ArticleRepository) private readonly articleRepo: ArticleRepository,
               private readonly logger: Logger,
+              private readonly tagService: TagService,
   ) {
     logger.setContext('ArticleService');
   }
 
   createOne(dto: CreateArticleDto): Observable<Article> {
-    // todo проверять наличие тегов в DTO
-    return from(this.articleRepo.insertOne(dto))
+    return from(this.tagService.resolveByText(dto.tags))
       .pipe(
+        map(tags => ({ ...dto, tags } as CreateArticleInternalDto)),
+        switchMap(resolvedDto => this.articleRepo.insertOne(resolvedDto)),
         catchError(err => {
           console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
         }),
       );
-
   }
 
   getById(id: number, payload: JwtPayload): Observable<Article> {

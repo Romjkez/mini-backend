@@ -36,9 +36,9 @@ export class CreateArticleDto {
   @MinLength(3)
   previewUrl?: string;
 
-  @ApiModelProperty({ type: 'integer', isArray: true })
+  @ApiModelProperty({ type: 'string', isArray: true })
   @IsArray()
-  tags: Array<number>;
+  tags: Array<string>;
 }
 
 export class CreateArticleInternalDto {
