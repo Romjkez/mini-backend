@@ -1,11 +1,17 @@
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { MAX_ARTICLE_TITLE_LENGTH, MIN_ARTICLE_TITLE_LENGTH } from './create-article.dto';
 
 export class UpdateArticleDto {
-  @ApiModelPropertyOptional({ example: 'История основателей MINI' })
+  @ApiModelPropertyOptional({
+    example: 'История основателей MINI',
+    minLength: MIN_ARTICLE_TITLE_LENGTH,
+    maxLength: MAX_ARTICLE_TITLE_LENGTH,
+  })
   @IsString()
-  @MinLength(3)
+  @MinLength(MIN_ARTICLE_TITLE_LENGTH)
+  @MaxLength(MAX_ARTICLE_TITLE_LENGTH)
   @IsNotEmpty()
   @IsOptional()
   title: string;

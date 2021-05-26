@@ -2,13 +2,32 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsArray, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Tag } from '../../tag/tag.entity';
+import { MAX_TAGS, MIN_TAGS } from '../../../common/constants';
+
+export const MIN_ARTICLE_TITLE_LENGTH = 3;
+export const MAX_ARTICLE_TITLE_LENGTH = 100;
+
 
 export class CreateArticleDto {
-  @ApiModelProperty({ example: 'История основателей MINI' })
+  @ApiModelProperty({
+    example: 'История основателей MINI',
+    minLength: MIN_ARTICLE_TITLE_LENGTH,
+    maxLength: MAX_ARTICLE_TITLE_LENGTH,
+  })
   @IsString()
-  @MinLength(3)
+  @MinLength(MIN_ARTICLE_TITLE_LENGTH)
+  @MaxLength(MAX_ARTICLE_TITLE_LENGTH)
   @IsNotEmpty()
   title: string;
 
@@ -41,6 +60,8 @@ export class CreateArticleDto {
 
   @ApiModelProperty({ type: 'string', isArray: true })
   @IsArray()
+  @ArrayMinSize(MIN_TAGS)
+  @ArrayMaxSize(MAX_TAGS)
   tags: Array<string>;
 }
 

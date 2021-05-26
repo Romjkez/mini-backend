@@ -5,8 +5,18 @@ import {
 import { Tag } from '../../tag/tag.entity';
 import { ArticleEntity } from '../../article/article.entity';
 import { Test } from '../../test/test.entity';
-import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
+import { MAX_TAGS, MIN_TAGS } from '../../../common/constants';
 
 export class CreateExerciseDto {
   @ApiModelProperty({ description: 'Title of the exercise', example: 'Общая информация о MINI' })
@@ -38,6 +48,8 @@ export class CreateExerciseDto {
 
   @ApiModelProperty({ type: 'integer', isArray: true })
   @IsArray()
+  @ArrayMinSize(MIN_TAGS)
+  @ArrayMaxSize(MAX_TAGS)
   tags: Array<number>;
 }
 
