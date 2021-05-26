@@ -51,6 +51,7 @@ export class ArticleController {
   @UseInterceptors(ExtractJwtPayloadInterceptor)
   @ApiBody({ type: GetManyArticlesDto })
   @Post('getMany')
+  @HttpCode(200)
   getMany(@Body() dto: GetManyArticlesDto & ExtractedJwtPayload): Observable<GetManyResponseDto<Article>> {
     return this.articleService.getMany(dto);
   }
