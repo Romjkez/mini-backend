@@ -27,6 +27,7 @@ export class TestController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ExtractJwtPayloadInterceptor)
   @ApiBody({ type: GetManyTestsDto })
+  @HttpCode(200)
   @Post('getMany')
   getMany(@Body() dto: GetManyTestsDto & ExtractedJwtPayload): Observable<GetManyResponseDto<SimpleTest>> {
     return this.testService.getMany(dto);
@@ -36,7 +37,6 @@ export class TestController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ExtractJwtPayloadInterceptor)
   @ApiOkResponse({ type: Test })
-  @HttpCode(200)
   @Get(':id')
   getById(@Param() dto: IdDto, @Query() payload: ExtractedJwtPayload): Observable<Test> {
     return this.testService.getById(dto.id, payload.jwtPayload);
