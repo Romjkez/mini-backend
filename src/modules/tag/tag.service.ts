@@ -52,25 +52,27 @@ export class TagService {
    * @param tags
    */
   resolveByText(tags: Array<string>): Observable<Array<Tag>> {
+    const processedTags = Array.from(new Set(tags)).map(tag => tag.trim());
+
     let qb = this.tagRepo.createQueryBuilder('tag').select();
-    for (let i = 0; i < tags.length; i++) {
-      qb = qb.orWhere(`tag.text ILIKE :${i}`, { [i]: tags[i] });
+    for (let i = 0; i < processedTags.length; i++) {
+      qb = qb.orWhere(`tag.text ILIKE :${i}`, { [i]: processedTags[i] });
     }
     return from(qb.getMany())
       .pipe(
         map(foundTags => {
           const newTags = [];
-          tags.forEach(tag => {
+          processedTags.forEach(tag => {
             // Decide which tags should be created
-            const wasFound = foundTags.find(foundTag => foundTag.text === tag);
+            const wasFound = foundTags.find(foundTag => foundTag.text.toLowerCase() === tag.toLowerCase());
             if (!wasFound) {
               newTags.push({ text: tag } as Partial<Tag>);
             }
           });
           return [foundTags, newTags];
         }),
-        switchMap(([tags, newTags]) => zip(of(tags), this.tagRepo.save(newTags))),
-        map(([tags, savedNewTags]) => [...tags, ...savedNewTags]),
+        switchMap(([foundTags, newTags]) => zip(of(foundTags), this.tagRepo.save(newTags))),
+        map(([foundTags, savedNewTags]) => [...foundTags, ...savedNewTags]),
       );
   }
 
