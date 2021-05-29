@@ -73,11 +73,11 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @IsNotEmpty()
   order?: number;
 
-  @ApiModelProperty({ type: 'integer', isArray: true, example: [1] })
+  @ApiModelProperty({ type: 'string', isArray: true, example: ['MINI'] })
   @IsArray()
   @ArrayMinSize(MIN_TAGS)
   @ArrayMaxSize(MAX_TAGS)
-  tags: Array<number>;
+  tags: Array<string>;
 }
 
 export class CreateTestInternalDto {

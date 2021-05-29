@@ -1,9 +1,8 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { Test } from './test.entity';
-import { CreateTestDto } from './dto/create-test.dto';
+import { CreateTestDto, CreateTestInternalDto } from './dto/create-test.dto';
 import { from, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { convertCreateTestDtoToInternal } from './utils/convert-create-test-dto-to-internal';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { SimpleTest } from './models/simple-test.model';
 import { GetManyTestsDto } from './dto/get-many-tests.dto';
@@ -13,18 +12,22 @@ import { ExtractedJwtPayload } from '../../common/models/extracted-jwt-payload.m
 import { UserRole } from '../user/models/user-role.enum';
 import { FinishedTestService } from '../finished-test/finished-test.service';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
+import { TagService } from '../tag/tag.service';
 
 @Injectable()
 export class TestService {
   constructor(private readonly testRepo: TestRepository,
               private readonly finTestService: FinishedTestService,
-              private readonly logger: Logger) {
+              private readonly logger: Logger,
+              private readonly tagService: TagService) {
     logger.setContext('TestService');
   }
 
   createOne(dto: CreateTestDto): Observable<Test> {
-    return from(this.testRepo.save(convertCreateTestDtoToInternal(dto)))
+    return this.tagService.resolveByText(dto.tags)
       .pipe(
+        map(tags => ({ ...dto, tags }) as CreateTestInternalDto),
+        switchMap(async dto => this.testRepo.save(dto)),
         switchMap(async test => this.testRepo.findOne(test.id, {
           relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions'],
         })),

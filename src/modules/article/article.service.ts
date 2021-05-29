@@ -27,7 +27,7 @@ export class ArticleService {
   }
 
   createOne(dto: CreateArticleDto): Observable<Article> {
-    return from(this.tagService.resolveByText(dto.tags))
+    return this.tagService.resolveByText(dto.tags)
       .pipe(
         map(tags => ({ ...dto, tags } as CreateArticleInternalDto)),
         switchMap(resolvedDto => this.articleRepo.insertOne(resolvedDto)),
