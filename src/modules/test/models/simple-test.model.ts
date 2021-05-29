@@ -30,7 +30,7 @@ export class SimpleTest {
   isFinished?: boolean;
 
   @ApiModelProperty()
-  updatedAt?: Pick<Test, 'updatedAt'>;
+  updatedAt: Pick<Test, 'updatedAt'>;
 
   @ApiModelProperty()
   tags: Pick<Test, 'tags'>;
