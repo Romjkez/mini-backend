@@ -11,6 +11,7 @@ import {
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Type } from 'class-transformer';
+import { HasOneCorrectAnswer } from '../../test/decorators/has-one-correct-answer';
 
 export class CreateOneOfQuestionDto {
   @ApiModelProperty({ minLength: 3, maxLength: 255, example: 'Which company owns MINI brand?' })
@@ -40,6 +41,7 @@ export class CreateOneOfQuestionDto {
       },
     ],
   })
+  @HasOneCorrectAnswer()
   @IsArray()
   @Type(() => CreateOptionDto)
   @ValidateNested({ each: true })

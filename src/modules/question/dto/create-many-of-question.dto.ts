@@ -11,6 +11,7 @@ import {
 } from 'class-validator';
 import { CreateOptionDto } from '../../option/dto/create-option.dto';
 import { Type } from 'class-transformer';
+import { HasCorrectAnswer } from '../../test/decorators/has-correct-answer';
 
 export class CreateManyOfQuestionDto {
   @ApiModelProperty({ minLength: 3, maxLength: 255, example: 'Which cars were designed by MINI?' })
@@ -43,6 +44,7 @@ export class CreateManyOfQuestionDto {
   @IsArray()
   @Type(() => CreateOptionDto)
   @ValidateNested({ each: true })
+  @HasCorrectAnswer()
   @IsNotEmpty()
   options: Array<CreateOptionDto>;
 

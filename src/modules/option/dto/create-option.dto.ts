@@ -3,7 +3,6 @@ import {
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
-import { Transform } from 'class-transformer';
 
 export class CreateOptionDto {
   @IsString()
@@ -22,7 +21,6 @@ export class CreateOptionDto {
   })
   url?: string;
 
-  @Transform(Boolean)
   @IsBoolean()
   @IsNotEmpty()
   @ApiModelProperty({ nullable: false, example: false, type: 'boolean' })
