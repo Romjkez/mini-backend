@@ -13,6 +13,8 @@ import { UserRole } from '../user/models/user-role.enum';
 import { FinishedTestService } from '../finished-test/finished-test.service';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
 import { TagService } from '../tag/tag.service';
+import { OneOfQuestionEntity } from '../question/entities/one-of-question.entity';
+import { ManyOfQuestionEntity } from '../question/entities/many-of-question.entity';
 
 @Injectable()
 export class TestService {
@@ -71,9 +73,15 @@ export class TestService {
 
   getById(id: number, payload?: JwtPayload): Observable<Test> {
     return from(this.testRepo.findOneOrFail(id, {
-      relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions'],
+      relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions', 'tags'],
     }))
       .pipe(
+        map(test => {
+          if (payload?.role !== UserRole.ADMIN) {
+            return excludeOptionsCorrectStatus(test);
+          }
+          return test;
+        }),
         switchMap(async res => {
           if (payload?.role === UserRole.EMPLOYEE) {
             const searchResult = await this.finTestService.hasUserFinishedTests(payload.sub, [res.id]);
@@ -107,4 +115,18 @@ function setIsFinishedStatuses<T extends { isFinished?, id }>(tests: Array<T>, f
     return test;
   });
 
+}
+
+function excludeOptionsCorrectStatus(test: Test): Test {
+  test.oneOfQuestions = test.oneOfQuestions.map(removeIsCorrect) as Array<OneOfQuestionEntity>;
+  test.manyOfQuestions = test.manyOfQuestions.map(removeIsCorrect) as Array<ManyOfQuestionEntity>;
+  return test;
+}
+
+function removeIsCorrect(q: OneOfQuestionEntity | ManyOfQuestionEntity): OneOfQuestionEntity | ManyOfQuestionEntity {
+  q.options = q.options.map(opt => {
+    delete opt.isCorrect;
+    return opt;
+  });
+  return q;
 }
