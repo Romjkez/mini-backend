@@ -30,7 +30,7 @@ export class Test {
   title: string;
 
   @ApiModelPropertyOptional()
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, default: 'https://i.imgur.com/yLiIVxG.jpg' })
   previewUrl?: string;
 
   @ApiModelProperty()

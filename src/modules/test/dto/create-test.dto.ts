@@ -4,6 +4,8 @@ import {
   ApiModelPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
   IsArray,
   IsInt,
   IsNotEmpty,
@@ -20,6 +22,7 @@ import { CreateManyOfQuestionDto } from '../../question/dto/create-many-of-quest
 import { CreateExactAnswerQuestionDto } from '../../question/dto/create-exact-answer-question.dto';
 import { CreateOrderQuestionDto } from '../../question/dto/create-order-question.dto';
 import { Tag } from '../../tag/tag.entity';
+import { MAX_TAGS, MIN_TAGS } from '../../../common/constants';
 
 export class CreateTestDto extends CreateQuestionBulkDto {
   @IsString()
@@ -32,7 +35,7 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  @ApiModelPropertyOptional()
+  @ApiModelPropertyOptional({ default: 'https://i.imgur.com/yLiIVxG.jpg' })
   previewUrl?: string;
 
   @ApiModelPropertyOptional()
@@ -70,9 +73,11 @@ export class CreateTestDto extends CreateQuestionBulkDto {
   @IsNotEmpty()
   order?: number;
 
-  @ApiModelProperty({ type: 'integer', isArray: true, example: [1] })
+  @ApiModelProperty({ type: 'string', isArray: true, example: ['MINI'] })
   @IsArray()
-  tags: Array<number>;
+  @ArrayMinSize(MIN_TAGS)
+  @ArrayMaxSize(MAX_TAGS)
+  tags: Array<string>;
 }
 
 export class CreateTestInternalDto {

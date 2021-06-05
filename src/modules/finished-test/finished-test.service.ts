@@ -38,7 +38,7 @@ export class FinishedTestService {
       if (answer) {
         throw new ForbiddenException('TEST_ALREADY_TAKEN');
       }
-
+      console.log(dto);
       return this.finishedTestRepo.saveAndUpdateRating(dto, this.userService, this.logger);
     }
   }
@@ -84,13 +84,20 @@ export class FinishedTestService {
 
   }
 
+  /**
+   * Search for finished tests
+   * @param userId
+   * @param testIds
+   * @return ids of tests (!) which user has finished
+   */
   async hasUserFinishedTests(userId: number, testIds: Array<number>): Promise<Array<number>> {
     return this.finishedTestRepo.createQueryBuilder('finishedTest')
       .select('finishedTest.id')
+      .leftJoinAndSelect('finishedTest.test', 'test')
       .where('finishedTest.finishedBy=:user', { user: userId })
       .andWhere('finishedTest.test IN (:...test)', { test: testIds })
       .getMany()
-      .then(res => res.map(finishedTest => finishedTest.id));
+      .then(res => res.map(finishedTest => finishedTest.test.id));
   }
 }
 

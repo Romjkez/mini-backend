@@ -8,6 +8,9 @@ export class SimpleTest {
   @ApiModelProperty()
   id: number;
 
+  @ApiModelProperty({ example: 'История MINI' })
+  title: string;
+
   @ApiModelProperty()
   oneOfQuestions: number;
 
@@ -30,7 +33,7 @@ export class SimpleTest {
   isFinished?: boolean;
 
   @ApiModelProperty()
-  updatedAt?: Pick<Test, 'updatedAt'>;
+  updatedAt: Pick<Test, 'updatedAt'>;
 
   @ApiModelProperty()
   tags: Pick<Test, 'tags'>;

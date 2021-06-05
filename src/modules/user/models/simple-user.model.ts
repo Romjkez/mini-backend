@@ -1,4 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import { UserRole } from './user-role.enum';
 
 export class SimpleUser {
   @ApiModelProperty({ example: 228 })
@@ -22,4 +23,6 @@ export class SimpleUser {
   @ApiModelProperty() bannedAt?: Date;
 
   @ApiModelProperty({ example: 4.51, nullable: true }) rating?: number;
+
+  @ApiModelProperty({ example: UserRole.EMPLOYEE, nullable: false }) role?: UserRole;
 }

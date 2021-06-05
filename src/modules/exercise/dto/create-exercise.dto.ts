@@ -5,8 +5,18 @@ import {
 import { Tag } from '../../tag/tag.entity';
 import { ArticleEntity } from '../../article/article.entity';
 import { Test } from '../../test/test.entity';
-import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
+import { MAX_TAGS, MIN_TAGS } from '../../../common/constants';
 
 export class CreateExerciseDto {
   @ApiModelProperty({ description: 'Title of the exercise', example: 'Общая информация о MINI' })
@@ -22,7 +32,7 @@ export class CreateExerciseDto {
   @IsOptional()
   isVisible?: boolean;
 
-  @ApiModelPropertyOptional({ nullable: true })
+  @ApiModelPropertyOptional({ nullable: true, default: 'https://i.imgur.com/yLiIVxG.jpg' })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
@@ -30,15 +40,19 @@ export class CreateExerciseDto {
 
   @ApiModelProperty({ type: 'integer', isArray: true })
   @IsArray()
+  @ArrayMinSize(1)
   tests: Array<number>;
 
   @ApiModelProperty({ type: 'integer', isArray: true })
+  @ArrayMinSize(1)
   @IsArray()
   articles: Array<number>;
 
-  @ApiModelProperty({ type: 'integer', isArray: true })
+  @ApiModelProperty({ type: 'string', isArray: true })
   @IsArray()
-  tags: Array<number>;
+  @ArrayMinSize(MIN_TAGS)
+  @ArrayMaxSize(MAX_TAGS)
+  tags: Array<string>;
 }
 
 export class CreateExerciseInternalDto {

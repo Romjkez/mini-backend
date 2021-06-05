@@ -1,9 +1,8 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { Test } from './test.entity';
-import { CreateTestDto } from './dto/create-test.dto';
+import { CreateTestDto, CreateTestInternalDto } from './dto/create-test.dto';
 import { from, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { convertCreateTestDtoToInternal } from './utils/convert-create-test-dto-to-internal';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 import { SimpleTest } from './models/simple-test.model';
 import { GetManyTestsDto } from './dto/get-many-tests.dto';
@@ -13,18 +12,24 @@ import { ExtractedJwtPayload } from '../../common/models/extracted-jwt-payload.m
 import { UserRole } from '../user/models/user-role.enum';
 import { FinishedTestService } from '../finished-test/finished-test.service';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
+import { TagService } from '../tag/tag.service';
+import { OneOfQuestionEntity } from '../question/entities/one-of-question.entity';
+import { ManyOfQuestionEntity } from '../question/entities/many-of-question.entity';
 
 @Injectable()
 export class TestService {
   constructor(private readonly testRepo: TestRepository,
               private readonly finTestService: FinishedTestService,
-              private readonly logger: Logger) {
+              private readonly logger: Logger,
+              private readonly tagService: TagService) {
     logger.setContext('TestService');
   }
 
   createOne(dto: CreateTestDto): Observable<Test> {
-    return from(this.testRepo.save(convertCreateTestDtoToInternal(dto)))
+    return this.tagService.resolveByText(dto.tags)
       .pipe(
+        map(tags => ({ ...dto, tags }) as CreateTestInternalDto),
+        switchMap(async dto => this.testRepo.save(dto)),
         switchMap(async test => this.testRepo.findOne(test.id, {
           relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions'],
         })),
@@ -68,9 +73,15 @@ export class TestService {
 
   getById(id: number, payload?: JwtPayload): Observable<Test> {
     return from(this.testRepo.findOneOrFail(id, {
-      relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions'],
+      relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions', 'tags'],
     }))
       .pipe(
+        map(test => {
+          if (payload?.role !== UserRole.ADMIN) {
+            return excludeOptionsCorrectStatus(test);
+          }
+          return test;
+        }),
         switchMap(async res => {
           if (payload?.role === UserRole.EMPLOYEE) {
             const searchResult = await this.finTestService.hasUserFinishedTests(payload.sub, [res.id]);
@@ -104,4 +115,18 @@ function setIsFinishedStatuses<T extends { isFinished?, id }>(tests: Array<T>, f
     return test;
   });
 
+}
+
+function excludeOptionsCorrectStatus(test: Test): Test {
+  test.oneOfQuestions = test.oneOfQuestions.map(removeIsCorrect) as Array<OneOfQuestionEntity>;
+  test.manyOfQuestions = test.manyOfQuestions.map(removeIsCorrect) as Array<ManyOfQuestionEntity>;
+  return test;
+}
+
+function removeIsCorrect(q: OneOfQuestionEntity | ManyOfQuestionEntity): OneOfQuestionEntity | ManyOfQuestionEntity {
+  q.options = q.options.map(opt => {
+    delete opt.isCorrect;
+    return opt;
+  });
+  return q;
 }
