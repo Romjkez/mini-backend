@@ -7,11 +7,12 @@ import { from, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { SimpleExercise } from './model/simple-exercise.model';
 import { GetManyExercisesDto } from './dto/get-many-exercises.dto';
-import { DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
 import { calculateQueryOffset } from '../../common/utils';
 import { addExerciseSort } from './utlis/add-exercise-sort';
 import { addExerciseFilter } from './utlis/add-exercise-filter';
 import { TagService } from '../tag/tag.service';
+import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 
 export const EXERCISE_RELATIONS = ['tests', 'articles', 'tags'];
 
@@ -49,7 +50,7 @@ export class ExerciseService {
       );
   }
 
-  getMany(dto: GetManyExercisesDto): Observable<Array<SimpleExercise>> {
+  getMany(dto: GetManyExercisesDto): Observable<GetManyResponseDto<SimpleExercise>> {
     const entityName = 'exercise';
     let qb = (this.exerciseRepo as unknown as Repository<SimpleExercise>).createQueryBuilder(entityName)
       .limit(dto?.perPage || DEFAULT_PER_PAGE)
@@ -66,6 +67,19 @@ export class ExerciseService {
       qb = addExerciseFilter(qb, dto.filter, entityName);
     }
 
-    return from(qb.getMany());
+    return from(qb.getManyAndCount())
+      .pipe(
+        map(([result, count]) => ({
+          data: result,
+          perPage: dto.perPage || DEFAULT_PER_PAGE,
+          page: dto.page || DEFAULT_PAGE,
+          totalItems: count,
+        })),
+        catchError(err => {
+          console.error(err);
+          this.logger.error(JSON.stringify(err, null, 2));
+          throw new InternalServerErrorException(err);
+        }),
+      );
   }
 }

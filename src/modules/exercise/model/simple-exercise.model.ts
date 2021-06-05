@@ -26,6 +26,9 @@ export class SimpleExercise {
   @ApiModelProperty({ example: 4 })
   articles: number;
 
+  @ApiModelProperty({ example: true })
+  isVisible: boolean;
+
   @ApiModelProperty({ type: Tag, isArray: true })
   tags: Array<Tag>;
 }

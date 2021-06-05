@@ -7,6 +7,7 @@ import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { IdDto } from '../../common/dto/id.dto';
 import { GetManyExercisesDto } from './dto/get-many-exercises.dto';
 import { SimpleExercise } from './model/simple-exercise.model';
+import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
 
 @ApiTags('exercise')
 @Controller('exercise')
@@ -29,7 +30,7 @@ export class ExerciseController {
   @ApiOkResponse({ type: SimpleExercise, isArray: true })
   @Post('getMany')
   @HttpCode(200)
-  getMany(@Body() dto: GetManyExercisesDto): Observable<Array<SimpleExercise>> {
+  getMany(@Body() dto: GetManyExercisesDto): Observable<GetManyResponseDto<SimpleExercise>> {
     return this.exerciseService.getMany(dto);
   }
 }
