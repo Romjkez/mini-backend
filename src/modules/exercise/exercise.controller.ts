@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ExerciseService } from './exercise.service';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { ExerciseEntity } from './exercise.entity';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
@@ -14,6 +14,7 @@ export class ExerciseController {
   constructor(private readonly exerciseService: ExerciseService) {
   }
 
+  @ApiOperation({ summary: 'Create exercise' })
   @Post()
   createOne(@Body() dto: CreateExerciseDto): Observable<ExerciseEntity> {
     return this.exerciseService.createOne(dto);

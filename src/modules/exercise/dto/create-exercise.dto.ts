@@ -40,17 +40,19 @@ export class CreateExerciseDto {
 
   @ApiModelProperty({ type: 'integer', isArray: true })
   @IsArray()
+  @ArrayMinSize(1)
   tests: Array<number>;
 
   @ApiModelProperty({ type: 'integer', isArray: true })
+  @ArrayMinSize(1)
   @IsArray()
   articles: Array<number>;
 
-  @ApiModelProperty({ type: 'integer', isArray: true })
+  @ApiModelProperty({ type: 'string', isArray: true })
   @IsArray()
   @ArrayMinSize(MIN_TAGS)
   @ArrayMaxSize(MAX_TAGS)
-  tags: Array<number>;
+  tags: Array<string>;
 }
 
 export class CreateExerciseInternalDto {
