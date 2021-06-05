@@ -8,6 +8,9 @@ export class SimpleTest {
   @ApiModelProperty()
   id: number;
 
+  @ApiModelProperty({ example: 'История MINI' })
+  title: string;
+
   @ApiModelProperty()
   oneOfQuestions: number;
 
