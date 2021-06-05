@@ -11,6 +11,9 @@ export class SimpleTest {
   @ApiModelProperty({ example: 'История MINI' })
   title: string;
 
+  @ApiModelPropertyOptional()
+  previewUrl?: string;
+
   @ApiModelProperty()
   oneOfQuestions: number;
 
