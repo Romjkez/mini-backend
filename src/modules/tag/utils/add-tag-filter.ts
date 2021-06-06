@@ -6,7 +6,7 @@ export function addTagFilter(qb: SelectQueryBuilder<Tag>, filter: TagFilterDto, 
   : SelectQueryBuilder<Tag> {
 
   if (filter.text) {
-    qb = qb.andWhere(`"${entityName}"."text" ILIKE :title`, { title: `%${filter.text}%` });
+    qb = qb.andWhere(`"${entityName}"."text" ILIKE :text`, { text: `%${filter.text}%` });
   }
 
   return qb;

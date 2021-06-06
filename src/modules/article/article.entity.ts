@@ -47,6 +47,9 @@ export class ArticleEntity {
   @ManyToOne(() => ExerciseEntity, e => e.articles)
   exercise: ExerciseEntity;
 
+  @Column({ type: 'smallint', default: null, nullable: true })
+  order: number;
+
   @JoinTable()
   @ManyToMany(() => Tag, t => t.articles)
   tags: Array<Tag>;

@@ -10,7 +10,7 @@ export function addTestFilter(qb: SelectQueryBuilder<Test>, filter: TestFilterDt
   }
 
   if (filter.title) {
-    qb = qb.andWhere(`"${entityName}"."title"=:title`, { title: filter.title });
+    qb = qb.andWhere(`"${entityName}"."title" ILIKE :title`, { title: `%${filter.title}%` });
   }
 
   return qb;
