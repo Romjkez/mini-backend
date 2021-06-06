@@ -2,23 +2,14 @@ FROM mhart/alpine-node:14
 
 LABEL maintainer="meshkov.ra@yandex.com"
 
-WORKDIR /app
+RUN apk add --update git
+RUN git clone https://github.com/Romjkez/mini-backend.git
 
-COPY package.json yarn.lock /app/
+WORKDIR /mini-backend
 
-RUN yarn install --ignore-optional --frozen-lockfile && yarn cache clean
+RUN yarn install --ignore-optional --frozen-lockfile && yarn build && yarn cache clean
 
-ADD . /app/
+ADD . /mini-backend/
 
 EXPOSE 3000
-ENV NODE_ENV 'production'
 
-ENV DB_HOST ''
-ENV DB_PORT ''
-ENV DB_USERNAME ''
-ENV DB_PASSWORD ''
-ENV DB_NAME ''
-
-RUN apk --update --no-cache add postgresql-client
-
-COPY dist/ /app/dist/
