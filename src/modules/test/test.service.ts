@@ -76,12 +76,12 @@ export class TestService {
       relations: ['oneOfQuestions', 'manyOfQuestions', 'exactAnswerQuestions', 'orderQuestions', 'tags'],
     }))
       .pipe(
-        map(test => {
+        /*map(test => {
           if (payload?.role !== UserRole.ADMIN) {
             return excludeOptionsCorrectStatus(test);
           }
           return test;
-        }),
+        }),*/
         switchMap(async res => {
           if (payload?.role === UserRole.EMPLOYEE) {
             const searchResult = await this.finTestService.hasUserFinishedTests(payload.sub, [res.id]);
