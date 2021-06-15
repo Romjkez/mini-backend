@@ -1,6 +1,5 @@
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
 import { MAX_ARTICLE_TITLE_LENGTH, MIN_ARTICLE_TITLE_LENGTH } from './create-article.dto';
 
 export class UpdateArticleDto {
@@ -14,7 +13,7 @@ export class UpdateArticleDto {
   @MaxLength(MAX_ARTICLE_TITLE_LENGTH)
   @IsNotEmpty()
   @IsOptional()
-  title: string;
+  title?: string;
 
   @ApiModelPropertyOptional({ example: 'https://www.youtube.com/watch?v=mU4TZ99yAdo' })
   @IsString()
@@ -40,9 +39,14 @@ export class UpdateArticleDto {
   previewUrl?: string;
 
   @ApiModelPropertyOptional({ description: 'Is article visible in articles list' })
-  @Transform(Boolean)
   @IsBoolean()
   @IsNotEmpty()
   @IsOptional()
-  isVisible: boolean;
+  isVisible?: boolean;
+
+  @IsInt()
+  @IsNotEmpty()
+  @Min(1)
+  @IsOptional()
+  order?: number;
 }

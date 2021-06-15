@@ -14,9 +14,11 @@ import {
   IsOptional,
   IsString,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { MAX_TAGS, MIN_TAGS } from '../../../common/constants';
+import { ExerciseOwnedEntityDto } from './exercise-owned-entity.dto';
 
 export class CreateExerciseDto {
   @ApiModelProperty({ description: 'Title of the exercise', example: 'Общая информация о MINI' })
@@ -38,15 +40,17 @@ export class CreateExerciseDto {
   @IsOptional()
   previewUrl?: string;
 
-  @ApiModelProperty({ type: 'integer', isArray: true })
+  @ApiModelProperty({ type: ExerciseOwnedEntityDto, isArray: true })
   @IsArray()
+  @ValidateNested()
   @ArrayMinSize(1)
-  tests: Array<number>;
+  tests: Array<ExerciseOwnedEntityDto>;
 
-  @ApiModelProperty({ type: 'integer', isArray: true })
+  @ApiModelProperty({ type: ExerciseOwnedEntityDto, isArray: true })
   @ArrayMinSize(1)
+  @ValidateNested()
   @IsArray()
-  articles: Array<number>;
+  articles: Array<ExerciseOwnedEntityDto>;
 
   @ApiModelProperty({ type: 'string', isArray: true })
   @IsArray()
