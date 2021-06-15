@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 export class ArticleFilterDto {
@@ -8,4 +8,10 @@ export class ArticleFilterDto {
   @IsNotEmpty()
   @IsOptional()
   title?: string;
+
+  @ApiModelPropertyOptional({ description: 'Is article owned by exercise ' })
+  @IsBoolean()
+  @IsNotEmpty()
+  @IsOptional()
+  isInExercise?: boolean;
 }

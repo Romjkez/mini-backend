@@ -14,4 +14,10 @@ export class TestFilterDto {
   @IsString()
   @IsNotEmpty()
   title?: Pick<Test, 'title'>;
+
+  @ApiModelPropertyOptional({ description: 'Is test owned by exercise' })
+  @IsOptional()
+  @IsBoolean()
+  @IsNotEmpty()
+  isInExercise?: boolean;
 }
