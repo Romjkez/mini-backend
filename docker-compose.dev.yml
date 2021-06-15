@@ -21,7 +21,7 @@ services:
       MAIL_PASSWORD: 'ac53e08c65f943'
       MAIL_HOST: 'smtp.mailtrap.io'
       ADMIN_EMAIL: 'meshkov.ra@ya.ru'
-    command: "yarn run start:dev"
+    command: "yarn run start:prod"
 
   db:
     image: postgres:13.2

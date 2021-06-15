@@ -15,6 +15,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
 import { FinishedTestModule } from './modules/finished-test/finished-test.module';
 import { FinishedExerciseModule } from './modules/finished-exercise/finished-exercise.module';
+import { NewsModule } from './modules/news/news.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { FinishedExerciseModule } from './modules/finished-exercise/finished-exe
     }),
     ConfigModule,
     FinishedExerciseModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -33,10 +33,10 @@ export class ArticleEntity {
   previewUrl?: string;
 
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt: number;
+  createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updatedAt?: number;
+  updatedAt?: Date;
 
   @ManyToMany(() => UserEntity, user => user.finishedArticles)
   finishedBy: Array<UserEntity>;
