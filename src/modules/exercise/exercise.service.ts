@@ -4,7 +4,7 @@ import { ExerciseEntity } from './exercise.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateExerciseDto, CreateExerciseInternalDto } from './dto/create-exercise.dto';
 import { from, Observable } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { SimpleExercise } from './model/simple-exercise.model';
 import { GetManyExercisesDto } from './dto/get-many-exercises.dto';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../common/dto/get-many.dto';
@@ -13,6 +13,8 @@ import { addExerciseSort } from './utlis/add-exercise-sort';
 import { addExerciseFilter } from './utlis/add-exercise-filter';
 import { TagService } from '../tag/tag.service';
 import { GetManyResponseDto } from '../../common/dto/get-many-response.dto';
+import { TestService } from '../test/test.service';
+import { ArticleService } from '../article/article.service';
 
 export const EXERCISE_RELATIONS = ['tests', 'articles', 'tags'];
 
@@ -20,7 +22,9 @@ export const EXERCISE_RELATIONS = ['tests', 'articles', 'tags'];
 export class ExerciseService {
   constructor(@InjectRepository(ExerciseEntity) private readonly exerciseRepo: Repository<ExerciseEntity>,
               private readonly logger: Logger,
-              private readonly tagService: TagService) {
+              private readonly tagService: TagService,
+              private readonly testService: TestService,
+              private readonly articleService: ArticleService) {
     logger.setContext('ExerciseService');
   }
 
@@ -31,12 +35,16 @@ export class ExerciseService {
           const internalDto: CreateExerciseInternalDto = {
             ...dto,
             tags,
-            tests: Array.from(new Set(dto.tests)).map(id => ({ id })),
-            articles: Array.from(new Set(dto.articles)).map(id => ({ id })),
+            tests: Array.from(new Set(dto.tests)).map(testDto => ({ id: testDto.id })),
+            articles: Array.from(new Set(dto.articles)).map(articleDto => ({ id: articleDto.id })),
           };
           return internalDto;
         }),
         switchMap(async dto => this.exerciseRepo.save(dto)),
+        tap(() => {
+          dto.tests.forEach(t => this.testService.updateOrder(t.id, t.order).subscribe());
+          dto.articles.forEach(t => this.articleService.update(t.id, { order: t.order }).subscribe());
+        }),
         switchMap(async exercise => this.exerciseRepo.findOne(exercise.id, { relations: EXERCISE_RELATIONS })));
   }
 

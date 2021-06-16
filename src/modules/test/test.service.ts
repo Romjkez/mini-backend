@@ -15,6 +15,7 @@ import { JwtPayload } from '../auth/models/jwt-payload.model';
 import { TagService } from '../tag/tag.service';
 import { OneOfQuestionEntity } from '../question/entities/one-of-question.entity';
 import { ManyOfQuestionEntity } from '../question/entities/many-of-question.entity';
+import { UpdateResult } from 'typeorm';
 
 @Injectable()
 export class TestService {
@@ -70,6 +71,10 @@ export class TestService {
   }
 
   // TODO add update method, restrict updating when there is at least 1 related finishedTest
+
+  updateOrder(id: number, order: number): Observable<UpdateResult> {
+    return from(this.testRepo.update({ id }, { order }));
+  }
 
   getById(id: number, payload?: JwtPayload): Observable<Test> {
     return from(this.testRepo.findOneOrFail(id, {

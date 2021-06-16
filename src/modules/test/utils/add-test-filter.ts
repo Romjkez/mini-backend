@@ -13,5 +13,13 @@ export function addTestFilter(qb: SelectQueryBuilder<Test>, filter: TestFilterDt
     qb = qb.andWhere(`"${entityName}"."title" ILIKE :title`, { title: `%${filter.title}%` });
   }
 
+  if (filter.isInExercise === true) {
+    qb = qb.andWhere(`"${entityName}"."order" IS NOT NULL`);
+  }
+
+  if (filter.isInExercise === false) {
+    qb = qb.andWhere(`"${entityName}"."order" IS NULL`);
+  }
+
   return qb;
 }
