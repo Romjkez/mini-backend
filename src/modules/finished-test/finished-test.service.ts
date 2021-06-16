@@ -9,6 +9,8 @@ import { DEFAULT_PER_PAGE, GetManyDto } from '../../common/dto/get-many.dto';
 import { JwtPayload } from '../auth/models/jwt-payload.model';
 import { calculateQueryOffset } from '../../common/utils';
 import { FinishedTestSimple } from './models/finished-test-simple.model';
+import { StatsPeriod } from '../stats/models/stats-period';
+import { StatsCountResponseDto } from '../stats/dto/stats-count-response.dto';
 
 export const FINISHED_TEST_RELATIONS: Array<string> = [
   'oneOfQuestionAnswers', 'manyOfQuestionAnswers', 'orderQuestionAnswers',
@@ -98,6 +100,40 @@ export class FinishedTestService {
       .andWhere('finishedTest.test IN (:...test)', { test: testIds })
       .getMany()
       .then(res => res.map(finishedTest => finishedTest.test.id));
+  }
+
+  getStats(period: StatsPeriod): Observable<StatsCountResponseDto> {
+    let qb = this.finishedTestRepo.createQueryBuilder('finishedTest')
+      .where('finishedTest.finishedAt < current_date');
+
+    if (period === StatsPeriod.DAY) {
+      qb = qb.andWhere('finishedTest.finishedAt >= date_trunc(\'day\', current_date)');
+    }
+
+    if (period === StatsPeriod.WEEK) {
+      qb = qb.andWhere('finishedTest.finishedAt >= (current_date - interval \'1 week\')');
+    }
+
+    if (period === StatsPeriod.MONTH) {
+      qb = qb.andWhere('finishedTest.finishedAt >= (current_date - interval \'1 month\')');
+    }
+
+    if (period === StatsPeriod.THREE_MONTHS) {
+      qb = qb.andWhere('finishedTest.finishedAt >= (current_date - interval \'3 month\')');
+    }
+
+    if (period === StatsPeriod.SIX_MONTHS) {
+      qb = qb.andWhere('finishedTest.finishedAt >= (current_date - interval \'6 month\')');
+    }
+
+    if (period === StatsPeriod.YEAR) {
+      qb = qb.andWhere('finishedTest.finishedAt >= (current_date - interval \'1 year\')');
+    }
+
+    return from(qb.getCount())
+      .pipe(
+        map(res => ({ count: res })),
+      );
   }
 }
 

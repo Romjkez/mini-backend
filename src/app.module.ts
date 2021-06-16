@@ -16,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
 import { FinishedTestModule } from './modules/finished-test/finished-test.module';
 import { FinishedExerciseModule } from './modules/finished-exercise/finished-exercise.module';
 import { NewsModule } from './modules/news/news.module';
+import { StatsModule } from './modules/stats/stats.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { NewsModule } from './modules/news/news.module';
     ConfigModule,
     FinishedExerciseModule,
     NewsModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [],
