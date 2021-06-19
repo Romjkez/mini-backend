@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -23,6 +24,7 @@ import { GetManyArticlesDto } from './dto/get-many-articles.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwtPayloadInterceptor } from '../../common/interceptors/extract-jwt-payload.interceptor';
 import { ExtractedJwtPayload } from '../../common/models/extracted-jwt-payload.model';
+import { IsCreateArticleValidPipe } from './pipes/is-create-article-valid.pipe';
 
 @ApiTags('article')
 @Controller('article')
@@ -31,6 +33,7 @@ export class ArticleController {
   }
 
   @ApiCreatedResponse({ type: Article })
+  @UsePipes(IsCreateArticleValidPipe)
   @Post()
   createOne(@Body() dto: CreateArticleDto): Observable<Article> {
     return this.articleService.createOne(dto);
