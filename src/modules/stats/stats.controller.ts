@@ -28,7 +28,6 @@ export class StatsController {
     )
       .pipe(
         map(([activeUsers, testStats]) => {
-          console.log(activeUsers);
           return {
             periodStats: {
               finishedTests: testStats.count,
