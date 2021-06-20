@@ -17,6 +17,7 @@ import { Repository } from 'typeorm';
 import { RefreshToken } from '../refresh-token.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
+import { StatsCountResponseDto } from '../../stats/dto/stats-count-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -84,6 +85,14 @@ export class AuthService {
       .pipe(
         mapTo(null),
       );
+  }
+
+  getLoginStats(): Observable<StatsCountResponseDto> {
+    return from(this.refreshTokenRepo.query('SELECT count(DISTINCT "refreshTokens"."ownerId") from "refreshTokens";'))
+      .pipe(
+        map(res => res[0]),
+      );
+
   }
 
   private generateJwtToken(isAuthorized: boolean, user: Partial<UserEntity>): Observable<JwtToken> {
