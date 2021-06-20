@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 
 @Entity('refreshTokens')
@@ -9,6 +9,9 @@ export class RefreshToken {
   @Index({ unique: true })
   @Column({ type: 'varchar', unique: true })
   refreshToken: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
   @ManyToOne(() => UserEntity, user => user.id, { eager: true })
   owner: UserEntity;

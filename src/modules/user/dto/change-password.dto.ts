@@ -6,7 +6,6 @@ const MIN_PASSWORD_LENGTH = 6;
 export class ChangePasswordDto {
   @IsNotEmpty()
   @IsString()
-  @MinLength(MIN_PASSWORD_LENGTH)
   @ApiModelProperty({example: '444555', nullable: false})
   oldPassword: string;
 
