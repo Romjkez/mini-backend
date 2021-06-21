@@ -28,5 +28,17 @@ export function addUserSort(qb: SelectQueryBuilder<UserEntity>, sortOptions: Use
     qb = qb.addOrderBy(`"${entityName}"."rating"`, sortOptions.rating);
   }
 
+  if (sortOptions.createdAt) {
+    qb = qb.addOrderBy(`"${entityName}"."createdAt"`, sortOptions.createdAt);
+  }
+
+  if (sortOptions.updatedAt) {
+    qb = qb.addOrderBy(`"${entityName}"."updatedAt"`, sortOptions.updatedAt);
+  }
+
+  if (sortOptions.bannedAt) {
+    qb = qb.addOrderBy(`"${entityName}"."bannedAt"`, sortOptions.bannedAt);
+  }
+
   return qb;
 }
