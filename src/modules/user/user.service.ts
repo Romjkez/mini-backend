@@ -248,6 +248,7 @@ export class UserService {
         }),
         switchMap(hash => from(this.userRepo.update(id, { password: hash }))),
         catchError(err => {
+          console.error(err);
           this.logger.error(JSON.stringify(err, null, 2));
           throw new InternalServerErrorException(err);
         }),

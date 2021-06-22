@@ -41,4 +41,22 @@ export class UserSortDto {
   @IsNotEmpty()
   @IsEnum(SortType)
   rating?: SortType;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(SortType)
+  createdAt?: SortType;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(SortType)
+  updatedAt?: SortType;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(SortType)
+  bannedAt?: SortType;
 }
